@@ -35,7 +35,7 @@ Mục tiêu của buổi 1 là khởi tạo cấu trúc dự án, tạo các Ent
 - Visual Studio 2022
 - Git và GitHub
 
----
+------
 
 ## 4. Cấu trúc thư mục dự án
 
@@ -101,6 +101,9 @@ TriCMS_Solution
 ```text
 CMS.Backend/Controllers/CategoryController.cs
 CMS.Backend/Views/Category/Index.cshtml
+```
+
+```
 6.2. Quản lý bài viết
 
 Đã tạo:
