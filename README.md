@@ -74,3 +74,30 @@ TriCMS_Solution
 ├── TriCMS_Solution.sln
 ├── .gitignore
 └── README.md
+```
+---
+
+## 5. Các Entity đã tạo
+
+| Entity | Chức năng |
+|---|---|
+| `Category.cs` | Lưu thông tin danh mục bài viết |
+| `Post.cs` | Lưu thông tin bài viết |
+| `User.cs` | Lưu thông tin người dùng quản trị |
+| `CategoryProduct.cs` | Lưu thông tin danh mục sản phẩm |
+| `Product.cs` | Lưu thông tin sản phẩm |
+| `Customer.cs` | Lưu thông tin khách hàng |
+| `Order.cs` | Lưu thông tin đơn hàng |
+| `OrderDetail.cs` | Lưu thông tin chi tiết đơn hàng |
+
+---
+
+## 6. Các chức năng đã hoàn thành trong buổi 1
+
+### 6.1. Quản lý danh mục bài viết
+
+Đã tạo:
+
+```text
+CMS.Backend/Controllers/CategoryController.cs
+CMS.Backend/Views/Category/Index.cshtml
