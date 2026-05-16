@@ -1,0 +1,30 @@
+﻿//MSSV:2123110137
+//Truong Minh Tri
+//CCQ2311D
+//Ngay tao:16/5/2026
+//Mo ta: Thuc the don hang
+
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace CMS.Data.Entities
+{
+    public class Order
+    {
+        [Key]
+        public int Id { get; set; }
+
+        public DateTime OrderDate { get; set; } = DateTime.Now;
+
+        public int CustomerId { get; set; }
+
+        public int Status { get; set; } // 0: Chờ duyệt, 1: Đang giao, 2: Đã xong
+
+        public string? Notes { get; set; }
+
+        [ForeignKey("CustomerId")]
+        public virtual Customer? Customer { get; set; }
+
+        public virtual ICollection<OrderDetail>? OrderDetails { get; set; }
+    }
+}

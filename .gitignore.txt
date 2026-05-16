@@ -1,0 +1,36 @@
+# Visual Studio
+.vs/
+bin/
+obj/
+*.user
+*.suo
+*.rsuser
+
+# Rider / VS Code
+.idea/
+.vscode/
+
+# Logs
+*.log
+
+# Build results
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+
+# ASP.NET
+appsettings.Development.json
+
+# Database
+*.mdf
+*.ldf
+
+# Node / React nếu có
+node_modules/
+build/
+dist/
+
+# OS files
+.DS_Store
+Thumbs.db
