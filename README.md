@@ -101,3 +101,67 @@ TriCMS_Solution
 ```text
 CMS.Backend/Controllers/CategoryController.cs
 CMS.Backend/Views/Category/Index.cshtml
+6.2. Quản lý bài viết
+
+Đã tạo:
+
+CMS.Backend/Controllers/PostController.cs
+CMS.Backend/Views/Post/Index.cshtml
+CMS.Backend/Views/Post/Details.cshtml
+
+Chức năng đã làm:
+
+Tạo danh sách bài viết mẫu trong Controller.
+Hiển thị danh sách bài viết dạng Card.
+Hiển thị tiêu đề, nội dung rút gọn, hình ảnh và ngày đăng.
+Có nút Xem chi tiết.
+Tạo trang chi tiết bài viết theo ID.
+Có nút quay lại danh sách bài viết.
+
+Dữ liệu mẫu:
+
+ID	Tiêu đề
+1	Lộ trình học ASP.NET Core cho người mới
+2	ReactJS và WebAPI: Xu hướng Fullstack 2026
+3	Hướng dẫn cài đặt môi trường Visual Studio
+6.3. Quản lý người dùng
+
+Đã tạo:
+
+CMS.Backend/Controllers/UserController.cs
+CMS.Backend/Views/User/Index.cshtml
+
+Chức năng đã làm:
+
+Tạo danh sách người dùng mẫu trong Controller.
+Hiển thị danh sách thành viên quản trị.
+Hiển thị vai trò người dùng.
+Dùng Badge Bootstrap để phân biệt quyền hạn.
+Có nút giao diện mẫu: Thêm, Sửa, Xóa.
+
+Dữ liệu mẫu:
+
+ID	Username	Họ tên	Quyền
+1	admin_thai	Nguyen Cao Thai	Administrator
+2	editor_01	Tran Van Bien Tap	Editor
+3	author_minh	Le Quang Minh	Author
+7. Đường dẫn chạy web trên localhost
+
+Sau khi chạy project CMS.Backend, có thể kiểm tra các trang sau:
+
+Chức năng	Đường dẫn
+Trang danh mục	http://localhost:5000/Category
+Trang danh mục đầy đủ Action	http://localhost:5000/Category/Index
+Trang bài viết	http://localhost:5000/Post
+Trang chi tiết bài viết ID = 1	http://localhost:5000/Post/Details/1
+Trang chi tiết bài viết ID = 2	http://localhost:5000/Post/Details/2
+Trang người dùng	http://localhost:5000/User
+Trang người dùng đầy đủ Action	http://localhost:5000/User/Index
+
+Lưu ý: Nếu Visual Studio chạy ở port khác, thay 5000 bằng port thật đang hiển thị trên trình duyệt.
+
+Ví dụ:
+
+http://localhost:7111/Category
+http://localhost:7111/Post
+http://localhost:7111/User
