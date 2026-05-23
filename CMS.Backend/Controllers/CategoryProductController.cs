@@ -2,25 +2,25 @@
 //Truong Minh Tri
 //CCQ2311D
 //Ngay tao:16/5/2026
-//Mo ta: Controller quan ly danh muc, lay du lieu that tu SQL Server
+//Mo ta: Controller hien thi danh sach danh muc san pham tu SQL Server
 
 using Microsoft.AspNetCore.Mvc;
 using CMS.Data;
 
 namespace CMS.Backend.Controllers
 {
-    public class CategoryController : Controller
+    public class CategoryProductController : Controller
     {
         private readonly ApplicationDbContext _context;
 
-        public CategoryController(ApplicationDbContext context)
+        public CategoryProductController(ApplicationDbContext context)
         {
             _context = context;
         }
 
         public IActionResult Index()
         {
-            var data = _context.Categories.ToList();
+            var data = _context.CategoriesProducts.ToList();
             return View(data);
         }
     }
