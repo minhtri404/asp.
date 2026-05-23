@@ -1,55 +1,40 @@
-# TriCMS - Hệ thống quản lý nội dung ASP.NET Core MVC
+# TriCMS - Báo cáo tiến độ Buổi 2
 
-## 1. Thông tin sinh viên
+## 1. Thông tin dự án
 
-- Họ và tên: Trương Minh Trí
-- MSSV: 2123110137
-- Lớp: CCQ2311D
-- Môn học: Chuyên đề ASP.NET
-- Công nghệ sử dụng: ASP.NET Core MVC, Entity Framework Core, SQL Server
-- Nhánh hiện tại: `buoi-2`
-
----
-
-## 2. Giới thiệu dự án
-
-TriCMS là hệ thống quản lý nội dung được xây dựng bằng ASP.NET Core MVC theo mô hình nhiều lớp. Dự án mô phỏng một hệ thống CMS cơ bản, có thể quản lý danh mục, bài viết, người dùng, sản phẩm, khách hàng, đơn hàng và chi tiết đơn hàng.
-
-Ở Buổi 1, dữ liệu chủ yếu được tạo trực tiếp trong Controller. Đến Buổi 2, dự án đã được nâng cấp để kết nối với cơ sở dữ liệu thật bằng Entity Framework Core và SQL Server.
+- Tên dự án: TriCMS
+- Mô hình: ASP.NET Core MVC nhiều lớp
+- Solution: `TriCMS_Solution`
+- Project dữ liệu: `CMS.data`
+- Project xử lý giao diện: `CMS.Backend`
+- Database: `TriCMS_DB`
+- Nhánh GitHub: `buoi-2`
+- Công nghệ chính: ASP.NET Core MVC, Entity Framework Core, SQL Server, Bootstrap, GitHub
 
 ---
 
-## 3. Mục tiêu Buổi 2
+## 2. Mục tiêu đã thực hiện ở Buổi 2
 
-Buổi 2 tập trung vào các nội dung chính:
+Ở Buổi 2, dự án đã chuyển từ dữ liệu mẫu viết trực tiếp trong Controller sang dữ liệu thật lưu trong SQL Server.
+
+Các nội dung đã hoàn thành:
 
 - Cài đặt Entity Framework Core cho dự án.
-- Tạo lớp `ApplicationDbContext` để quản lý kết nối dữ liệu.
+- Tạo `ApplicationDbContext.cs`.
 - Cấu hình chuỗi kết nối trong `appsettings.json`.
-- Đăng ký `DbContext` trong `Program.cs`.
-- Sử dụng Code First Migration để tạo database tự động.
+- Đăng ký `ApplicationDbContext` trong `Program.cs`.
+- Chạy Migration để tạo database.
 - Tạo database `TriCMS_DB` trong SQL Server.
-- Sinh các bảng dữ liệu từ các Entity đã tạo ở Buổi 1.
-- Thay dữ liệu giả trong Controller bằng dữ liệu thật lấy từ SQL Server.
-- Hiển thị dữ liệu thật lên giao diện MVC.
+- Tạo đủ các bảng chính của hệ thống.
+- Nhập dữ liệu thật vào từng bảng.
+- Sửa Controller để lấy dữ liệu từ database.
+- Tạo View để hiển thị dữ liệu.
+- Gắn hình ảnh cho bài viết và sản phẩm.
+- Tạo thanh menu điều hướng trên website để bấm qua các trang dễ hơn.
 
 ---
 
-## 4. Công nghệ sử dụng
-
-| Công nghệ | Mục đích sử dụng |
-|---|---|
-| ASP.NET Core MVC | Xây dựng ứng dụng web theo mô hình MVC |
-| C# | Ngôn ngữ lập trình chính |
-| Entity Framework Core | Kết nối và thao tác dữ liệu với SQL Server |
-| SQL Server | Lưu trữ dữ liệu thật của hệ thống |
-| SQL Server Management Studio | Quản lý database và nhập dữ liệu mẫu |
-| Bootstrap 5 | Thiết kế giao diện bảng, card, nút và badge |
-| Git & GitHub | Quản lý mã nguồn theo từng nhánh |
-
----
-
-## 5. Cấu trúc Solution
+## 3. Cấu trúc project hiện tại
 
 ```text
 TriCMS_Solution
@@ -87,7 +72,9 @@ TriCMS_Solution
     │   ├── Product
     │   ├── Customer
     │   ├── Order
-    │   └── OrderDetail
+    │   ├── OrderDetail
+    │   └── Shared
+    │       └── _Layout.cshtml
     │
     ├── wwwroot
     │   └── img
@@ -98,9 +85,9 @@ TriCMS_Solution
 
 ---
 
-## 6. Các package đã cài đặt
+## 4. Package đã sử dụng
 
-Dự án sử dụng Entity Framework Core phiên bản 8.x để tương thích với `.NET 8`.
+Dự án dùng `.NET 8`, vì vậy Entity Framework Core được cài ở phiên bản `8.0.x`.
 
 | Package | Mục đích |
 |---|---|
@@ -108,13 +95,11 @@ Dự án sử dụng Entity Framework Core phiên bản 8.x để tương thích
 | Microsoft.EntityFrameworkCore.Tools | Hỗ trợ chạy lệnh Migration |
 | Microsoft.EntityFrameworkCore.Design | Hỗ trợ thiết kế và tạo database |
 
-Lưu ý: Dự án dùng `.NET 8`, vì vậy các package EF Core phải dùng phiên bản `8.0.x`, không dùng phiên bản `10.x`.
-
 ---
 
-## 7. Cấu hình cơ sở dữ liệu
+## 5. Cấu hình database
 
-Trong file `appsettings.json`, dự án đã cấu hình chuỗi kết nối đến SQL Server LocalDB:
+File `appsettings.json` đã cấu hình chuỗi kết nối:
 
 ```json
 {
@@ -124,7 +109,7 @@ Trong file `appsettings.json`, dự án đã cấu hình chuỗi kết nối đ�
 }
 ```
 
-Database được tạo ra:
+Database đã tạo:
 
 ```text
 TriCMS_DB
@@ -132,30 +117,7 @@ TriCMS_DB
 
 ---
 
-## 8. ApplicationDbContext
-
-Dự án đã tạo file `ApplicationDbContext.cs` trong project `CMS.data`.
-
-File này có nhiệm vụ kết nối các Entity với SQL Server thông qua Entity Framework Core.
-
-Các bảng được khai báo trong `ApplicationDbContext`:
-
-```csharp
-public DbSet<Category> Categories { get; set; }
-public DbSet<Post> Posts { get; set; }
-public DbSet<User> Users { get; set; }
-public DbSet<CategoryProduct> CategoriesProducts { get; set; }
-public DbSet<Product> Products { get; set; }
-public DbSet<Customer> Customers { get; set; }
-public DbSet<Order> Orders { get; set; }
-public DbSet<OrderDetail> OrderDetails { get; set; }
-```
-
----
-
-## 9. Migration đã thực hiện
-
-Dự án đã chạy thành công các lệnh Migration:
+## 6. Lệnh Migration đã chạy
 
 ```powershell
 Add-Migration InitialCreate -StartupProject CMS.Backend
@@ -165,225 +127,171 @@ Add-Migration InitialCreate -StartupProject CMS.Backend
 Update-Database -StartupProject CMS.Backend
 ```
 
-Sau khi chạy Migration, SQL Server đã tạo database `TriCMS_DB` và sinh các bảng tương ứng với các Entity trong project.
+Sau khi chạy Migration, SQL Server đã tạo các bảng trong database `TriCMS_DB`.
 
 ---
 
-## 10. Danh sách bảng đã tạo trong database
+## 7. Danh sách bảng hiện có trong database
 
-| STT | Tên bảng | Chức năng |
+| STT | Bảng | Chức năng |
 |---:|---|---|
-| 1 | Categories | Lưu danh mục bài viết |
-| 2 | Posts | Lưu thông tin bài viết |
-| 3 | Users | Lưu thông tin người dùng quản trị |
-| 4 | CategoriesProducts | Lưu danh mục sản phẩm |
-| 5 | Products | Lưu thông tin sản phẩm |
-| 6 | Customers | Lưu thông tin khách hàng |
-| 7 | Orders | Lưu thông tin đơn hàng |
-| 8 | OrderDetails | Lưu chi tiết từng sản phẩm trong đơn hàng |
-| 9 | __EFMigrationsHistory | Lưu lịch sử Migration của Entity Framework Core |
+| 1 | `Categories` | Lưu danh mục bài viết |
+| 2 | `Posts` | Lưu bài viết |
+| 3 | `Users` | Lưu người dùng quản trị |
+| 4 | `CategoriesProducts` | Lưu danh mục sản phẩm |
+| 5 | `Products` | Lưu sản phẩm |
+| 6 | `Customers` | Lưu khách hàng |
+| 7 | `Orders` | Lưu đơn hàng |
+| 8 | `OrderDetails` | Lưu chi tiết đơn hàng |
+| 9 | `__EFMigrationsHistory` | Lưu lịch sử Migration của EF Core |
 
 ---
 
-## 11. Chi tiết các bảng đã làm
+## 8. Chi tiết dữ liệu các bảng đã làm
 
-### 11.1. Bảng Categories
+### 8.1. Bảng `Categories`
 
-Bảng `Categories` dùng để quản lý danh mục bài viết.
+Bảng này quản lý danh mục bài viết.
 
-| Trường | Ý nghĩa |
-|---|---|
-| Id | Mã danh mục |
-| Name | Tên danh mục |
-| Description | Mô tả danh mục |
+| Id | Name | Description |
+|---:|---|---|
+| 1 | Tin tức Công nghệ | Cập nhật xu hướng AI, IoT và lập trình |
+| 2 | Đời sống du lịch | Kinh nghiệm phượt và các điểm đến hấp dẫn |
+| 3 | Sức khỏe Thể thao | Các bài tập và chế độ ăn uống lành mạnh |
 
-Dữ liệu mẫu đã nhập:
+Đã làm:
 
-| Name | Description |
-|---|---|
-| Tin tức Công nghệ | Cập nhật xu hướng AI, IoT và lập trình |
-| Đời sống du lịch | Kinh nghiệm phượt và các điểm đến hấp dẫn |
-| Sức khỏe Thể thao | Các bài tập và chế độ ăn uống lành mạnh |
-
-Chức năng đã làm:
-
-- Tạo bảng `Categories` bằng Migration.
+- Tạo bảng bằng Migration.
 - Nhập dữ liệu thật trong SQL Server.
 - Sửa `CategoryController` để lấy dữ liệu từ `_context.Categories`.
-- Hiển thị danh sách danh mục tại đường dẫn `/Category`.
+- Tạo View hiển thị danh sách danh mục.
+- Truy cập tại đường dẫn `/Category`.
 
 ---
 
-### 11.2. Bảng Posts
+### 8.2. Bảng `Posts`
 
-Bảng `Posts` dùng để quản lý bài viết.
+Bảng này quản lý bài viết của hệ thống.
 
-| Trường | Ý nghĩa |
-|---|---|
-| Id | Mã bài viết |
-| Title | Tiêu đề bài viết |
-| Content | Nội dung bài viết |
-| ImageUrl | Đường dẫn hình ảnh |
-| CreatedDate | Ngày tạo bài viết |
-| CategoryId | Mã danh mục liên kết |
+| Id | Title | Content | ImageUrl | CategoryId |
+|---:|---|---|---|---:|
+| 1 | Lộ trình học ASP.NET | Hướng dẫn chi tiết cho người mới bắt đầu học ASP.NET Core. | `/img/dotnet.jpg` | 1 |
+| 2 | AI và tương lai | Trí tuệ nhân tạo đang thay đổi cuộc sống và công việc. | `/img/ai.jpg` | 1 |
+| 3 | Kỹ năng Teamwork | Cách phối hợp hiệu quả trong nhóm đồ án. | `/img/team.jpg` | 2 |
 
-Dữ liệu mẫu đã nhập:
+Đã làm:
 
-| Title | CategoryId | ImageUrl |
-|---|---:|---|
-| Lộ trình học ASP.NET | 1 | /img/dotnet.jpg |
-| AI và tương lai | 1 | /img/ai.jpg |
-| Kỹ năng Teamwork | 2 | /img/team.jpg |
-
-Chức năng đã làm:
-
-- Tạo bảng `Posts` bằng Migration.
-- Nhập dữ liệu bài viết thật vào SQL Server.
+- Tạo bảng `Posts`.
+- Nhập dữ liệu bài viết.
+- Gắn hình ảnh bài viết thông qua cột `ImageUrl`.
 - Sửa `PostController` để lấy dữ liệu từ `_context.Posts`.
 - Tạo trang danh sách bài viết dạng card.
 - Tạo chức năng xem chi tiết bài viết bằng `Details(int id)`.
-- Gắn hình ảnh bài viết thông qua cột `ImageUrl`.
-- Hiển thị danh sách bài viết tại `/Post`.
-- Hiển thị chi tiết bài viết tại `/Post/Details/{id}`.
+- Truy cập danh sách tại `/Post`.
+- Truy cập chi tiết tại `/Post/Details/{id}`.
 
 ---
 
-### 11.3. Bảng Users
+### 8.3. Bảng `Users`
 
-Bảng `Users` dùng để quản lý người dùng trong hệ thống.
+Bảng này quản lý người dùng trong hệ thống.
 
-| Trường | Ý nghĩa |
-|---|---|
-| Id | Mã người dùng |
-| Username | Tên đăng nhập |
-| PasswordHash | Mật khẩu |
-| FullName | Họ tên |
-| Role | Vai trò người dùng |
+| Id | Username | FullName | Role |
+|---:|---|---|---|
+| 1 | admin | Quản trị viên hệ thống | Admin |
+| 2 | editor01 | Biên tập viên nội dung | Editor |
+| 3 | user01 | Nguyễn Văn A | User |
 
-Dữ liệu mẫu đã nhập:
+Đã làm:
 
-| Username | FullName | Role |
-|---|---|---|
-| admin | Quản trị viên hệ thống | Admin |
-| editor01 | Biên tập viên nội dung | Editor |
-| user01 | Nguyễn Văn A | User |
-
-Chức năng đã làm:
-
-- Tạo bảng `Users` bằng Migration.
-- Nhập dữ liệu người dùng vào SQL Server.
+- Tạo bảng `Users`.
+- Nhập dữ liệu người dùng.
 - Sửa `UserController` để lấy dữ liệu từ `_context.Users`.
 - Tạo giao diện danh sách thành viên.
 - Không hiển thị mật khẩu trên giao diện.
-- Hiển thị danh sách người dùng tại `/User`.
+- Truy cập tại `/User`.
 
 ---
 
-### 11.4. Bảng CategoriesProducts
+### 8.4. Bảng `CategoriesProducts`
 
-Bảng `CategoriesProducts` dùng để quản lý danh mục sản phẩm.
+Bảng này quản lý danh mục sản phẩm.
 
-| Trường | Ý nghĩa |
-|---|---|
-| Id | Mã danh mục sản phẩm |
-| Name | Tên danh mục sản phẩm |
-| Description | Mô tả danh mục sản phẩm |
+| Id | Name | Description |
+|---:|---|---|
+| 1 | Laptop | Các dòng laptop học tập, văn phòng và gaming |
+| 2 | Điện thoại | Các mẫu điện thoại thông minh mới nhất |
+| 3 | Phụ kiện | Chuột, bàn phím, tai nghe và phụ kiện công nghệ |
 
-Dữ liệu mẫu đã nhập:
+Đã làm:
 
-| Name | Description |
-|---|---|
-| Laptop | Các dòng laptop học tập, văn phòng và gaming |
-| Điện thoại | Các mẫu điện thoại thông minh mới nhất |
-| Phụ kiện | Chuột, bàn phím, tai nghe và phụ kiện công nghệ |
-
-Chức năng đã làm:
-
-- Tạo bảng `CategoriesProducts` bằng Migration.
+- Tạo bảng `CategoriesProducts`.
 - Nhập dữ liệu danh mục sản phẩm.
 - Tạo `CategoryProductController`.
-- Tạo View hiển thị danh sách danh mục sản phẩm.
-- Hiển thị dữ liệu tại `/CategoryProduct`.
+- Tạo View hiển thị danh mục sản phẩm.
+- Truy cập tại `/CategoryProduct`.
 
 ---
 
-### 11.5. Bảng Products
+### 8.5. Bảng `Products`
 
-Bảng `Products` dùng để quản lý sản phẩm.
+Bảng này quản lý sản phẩm.
 
-| Trường | Ý nghĩa |
-|---|---|
-| Id | Mã sản phẩm |
-| Name | Tên sản phẩm |
-| Description | Mô tả sản phẩm |
-| Price | Giá sản phẩm |
-| StockQuantity | Số lượng tồn kho |
-| ImageUrl | Đường dẫn ảnh sản phẩm |
-| CategoryProductId | Mã danh mục sản phẩm |
+Dữ liệu hiện tại đã làm trong database:
 
-Dữ liệu mẫu đã nhập:
+| Id | Name | Description | Price | StockQuantity | ImageUrl | CategoryProductId |
+|---:|---|---|---:|---:|---|---:|
+| 1 | Laptop Dell Inspiron | Laptop học tập và văn phòng | 15000000 | 10 | Link ảnh Laptop hoặc `/img/laptop.jpg` | 1 |
+| 2 | iPhone 15 | Điện thoại thông minh cao cấp | 22000000 | 8 | Link ảnh iPhone hoặc `/img/iphone.jpg` | 2 |
+| 9 | Tai nghe Bluetooth | Tai nghe không dây tiện lợi | 550000 | 25 | Link ảnh Headphone hoặc `/img/headphone.jpg` | 3 |
 
-| Name | Price | StockQuantity | CategoryProductId |
-|---|---:|---:|---:|
-| Laptop Dell Inspiron | 15000000 | 10 | 1 |
-| iPhone 15 | 22000000 | 8 | 2 |
-| Tai nghe Bluetooth | 550000 | 25 | Theo Id danh mục Phụ kiện |
+Ghi chú:
 
-Chức năng đã làm:
+- Trong quá trình nhập dữ liệu có phát sinh lỗi khóa ngoại do `CategoryProductId` không tồn tại.
+- Đã xử lý bằng cách kiểm tra Id thật trong bảng `CategoriesProducts`.
+- Sản phẩm `Tai nghe Bluetooth` được dùng với `ProductId = 9` trong bảng `OrderDetails`.
 
-- Tạo bảng `Products` bằng Migration.
-- Nhập dữ liệu sản phẩm vào SQL Server.
-- Xử lý lỗi khóa ngoại khi `CategoryProductId` không tồn tại.
-- Gắn ảnh sản phẩm qua `ImageUrl`.
+Đã làm:
+
+- Tạo bảng `Products`.
+- Nhập dữ liệu sản phẩm.
+- Gắn hình ảnh sản phẩm.
 - Tạo `ProductController`.
 - Tạo giao diện sản phẩm dạng card.
-- Hiển thị danh sách sản phẩm tại `/Product`.
+- Truy cập tại `/Product`.
 
 ---
 
-### 11.6. Bảng Customers
+### 8.6. Bảng `Customers`
 
-Bảng `Customers` dùng để lưu thông tin khách hàng.
+Bảng này quản lý khách hàng.
 
-| Trường | Ý nghĩa |
-|---|---|
-| Id | Mã khách hàng |
-| FullName | Họ tên khách hàng |
-| Email | Email |
-| Phone | Số điện thoại |
-| Address | Địa chỉ |
-| Password | Mật khẩu |
+| Id | FullName | Email | Phone | Address |
+|---:|---|---|---|---|
+| 1 | Nguyễn Văn An | an@gmail.com | 0901234567 | Hồ Chí Minh |
+| 2 | Trần Thị Bình | binh@gmail.com | 0912345678 | Hà Nội |
+| 3 | Lê Văn Cường | cuong@gmail.com | 0923456789 | Đà Nẵng |
 
-Dữ liệu mẫu đã nhập:
+Đã làm:
 
-| FullName | Email | Phone | Address |
-|---|---|---|---|
-| Nguyễn Văn An | an@gmail.com | 0901234567 | Hồ Chí Minh |
-| Trần Thị Bình | binh@gmail.com | 0912345678 | Hà Nội |
-| Lê Văn Cường | cuong@gmail.com | 0923456789 | Đà Nẵng |
-
-Chức năng đã làm:
-
-- Tạo bảng `Customers` bằng Migration.
+- Tạo bảng `Customers`.
 - Nhập dữ liệu khách hàng.
 - Tạo `CustomerController`.
-- Tạo View `Customer/Index.cshtml`.
+- Tạo View `Views/Customer/Index.cshtml`.
 - Không hiển thị mật khẩu trên giao diện.
-- Hiển thị danh sách khách hàng tại `/Customer`.
+- Truy cập tại `/Customer`.
 
 ---
 
-### 11.7. Bảng Orders
+### 8.7. Bảng `Orders`
 
-Bảng `Orders` dùng để lưu thông tin đơn hàng.
+Bảng này quản lý đơn hàng.
 
-| Trường | Ý nghĩa |
-|---|---|
-| Id | Mã đơn hàng |
-| OrderDate | Ngày đặt hàng |
-| CustomerId | Mã khách hàng |
-| Status | Trạng thái đơn hàng |
-| Notes | Ghi chú |
+| Id | OrderDate | CustomerId | Status | Notes |
+|---:|---|---:|---:|---|
+| 1 | 2026-05-01 | 1 | 0 | Khách mới đặt hàng, chờ xác nhận |
+| 2 | 2026-05-02 | 2 | 1 | Đơn hàng đang giao |
+| 3 | 2026-05-03 | 3 | 2 | Đơn hàng đã hoàn thành |
 
 Quy ước trạng thái:
 
@@ -393,79 +301,85 @@ Quy ước trạng thái:
 | 1 | Đang giao |
 | 2 | Đã xong |
 
-Dữ liệu mẫu đã nhập:
+Đã làm:
 
-| OrderDate | CustomerId | Status | Notes |
-|---|---:|---:|---|
-| 2026-05-01 | 1 | 0 | Khách mới đặt hàng, chờ xác nhận |
-| 2026-05-02 | 2 | 1 | Đơn hàng đang giao |
-| 2026-05-03 | 3 | 2 | Đơn hàng đã hoàn thành |
-
-Chức năng đã làm:
-
-- Tạo bảng `Orders` bằng Migration.
+- Tạo bảng `Orders`.
 - Nhập dữ liệu đơn hàng.
 - Tạo `OrderController`.
-- Tạo giao diện hiển thị danh sách đơn hàng.
+- Tạo View hiển thị danh sách đơn hàng.
 - Hiển thị trạng thái bằng badge màu.
-- Hiển thị danh sách đơn hàng tại `/Order`.
+- Truy cập tại `/Order`.
 
 ---
 
-### 11.8. Bảng OrderDetails
+### 8.8. Bảng `OrderDetails`
 
-Bảng `OrderDetails` dùng để lưu chi tiết sản phẩm trong từng đơn hàng.
+Bảng này quản lý chi tiết đơn hàng.
 
-| Trường | Ý nghĩa |
-|---|---|
-| Id | Mã chi tiết đơn hàng |
-| OrderId | Mã đơn hàng |
-| ProductId | Mã sản phẩm |
-| Quantity | Số lượng |
-| UnitPrice | Đơn giá tại thời điểm mua |
+| Id | OrderId | ProductId | Quantity | UnitPrice | Thành tiền |
+|---:|---:|---:|---:|---:|---:|
+| 1 | 1 | 1 | 1 | 15000000 | 15000000 |
+| 2 | 2 | 2 | 1 | 22000000 | 22000000 |
+| 3 | 3 | 9 | 2 | 550000 | 1100000 |
 
-Dữ liệu mẫu đã nhập:
+Đã làm:
 
-| OrderId | ProductId | Quantity | UnitPrice |
-|---:|---:|---:|---:|
-| 1 | 1 | 1 | 15000000 |
-| 2 | 2 | 1 | 22000000 |
-| 3 | 9 | 2 | 550000 |
-
-Chức năng đã làm:
-
-- Tạo bảng `OrderDetails` bằng Migration.
+- Tạo bảng `OrderDetails`.
 - Nhập dữ liệu chi tiết đơn hàng.
-- Xử lý ProductId theo Id thật trong bảng `Products`.
+- Dùng đúng `ProductId = 9` cho sản phẩm Tai nghe Bluetooth.
 - Tạo `OrderDetailController`.
-- Tạo View `OrderDetail/Index.cshtml`.
-- Tính thành tiền bằng công thức: `Quantity * UnitPrice`.
-- Hiển thị chi tiết đơn hàng tại `/OrderDetail`.
+- Tạo View `Views/OrderDetail/Index.cshtml`.
+- Tính thành tiền bằng công thức `Quantity * UnitPrice`.
+- Truy cập tại `/OrderDetail`.
 
 ---
 
-## 12. Các Controller đã hoàn thành
+## 9. Các Controller đã hoàn thành
 
 | Controller | Chức năng |
 |---|---|
-| CategoryController | Hiển thị danh sách danh mục bài viết |
-| PostController | Hiển thị danh sách và chi tiết bài viết |
-| UserController | Hiển thị danh sách người dùng |
-| CategoryProductController | Hiển thị danh mục sản phẩm |
-| ProductController | Hiển thị danh sách sản phẩm |
-| CustomerController | Hiển thị danh sách khách hàng |
-| OrderController | Hiển thị danh sách đơn hàng |
-| OrderDetailController | Hiển thị chi tiết đơn hàng |
+| `CategoryController` | Hiển thị danh sách danh mục bài viết |
+| `PostController` | Hiển thị danh sách và chi tiết bài viết |
+| `UserController` | Hiển thị danh sách người dùng |
+| `CategoryProductController` | Hiển thị danh mục sản phẩm |
+| `ProductController` | Hiển thị danh sách sản phẩm |
+| `CustomerController` | Hiển thị danh sách khách hàng |
+| `OrderController` | Hiển thị danh sách đơn hàng |
+| `OrderDetailController` | Hiển thị chi tiết đơn hàng |
 
 ---
 
-## 13. Các đường dẫn chạy thử
+## 10. Các View đã hoàn thành
+
+| View | Chức năng |
+|---|---|
+| `Views/Category/Index.cshtml` | Danh sách danh mục bài viết |
+| `Views/Post/Index.cshtml` | Danh sách bài viết |
+| `Views/Post/Details.cshtml` | Chi tiết bài viết |
+| `Views/User/Index.cshtml` | Danh sách người dùng |
+| `Views/CategoryProduct/Index.cshtml` | Danh mục sản phẩm |
+| `Views/Product/Index.cshtml` | Danh sách sản phẩm |
+| `Views/Customer/Index.cshtml` | Danh sách khách hàng |
+| `Views/Order/Index.cshtml` | Danh sách đơn hàng |
+| `Views/OrderDetail/Index.cshtml` | Chi tiết đơn hàng |
+| `Views/Shared/_Layout.cshtml` | Layout chung và thanh menu điều hướng |
+
+---
+
+## 11. Thanh menu điều hướng
+
+Dự án đã tạo thanh menu trong file:
+
+```text
+Views/Shared/_Layout.cshtml
+```
+
+Menu giúp người dùng bấm nhanh đến các trang:
 
 | Chức năng | Đường dẫn |
 |---|---|
 | Danh mục bài viết | `/Category` |
 | Bài viết | `/Post` |
-| Chi tiết bài viết | `/Post/Details/{id}` |
 | Người dùng | `/User` |
 | Danh mục sản phẩm | `/CategoryProduct` |
 | Sản phẩm | `/Product` |
@@ -475,9 +389,11 @@ Chức năng đã làm:
 
 ---
 
-## 14. Những lỗi đã gặp và cách xử lý
+## 12. Các lỗi đã gặp và đã xử lý
 
-### Lỗi 1: EF Core version không tương thích
+### 12.1. Lỗi EF Core version không tương thích
+
+Lỗi:
 
 ```text
 Package Microsoft.EntityFrameworkCore.SqlServer 10.x is not compatible with net8.0
@@ -486,65 +402,67 @@ Package Microsoft.EntityFrameworkCore.SqlServer 10.x is not compatible with net8
 Nguyên nhân:
 
 - Project dùng `.NET 8`.
-- Nhưng NuGet tự chọn EF Core phiên bản `10.x`.
+- NuGet tự chọn EF Core phiên bản `10.x`.
 
 Cách xử lý:
 
-- Cài lại các package EF Core phiên bản `8.0.x`.
+- Cài lại EF Core phiên bản `8.0.x`.
 
 ---
 
-### Lỗi 2: Hai project dùng EF Core khác version
+### 12.2. Lỗi hai project dùng EF Core khác version
+
+Lỗi:
 
 ```text
 CMS.data uses Microsoft.EntityFrameworkCore 8.0.22
 CMS.Backend references Microsoft.EntityFrameworkCore 8.0.8
 ```
 
-Nguyên nhân:
-
-- `CMS.data` và `CMS.Backend` dùng hai phiên bản EF Core khác nhau.
-
 Cách xử lý:
 
-- Đồng bộ cả hai project về cùng phiên bản `8.0.22`.
+- Đồng bộ `CMS.data` và `CMS.Backend` về cùng EF Core `8.0.22`.
 
 ---
 
-### Lỗi 3: Add-Migration bị Build failed
+### 12.3. Lỗi Add-Migration bị Build failed
 
 Nguyên nhân:
 
 - Project còn lỗi build.
 - Package chưa đồng bộ.
-- `ApplicationDbContext` hoặc `Program.cs` chưa cấu hình đúng.
+- Cấu hình `ApplicationDbContext` hoặc `Program.cs` chưa đúng.
 
 Cách xử lý:
 
 - Kiểm tra Error List.
-- Sửa lỗi build trước.
-- Sau đó chạy lại Migration.
+- Sửa lỗi build.
+- Chạy lại `Add-Migration`.
 
 ---
 
-### Lỗi 4: Không tìm thấy View
+### 12.4. Lỗi không tìm thấy View
+
+Lỗi:
 
 ```text
 The view 'Index' was not found
 ```
 
-Nguyên nhân:
-
-- Chưa tạo đúng thư mục View.
-- Tên folder không trùng với tên Controller.
-
 Cách xử lý:
 
-- Với `CustomerController`, phải có file `Views/Customer/Index.cshtml`.
+- Tạo đúng folder View theo tên Controller.
+- Ví dụ `CustomerController` cần file:
+
+```text
+Views/Customer/Index.cshtml
+```
 
 ---
 
-### Lỗi 5: Lỗi khóa ngoại khi thêm dữ liệu
+### 12.5. Lỗi khóa ngoại khi thêm dữ liệu
+
+Lỗi:
 
 ```text
 The INSERT statement conflicted with the FOREIGN KEY constraint
@@ -552,14 +470,11 @@ The INSERT statement conflicted with the FOREIGN KEY constraint
 
 Nguyên nhân:
 
-- `CategoryProductId`, `CustomerId`, `OrderId` hoặc `ProductId` không tồn tại trong bảng cha.
+- Nhập `CategoryProductId`, `CustomerId`, `OrderId` hoặc `ProductId` không tồn tại trong bảng cha.
 
 Cách xử lý:
 
-- Kiểm tra Id thật bằng lệnh `SELECT`.
-- Sau đó nhập lại đúng Id đang tồn tại trong database.
-
-Ví dụ:
+- Kiểm tra Id thật bằng lệnh:
 
 ```sql
 SELECT Id, Name FROM CategoriesProducts;
@@ -567,24 +482,28 @@ SELECT Id, Name FROM Products;
 SELECT Id, Notes FROM Orders;
 ```
 
+- Sau đó nhập đúng Id thật đang có trong database.
+
 ---
 
-## 15. Kết quả đạt được sau Buổi 2
+## 13. Kết quả đạt được sau Buổi 2
 
 Sau Buổi 2, dự án đã hoàn thành:
 
 - Kết nối thành công ASP.NET Core MVC với SQL Server.
 - Tạo thành công database `TriCMS_DB`.
-- Tạo đủ các bảng bằng Entity Framework Core Migration.
-- Thay thế dữ liệu giả bằng dữ liệu thật từ database.
-- Hiển thị dữ liệu thật lên giao diện MVC.
+- Tạo đủ bảng bằng Entity Framework Core Migration.
+- Nhập dữ liệu thật vào database.
+- Thay thế dữ liệu giả trong Controller bằng dữ liệu thật.
+- Hiển thị dữ liệu lên giao diện MVC.
 - Tạo đầy đủ Controller và View cho các bảng chính.
-- Biết xử lý lỗi package, lỗi Migration, lỗi View và lỗi khóa ngoại.
-- Dự án đã sẵn sàng để chuyển sang Buổi 3: truy vấn LINQ và thao tác CRUD.
+- Gắn hình ảnh cho bài viết và sản phẩm.
+- Tạo thanh menu điều hướng giúp thao tác nhanh hơn.
+- Xử lý được lỗi package, lỗi Migration, lỗi View và lỗi khóa ngoại.
 
 ---
 
-## 16. Hướng dẫn chạy dự án
+## 14. Hướng dẫn chạy dự án
 
 ### Bước 1: Clone project
 
@@ -616,9 +535,9 @@ Mở file:
 CMS.Backend/appsettings.json
 ```
 
-kiểm tra `DefaultConnection`.
+Kiểm tra `DefaultConnection`.
 
-### Bước 5: Chạy Migration nếu máy chưa có database
+### Bước 5: Tạo database nếu máy chưa có
 
 Mở Package Manager Console và chạy:
 
@@ -632,14 +551,12 @@ Chọn `CMS.Backend` làm Startup Project, sau đó bấm `F5`.
 
 ---
 
-## 17. Định hướng phát triển tiếp theo
+## 15. Định hướng Buổi 3
 
-Ở các buổi tiếp theo, dự án có thể phát triển thêm:
+Ở Buổi 3, dự án có thể phát triển tiếp:
 
-- Thêm chức năng Create, Edit, Delete cho từng bảng.
-- Sử dụng LINQ để lọc, tìm kiếm và sắp xếp dữ liệu.
-- Dùng `.Include()` để hiển thị tên khách hàng, tên sản phẩm thay vì chỉ hiện Id.
-- Làm trang Admin hoàn chỉnh.
-- Thêm đăng nhập và phân quyền người dùng.
-- Xây dựng API để kết nối với ReactJS.
-- Hoàn thiện giao diện chuyên nghiệp hơn.
+- Dùng LINQ để lọc, tìm kiếm và sắp xếp dữ liệu.
+- Dùng `.Include()` để hiển thị tên khách hàng, tên sản phẩm thay vì chỉ hiển thị Id.
+- Làm chức năng thêm, sửa, xóa dữ liệu.
+- Hoàn thiện giao diện Admin.
+- Xây dựng API để chuẩn bị kết nối với ReactJS.
