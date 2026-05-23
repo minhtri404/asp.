@@ -1,91 +1,48 @@
-﻿@*
-MSSV:2123110137
-Truong Minh Tri
-CCQ2311D
-Ngay tao:16/5/2026
-Mo ta: Giao dien hien thi danh sach thanh vien quan tri he thong
-*@
-
-@model IEnumerable<CMS.Data.Entities.User>
-
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8" />
-    <title>Quan ly thanh vien</title>
-
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-
-<body>
-    <nav class="navbar navbar-expand-sm navbar-light bg-white border-bottom shadow-sm mb-4">
-        <div class="container">
-            <a class="navbar-brand" href="/">CMS.Backend</a>
-
-            <div class="navbar-nav">
-                <a class="nav-link" href="/">Home</a>
-                <a class="nav-link" href="/Category">Category</a>
-                <a class="nav-link" href="/Post">Post</a>
-                <a class="nav-link" href="/User">User</a>
-            </div>
-        </div>
-    </nav>
-
-    <div class="container mt-4">
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <h2 class="text-dark fw-bold">QUẢN LÝ THÀNH VIÊN</h2>
-
-            <button class="btn btn-success btn-sm">
-                + Thêm thành viên mới
-            </button>
-        </div>
-
-        <table class="table table-hover table-bordered shadow-sm">
-            <thead class="table-light">
-                <tr>
-                    <th style="width:80px">ID</th>
-                    <th>Tên Đăng Nhập</th>
-                    <th>Họ Và Tên</th>
-                    <th>Quyền Hạn</th>
-                    <th style="width:150px">Thao Tác</th>
-                </tr>
-            </thead>
-
-            <tbody>
-                @foreach (var user in Model)
-                {
-                        <tr>
-                            <td>@user.Id</td>
-
-                            <td>
-                                <strong>@user.Username</strong>
-                            </td>
-
-                            <td>@user.FullName</td>
-
-                            <td>
-                            @if (user.Role == "Administrator")
-                            {
-                                        <span class="badge bg-danger">@user.Role</span>
-                            }
-                            else if (user.Role == "Editor")
-                            {
-                                        <span class="badge bg-info text-dark">@user.Role</span>
-                            }
-                            else
-                            {
-                                        <span class="badge bg-secondary">@user.Role</span>
-                            }
-                            </td>
-
-                            <td>
-                                <button class="btn btn-sm btn-outline-warning">Sửa</button>
-                                <button class="btn btn-sm btn-outline-danger">Xóa</button>
-                            </td>
-                        </tr>
-                }
-            </tbody>
-        </table>
+﻿@model IEnumerable<CMS.Data.Entities.User>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="text-dark">QUẢN LÝ THÀNH VIÊN</h2>
+        <button class="btn btn-success btn-sm">+ Thêm thành viên mới</button>
     </div>
-</body>
-</html>
+
+    <table class="table table-hover shadow-sm border">
+        <thead class="table-light">
+            <tr>
+                <th>ID</th>
+                <th>Tên Đăng Nhập</th>
+                <th>Họ Và Tên</th>
+                <th>Quyền Hạn</th>
+                <th>Thao Tác</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var user in Model)
+            {
+                    <tr>
+                        <td>@user.Id</td>
+                        <td><strong>@user.Username</strong></td>
+                        <td>@user.FullName</td>
+                        <td>
+                        @if (user.Role == "Admin")
+                        {
+                                    <span class="badge bg-danger">@user.Role</span>
+                        }
+                        else if (user.Role == "Editor")
+                        {
+                                    <span class="badge bg-info text-dark">@user.Role</span>
+                        }
+                        else
+                        {
+                                    <span class="badge bg-secondary">@user.Role</span>
+                        }
+                        </td>
+                        <td>
+                            <button class="btn btn-sm btn-outline-warning">Sửa</button>
+                            <button class="btn btn-sm btn-outline-danger">Xóa</button>
+                        </td>
+                    </tr>
+            }
+        </tbody>
+    </table>
+</div>
