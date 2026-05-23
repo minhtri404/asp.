@@ -1,10 +1,10 @@
-# TriCMS - Hệ thống quản lý nội dung ASP.NET Core MVC
+# TriCMS - README Tổng quan sau 6 buổi
 
 ## 1. Giới thiệu dự án
 
-TriCMS là hệ thống quản lý nội dung được xây dựng bằng **ASP.NET Core MVC** theo mô hình nhiều lớp. Dự án được phát triển theo từng buổi học, bắt đầu từ việc xây dựng cấu trúc Solution, tạo Entity, sau đó kết nối database thật bằng Entity Framework Core và SQL Server.
+**TriCMS** là hệ thống quản lý nội dung được xây dựng bằng **ASP.NET Core MVC**, **Entity Framework Core** và **SQL Server**. Dự án được phát triển theo từng buổi học của môn Chuyên đề ASP.NET, từ bước khởi tạo cấu trúc Solution, thiết kế Entity, kết nối database, truy vấn dữ liệu bằng LINQ, xây dựng giao diện quản trị MVC, xử lý CRUD, kiểm tra dữ liệu và chuẩn bị nền tảng cho bảo mật/API.
 
-Dự án hướng đến mục tiêu xây dựng một hệ thống CMS cơ bản, có khả năng quản lý:
+Mục tiêu của dự án là xây dựng một hệ thống CMS cơ bản có thể quản lý:
 
 - Danh mục bài viết
 - Bài viết
@@ -15,7 +15,7 @@ Dự án hướng đến mục tiêu xây dựng một hệ thống CMS cơ bả
 - Đơn hàng
 - Chi tiết đơn hàng
 
-Đây là README tổng dùng cho nhánh chính của dự án, trình bày tổng quan cấu trúc, công nghệ, chức năng đã làm và định hướng phát triển tiếp theo.
+Sau 6 buổi, dự án đã có nền tảng Backend MVC tương đối đầy đủ, có database thật, có các bảng chính, có giao diện quản trị, có truy vấn LINQ, có chức năng thêm/sửa/xóa cơ bản và có định hướng phát triển tiếp sang Web API, ReactJS và phân quyền.
 
 ---
 
@@ -36,20 +36,19 @@ Dự án hướng đến mục tiêu xây dựng một hệ thống CMS cơ bả
 
 | Công nghệ | Mục đích sử dụng |
 |---|---|
-| ASP.NET Core MVC | Xây dựng ứng dụng web theo mô hình Model - View - Controller |
+| ASP.NET Core MVC | Xây dựng website theo mô hình Model - View - Controller |
 | C# | Ngôn ngữ lập trình chính |
-| Entity Framework Core | Kết nối và thao tác với cơ sở dữ liệu |
-| SQL Server | Lưu trữ dữ liệu của hệ thống |
+| Entity Framework Core | Kết nối và thao tác dữ liệu với SQL Server |
+| SQL Server | Lưu trữ dữ liệu thật của hệ thống |
 | SQL Server Management Studio | Quản lý database và nhập dữ liệu mẫu |
-| Bootstrap 5 | Hỗ trợ xây dựng giao diện đẹp và dễ nhìn |
+| LINQ | Truy vấn, lọc, tìm kiếm và sắp xếp dữ liệu |
+| Bootstrap 5 | Thiết kế giao diện quản trị dễ nhìn |
 | Git | Quản lý phiên bản mã nguồn |
-| GitHub | Lưu trữ và nộp bài theo từng nhánh |
+| GitHub | Lưu trữ source code theo từng nhánh/buổi |
 
 ---
 
 ## 4. Cấu trúc Solution
-
-Dự án được tổ chức theo hướng tách lớp rõ ràng:
 
 ```text
 TriCMS_Solution
@@ -100,95 +99,278 @@ TriCMS_Solution
 
 ---
 
-## 5. Ý nghĩa các project
+## 5. Kết quả đã làm được sau 6 buổi
 
-### 5.1. Project `CMS.data`
+## Buổi 1 - Khởi tạo cấu trúc dự án
 
-Project `CMS.data` là lớp dữ liệu của hệ thống, chứa các Entity đại diện cho bảng trong database.
+### Mục tiêu
 
-Các thành phần chính:
+- Làm quen với ASP.NET Core MVC.
+- Tạo Solution nhiều project.
+- Tạo các Entity đầu tiên.
+- Hiển thị dữ liệu mẫu trên giao diện.
 
-- `Entities`: chứa các class mô tả bảng dữ liệu.
-- `ApplicationDbContext.cs`: lớp trung tâm kết nối Entity Framework Core với SQL Server.
-- `Migrations`: chứa lịch sử tạo và cập nhật database.
+### Đã hoàn thành
 
-### 5.2. Project `CMS.Backend`
+- Tạo Solution `TriCMS_Solution`.
+- Tạo project `CMS.data` để chứa Entity.
+- Tạo project `CMS.Backend` để làm Backend MVC.
+- Kết nối `CMS.Backend` với `CMS.data` bằng Project Reference.
+- Tạo các Entity chính:
+  - `Category`
+  - `Post`
+  - `User`
+  - `CategoryProduct`
+  - `Product`
+  - `Customer`
+  - `Order`
+  - `OrderDetail`
+- Tạo Controller và View ban đầu cho một số đối tượng.
+- Hiển thị dữ liệu mẫu trực tiếp trong Controller.
 
-Project `CMS.Backend` là lớp xử lý và giao diện quản trị, sử dụng ASP.NET Core MVC.
+### Ý nghĩa
 
-Các thành phần chính:
-
-- `Controllers`: xử lý request và lấy dữ liệu từ database.
-- `Views`: hiển thị dữ liệu ra giao diện.
-- `wwwroot`: chứa file tĩnh như hình ảnh, CSS, JavaScript.
-- `appsettings.json`: cấu hình chuỗi kết nối database.
-- `Program.cs`: cấu hình dịch vụ và route cho ứng dụng.
-
----
-
-## 6. Database sử dụng
-
-Database của dự án:
-
-```text
-TriCMS_DB
-```
-
-Chuỗi kết nối trong `appsettings.json`:
-
-```json
-{
-  "ConnectionStrings": {
-    "DefaultConnection": "Server=(localdb)\\mssqllocaldb;Database=TriCMS_DB;Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=True"
-  }
-}
-```
+Buổi 1 giúp dự án có nền móng ban đầu, hiểu được cách chia project, cách tạo Entity, Controller và View trong ASP.NET Core MVC.
 
 ---
 
-## 7. Entity Framework Core
+## Buổi 2 - Kết nối database bằng Entity Framework Core
 
-Dự án sử dụng Entity Framework Core để làm việc với SQL Server theo hướng Code First.
+### Mục tiêu
 
-Các package đã dùng:
+- Cài đặt Entity Framework Core.
+- Tạo `ApplicationDbContext`.
+- Kết nối SQL Server.
+- Chạy Migration tạo database.
+- Thay dữ liệu giả bằng dữ liệu thật.
 
-| Package | Công dụng |
-|---|---|
-| Microsoft.EntityFrameworkCore.SqlServer | Kết nối SQL Server |
-| Microsoft.EntityFrameworkCore.Tools | Chạy lệnh Migration |
-| Microsoft.EntityFrameworkCore.Design | Hỗ trợ thiết kế database |
+### Đã hoàn thành
 
-Các lệnh Migration đã sử dụng:
+- Cài đặt các package Entity Framework Core:
+  - `Microsoft.EntityFrameworkCore.SqlServer`
+  - `Microsoft.EntityFrameworkCore.Tools`
+  - `Microsoft.EntityFrameworkCore.Design`
+- Tạo file `ApplicationDbContext.cs`.
+- Cấu hình chuỗi kết nối trong `appsettings.json`.
+- Đăng ký `ApplicationDbContext` trong `Program.cs`.
+- Chạy Migration:
 
 ```powershell
 Add-Migration InitialCreate -StartupProject CMS.Backend
-```
-
-```powershell
 Update-Database -StartupProject CMS.Backend
 ```
 
----
+- Tạo database `TriCMS_DB` trong SQL Server.
+- Sinh các bảng chính từ Entity.
+- Nhập dữ liệu thật vào SQL Server.
+- Sửa Controller để lấy dữ liệu từ database.
+- Hiển thị dữ liệu thật lên giao diện MVC.
 
-## 8. Danh sách bảng trong database
+### Danh sách bảng đã tạo
 
 | STT | Bảng | Chức năng |
 |---:|---|---|
 | 1 | `Categories` | Lưu danh mục bài viết |
-| 2 | `Posts` | Lưu thông tin bài viết |
-| 3 | `Users` | Lưu người dùng quản trị |
+| 2 | `Posts` | Lưu bài viết |
+| 3 | `Users` | Lưu người dùng |
 | 4 | `CategoriesProducts` | Lưu danh mục sản phẩm |
-| 5 | `Products` | Lưu thông tin sản phẩm |
-| 6 | `Customers` | Lưu thông tin khách hàng |
-| 7 | `Orders` | Lưu thông tin đơn hàng |
+| 5 | `Products` | Lưu sản phẩm |
+| 6 | `Customers` | Lưu khách hàng |
+| 7 | `Orders` | Lưu đơn hàng |
 | 8 | `OrderDetails` | Lưu chi tiết đơn hàng |
 | 9 | `__EFMigrationsHistory` | Lưu lịch sử Migration |
 
+### Ý nghĩa
+
+Buổi 2 là bước chuyển quan trọng từ dữ liệu giả sang dữ liệu thật, giúp hệ thống có database và có thể phát triển thành ứng dụng thực tế.
+
 ---
 
-## 9. Các bảng đã triển khai
+## Buổi 3 - LINQ, Include và CRUD cơ bản
 
-### 9.1. Bảng `Categories`
+### Mục tiêu
+
+- Sử dụng LINQ để truy vấn dữ liệu.
+- Dùng `Where`, `OrderBy`, `FirstOrDefault`.
+- Dùng `Include` và `ThenInclude` để lấy dữ liệu liên kết.
+- Tạo CRUD cơ bản cho Category.
+
+### Đã hoàn thành
+
+- Nâng cấp `PostController`:
+  - Dùng `Include(p => p.Category)` để lấy tên danh mục bài viết.
+  - Tìm kiếm bài viết theo tiêu đề hoặc nội dung.
+  - Sắp xếp bài viết mới nhất lên đầu.
+  - Xem chi tiết bài viết bằng `FirstOrDefault()`.
+
+- Nâng cấp `ProductController`:
+  - Dùng `Include(p => p.CategoryProduct)`.
+  - Tìm kiếm sản phẩm theo tên/mô tả.
+  - Lọc sản phẩm theo giá.
+  - Sắp xếp giá tăng dần/giảm dần.
+
+- Nâng cấp `CustomerController`:
+  - Tìm kiếm khách hàng theo họ tên, email, số điện thoại, địa chỉ.
+
+- Nâng cấp `OrderController`:
+  - Dùng `Include(o => o.Customer)` để hiện tên khách hàng.
+
+- Nâng cấp `OrderDetailController`:
+  - Dùng `Include(od => od.Order)`.
+  - Dùng `ThenInclude(o => o.Customer)`.
+  - Dùng `Include(od => od.Product)`.
+  - Hiển thị tên khách hàng, tên sản phẩm và thành tiền.
+
+- Hoàn thiện CRUD cho `Category`:
+  - Thêm danh mục.
+  - Sửa danh mục.
+  - Xóa danh mục.
+  - Tìm kiếm danh mục.
+  - Thông báo thành công sau khi thêm/sửa/xóa.
+
+### Các kỹ thuật LINQ đã dùng
+
+| Kỹ thuật | Mục đích |
+|---|---|
+| `Where()` | Lọc, tìm kiếm dữ liệu |
+| `OrderBy()` | Sắp xếp tăng dần |
+| `OrderByDescending()` | Sắp xếp giảm dần |
+| `FirstOrDefault()` | Lấy một bản ghi theo điều kiện |
+| `Include()` | Lấy dữ liệu liên kết |
+| `ThenInclude()` | Lấy dữ liệu liên kết nhiều cấp |
+
+### Ý nghĩa
+
+Buổi 3 giúp hệ thống không chỉ hiển thị dữ liệu mà còn biết xử lý dữ liệu linh hoạt hơn, có tìm kiếm, lọc, sắp xếp và CRUD cơ bản.
+
+---
+
+## Buổi 4 - Giao diện quản trị MVC
+
+### Mục tiêu
+
+- Nâng cấp giao diện quản trị.
+- Tạo layout dùng chung.
+- Tạo thanh điều hướng.
+- Chuẩn hóa View cho các trang quản lý.
+
+### Đã hoàn thành
+
+- Tạo file layout dùng chung:
+
+```text
+Views/Shared/_Layout.cshtml
+```
+
+- Tạo thanh menu điều hướng trên website.
+- Bổ sung Bootstrap để giao diện dễ nhìn hơn.
+- Các trang có thể bấm chuyển nhanh:
+  - `/Category`
+  - `/Post`
+  - `/User`
+  - `/CategoryProduct`
+  - `/Product`
+  - `/Customer`
+  - `/Order`
+  - `/OrderDetail`
+- Cải thiện giao diện bảng dữ liệu.
+- Cải thiện giao diện card cho bài viết và sản phẩm.
+- Thêm nút thao tác như:
+  - Thêm
+  - Sửa
+  - Xóa
+  - Tìm kiếm
+  - Làm mới
+
+### Ý nghĩa
+
+Buổi 4 giúp hệ thống có giao diện quản trị rõ ràng hơn, dễ thao tác hơn, không cần gõ đường dẫn thủ công từng trang.
+
+---
+
+## Buổi 5 - Validation, thông báo và xử lý dữ liệu an toàn hơn
+
+### Mục tiêu
+
+- Bắt đầu kiểm soát dữ liệu nhập.
+- Không hiển thị dữ liệu nhạy cảm.
+- Thông báo kết quả sau khi thao tác.
+- Chuẩn bị nền tảng cho bảo mật và phân quyền.
+
+### Đã hoàn thành
+
+- Không hiển thị mật khẩu ở giao diện `User` và `Customer`.
+- Thêm thông báo bằng `TempData`.
+- Sau khi thêm danh mục thành công, hiển thị:
+
+```text
+Thêm danh mục thành công!
+```
+
+- Sau khi sửa danh mục thành công, hiển thị:
+
+```text
+Sửa danh mục thành công!
+```
+
+- Sau khi xóa danh mục thành công, hiển thị:
+
+```text
+Xóa danh mục thành công!
+```
+
+- Tạo trang xác nhận xóa trước khi xóa dữ liệu.
+- Lưu ý khóa ngoại khi xóa danh mục đang có bài viết liên kết.
+- Bắt đầu hình thành thói quen kiểm tra dữ liệu trước khi thao tác.
+
+### Ý nghĩa
+
+Buổi 5 giúp hệ thống an toàn và thân thiện hơn với người dùng. Khi thao tác thêm/sửa/xóa, người dùng biết rõ hành động đã thành công hay chưa.
+
+---
+
+## Buổi 6 - Chuẩn bị Web API và hướng phát triển Full-stack
+
+### Mục tiêu
+
+- Chuẩn bị nền tảng để tách Backend và Frontend.
+- Định hướng xây dựng API cho ReactJS.
+- Chuẩn hóa dữ liệu trả về.
+- Chuẩn bị cho các chức năng nâng cao.
+
+### Định hướng đã chuẩn bị
+
+Dự án hiện tại đã có nền Backend MVC và database đầy đủ, nên có thể tiếp tục phát triển Web API cho các đối tượng:
+
+- API danh sách bài viết.
+- API chi tiết bài viết.
+- API danh sách danh mục.
+- API danh sách sản phẩm.
+- API chi tiết sản phẩm.
+- API khách hàng.
+- API đơn hàng.
+
+Các API dự kiến có thể phát triển:
+
+| API | Mục đích |
+|---|---|
+| `GET /api/posts` | Lấy danh sách bài viết |
+| `GET /api/posts/{id}` | Lấy chi tiết bài viết |
+| `GET /api/categories` | Lấy danh mục bài viết |
+| `GET /api/products` | Lấy danh sách sản phẩm |
+| `GET /api/products/{id}` | Lấy chi tiết sản phẩm |
+| `GET /api/orders` | Lấy danh sách đơn hàng |
+| `GET /api/orderdetails` | Lấy chi tiết đơn hàng |
+
+### Ý nghĩa
+
+Buổi 6 giúp dự án sẵn sàng mở rộng sang mô hình Full-stack, trong đó ASP.NET Core đóng vai trò Backend API và ReactJS đóng vai trò Frontend.
+
+---
+
+## 6. Chi tiết các bảng trong hệ thống
+
+## 6.1. Bảng `Categories`
 
 Dùng để quản lý danh mục bài viết.
 
@@ -200,40 +382,42 @@ Dùng để quản lý danh mục bài viết.
 
 Chức năng đã làm:
 
-- Tạo Entity `Category`.
-- Tạo bảng `Categories`.
-- Nhập dữ liệu danh mục.
-- Hiển thị danh sách danh mục tại `/Category`.
+- Hiển thị danh sách.
+- Tìm kiếm danh mục.
+- Thêm danh mục.
+- Sửa danh mục.
+- Xóa danh mục.
+- Hiển thị thông báo sau thao tác.
 
 ---
 
-### 9.2. Bảng `Posts`
+## 6.2. Bảng `Posts`
 
 Dùng để quản lý bài viết.
 
 | Trường | Ý nghĩa |
 |---|---|
 | Id | Mã bài viết |
-| Title | Tiêu đề bài viết |
-| Content | Nội dung bài viết |
+| Title | Tiêu đề |
+| Content | Nội dung |
 | ImageUrl | Đường dẫn hình ảnh |
-| CreatedDate | Ngày tạo bài viết |
-| CategoryId | Mã danh mục bài viết |
+| CreatedDate | Ngày tạo |
+| CategoryId | Mã danh mục |
 
 Chức năng đã làm:
 
-- Tạo Entity `Post`.
-- Tạo bảng `Posts`.
-- Nhập dữ liệu bài viết.
-- Gắn hình ảnh cho bài viết.
-- Hiển thị danh sách bài viết tại `/Post`.
-- Hiển thị chi tiết bài viết tại `/Post/Details/{id}`.
+- Hiển thị danh sách bài viết.
+- Hiển thị tên danh mục bằng `Include`.
+- Tìm kiếm bài viết.
+- Sắp xếp bài viết mới nhất.
+- Xem chi tiết bài viết.
+- Hiển thị hình ảnh bài viết.
 
 ---
 
-### 9.3. Bảng `Users`
+## 6.3. Bảng `Users`
 
-Dùng để quản lý người dùng quản trị hệ thống.
+Dùng để quản lý người dùng hệ thống.
 
 | Trường | Ý nghĩa |
 |---|---|
@@ -245,34 +429,30 @@ Dùng để quản lý người dùng quản trị hệ thống.
 
 Chức năng đã làm:
 
-- Tạo Entity `User`.
-- Tạo bảng `Users`.
-- Nhập dữ liệu người dùng.
-- Hiển thị danh sách người dùng tại `/User`.
-- Không hiển thị mật khẩu trên giao diện.
+- Hiển thị danh sách người dùng.
+- Không hiển thị mật khẩu lên giao diện.
+- Phân biệt vai trò bằng badge.
 
 ---
 
-### 9.4. Bảng `CategoriesProducts`
+## 6.4. Bảng `CategoriesProducts`
 
 Dùng để quản lý danh mục sản phẩm.
 
 | Trường | Ý nghĩa |
 |---|---|
 | Id | Mã danh mục sản phẩm |
-| Name | Tên danh mục sản phẩm |
+| Name | Tên danh mục |
 | Description | Mô tả |
 
 Chức năng đã làm:
 
-- Tạo Entity `CategoryProduct`.
-- Tạo bảng `CategoriesProducts`.
-- Nhập dữ liệu danh mục sản phẩm.
-- Hiển thị danh mục sản phẩm tại `/CategoryProduct`.
+- Hiển thị danh sách danh mục sản phẩm.
+- Làm dữ liệu liên kết cho bảng `Products`.
 
 ---
 
-### 9.5. Bảng `Products`
+## 6.5. Bảng `Products`
 
 Dùng để quản lý sản phẩm.
 
@@ -280,23 +460,24 @@ Dùng để quản lý sản phẩm.
 |---|---|
 | Id | Mã sản phẩm |
 | Name | Tên sản phẩm |
-| Description | Mô tả sản phẩm |
-| Price | Giá sản phẩm |
-| StockQuantity | Số lượng tồn kho |
-| ImageUrl | Đường dẫn ảnh sản phẩm |
+| Description | Mô tả |
+| Price | Giá |
+| StockQuantity | Tồn kho |
+| ImageUrl | Ảnh sản phẩm |
 | CategoryProductId | Mã danh mục sản phẩm |
 
 Chức năng đã làm:
 
-- Tạo Entity `Product`.
-- Tạo bảng `Products`.
-- Nhập dữ liệu sản phẩm.
-- Gắn hình ảnh sản phẩm.
-- Hiển thị sản phẩm dạng card tại `/Product`.
+- Hiển thị sản phẩm dạng card.
+- Hiển thị hình ảnh sản phẩm.
+- Hiển thị tên danh mục sản phẩm bằng `Include`.
+- Tìm kiếm sản phẩm.
+- Lọc sản phẩm theo khoảng giá.
+- Sắp xếp giá tăng dần/giảm dần.
 
 ---
 
-### 9.6. Bảng `Customers`
+## 6.6. Bảng `Customers`
 
 Dùng để quản lý khách hàng.
 
@@ -311,24 +492,22 @@ Dùng để quản lý khách hàng.
 
 Chức năng đã làm:
 
-- Tạo Entity `Customer`.
-- Tạo bảng `Customers`.
-- Nhập dữ liệu khách hàng.
-- Hiển thị danh sách khách hàng tại `/Customer`.
-- Không hiển thị mật khẩu trên giao diện.
+- Hiển thị danh sách khách hàng.
+- Tìm kiếm khách hàng.
+- Không hiển thị mật khẩu lên giao diện.
 
 ---
 
-### 9.7. Bảng `Orders`
+## 6.7. Bảng `Orders`
 
 Dùng để quản lý đơn hàng.
 
 | Trường | Ý nghĩa |
 |---|---|
 | Id | Mã đơn hàng |
-| OrderDate | Ngày đặt hàng |
+| OrderDate | Ngày đặt |
 | CustomerId | Mã khách hàng |
-| Status | Trạng thái đơn hàng |
+| Status | Trạng thái |
 | Notes | Ghi chú |
 
 Quy ước trạng thái:
@@ -341,21 +520,20 @@ Quy ước trạng thái:
 
 Chức năng đã làm:
 
-- Tạo Entity `Order`.
-- Tạo bảng `Orders`.
-- Nhập dữ liệu đơn hàng.
-- Hiển thị danh sách đơn hàng tại `/Order`.
-- Hiển thị trạng thái bằng badge màu.
+- Hiển thị danh sách đơn hàng.
+- Hiển thị tên khách hàng bằng `Include`.
+- Hiển thị trạng thái đơn hàng bằng badge màu.
+- Sắp xếp đơn hàng theo ngày đặt mới nhất.
 
 ---
 
-### 9.8. Bảng `OrderDetails`
+## 6.8. Bảng `OrderDetails`
 
-Dùng để quản lý chi tiết sản phẩm trong từng đơn hàng.
+Dùng để quản lý chi tiết đơn hàng.
 
 | Trường | Ý nghĩa |
 |---|---|
-| Id | Mã chi tiết đơn hàng |
+| Id | Mã chi tiết |
 | OrderId | Mã đơn hàng |
 | ProductId | Mã sản phẩm |
 | Quantity | Số lượng |
@@ -363,60 +541,63 @@ Dùng để quản lý chi tiết sản phẩm trong từng đơn hàng.
 
 Chức năng đã làm:
 
-- Tạo Entity `OrderDetail`.
-- Tạo bảng `OrderDetails`.
-- Nhập dữ liệu chi tiết đơn hàng.
-- Hiển thị chi tiết đơn hàng tại `/OrderDetail`.
-- Tính thành tiền bằng công thức `Quantity * UnitPrice`.
+- Hiển thị chi tiết đơn hàng.
+- Hiển thị ngày đặt hàng.
+- Hiển thị tên khách hàng.
+- Hiển thị tên sản phẩm.
+- Tính thành tiền bằng công thức:
+
+```text
+Thành tiền = Quantity x UnitPrice
+```
 
 ---
 
-## 10. Controller đã hoàn thành
+## 7. Các Controller đã hoàn thành
 
 | Controller | Chức năng |
 |---|---|
-| `CategoryController` | Hiển thị danh sách danh mục bài viết |
-| `PostController` | Hiển thị danh sách và chi tiết bài viết |
-| `UserController` | Hiển thị danh sách người dùng |
-| `CategoryProductController` | Hiển thị danh mục sản phẩm |
-| `ProductController` | Hiển thị danh sách sản phẩm |
-| `CustomerController` | Hiển thị danh sách khách hàng |
-| `OrderController` | Hiển thị danh sách đơn hàng |
-| `OrderDetailController` | Hiển thị chi tiết đơn hàng |
+| `CategoryController` | Danh sách, tìm kiếm, thêm, sửa, xóa danh mục |
+| `PostController` | Danh sách, tìm kiếm, chi tiết bài viết |
+| `UserController` | Danh sách người dùng |
+| `CategoryProductController` | Danh sách danh mục sản phẩm |
+| `ProductController` | Danh sách, tìm kiếm, lọc, sắp xếp sản phẩm |
+| `CustomerController` | Danh sách và tìm kiếm khách hàng |
+| `OrderController` | Danh sách đơn hàng, hiển thị tên khách hàng |
+| `OrderDetailController` | Chi tiết đơn hàng, hiển thị khách hàng và sản phẩm |
 
 ---
 
-## 11. View đã hoàn thành
+## 8. Các View đã hoàn thành
 
 | View | Chức năng |
 |---|---|
-| `Views/Category/Index.cshtml` | Trang danh sách danh mục |
-| `Views/Post/Index.cshtml` | Trang danh sách bài viết |
-| `Views/Post/Details.cshtml` | Trang chi tiết bài viết |
-| `Views/User/Index.cshtml` | Trang danh sách người dùng |
-| `Views/CategoryProduct/Index.cshtml` | Trang danh mục sản phẩm |
-| `Views/Product/Index.cshtml` | Trang danh sách sản phẩm |
-| `Views/Customer/Index.cshtml` | Trang danh sách khách hàng |
-| `Views/Order/Index.cshtml` | Trang danh sách đơn hàng |
-| `Views/OrderDetail/Index.cshtml` | Trang chi tiết đơn hàng |
+| `Views/Category/Index.cshtml` | Danh sách, tìm kiếm, thao tác danh mục |
+| `Views/Category/Create.cshtml` | Form thêm danh mục |
+| `Views/Category/Edit.cshtml` | Form sửa danh mục |
+| `Views/Category/Delete.cshtml` | Xác nhận xóa danh mục |
+| `Views/Post/Index.cshtml` | Danh sách và tìm kiếm bài viết |
+| `Views/Post/Details.cshtml` | Chi tiết bài viết |
+| `Views/User/Index.cshtml` | Danh sách người dùng |
+| `Views/CategoryProduct/Index.cshtml` | Danh mục sản phẩm |
+| `Views/Product/Index.cshtml` | Danh sách, tìm kiếm, lọc sản phẩm |
+| `Views/Customer/Index.cshtml` | Danh sách và tìm kiếm khách hàng |
+| `Views/Order/Index.cshtml` | Danh sách đơn hàng |
+| `Views/OrderDetail/Index.cshtml` | Chi tiết đơn hàng |
 | `Views/Shared/_Layout.cshtml` | Layout chung và thanh menu điều hướng |
 
 ---
 
-## 12. Thanh điều hướng
-
-Dự án đã tạo thanh menu điều hướng dùng chung trong file:
-
-```text
-Views/Shared/_Layout.cshtml
-```
-
-Các đường dẫn trên thanh menu:
+## 9. Đường dẫn kiểm tra nhanh
 
 | Chức năng | Đường dẫn |
 |---|---|
-| Danh mục bài viết | `/Category` |
+| Danh mục | `/Category` |
+| Thêm danh mục | `/Category/Create` |
+| Sửa danh mục | `/Category/Edit/{id}` |
+| Xóa danh mục | `/Category/Delete/{id}` |
 | Bài viết | `/Post` |
+| Chi tiết bài viết | `/Post/Details/{id}` |
 | Người dùng | `/User` |
 | Danh mục sản phẩm | `/CategoryProduct` |
 | Sản phẩm | `/Product` |
@@ -426,63 +607,31 @@ Các đường dẫn trên thanh menu:
 
 ---
 
-## 13. Các chức năng đã hoàn thành
+## 10. Các lỗi đã gặp và cách xử lý
 
-- Khởi tạo Solution nhiều lớp.
-- Tạo các Entity chính cho hệ thống.
-- Kết nối SQL Server bằng Entity Framework Core.
-- Tạo database bằng Migration.
-- Tạo đủ các bảng chính.
-- Nhập dữ liệu thật vào database.
-- Hiển thị dữ liệu thật lên giao diện.
-- Tạo danh sách danh mục bài viết.
-- Tạo danh sách bài viết.
-- Tạo trang chi tiết bài viết.
-- Tạo danh sách người dùng.
-- Tạo danh mục sản phẩm.
-- Tạo danh sách sản phẩm có hình ảnh.
-- Tạo danh sách khách hàng.
-- Tạo danh sách đơn hàng.
-- Tạo danh sách chi tiết đơn hàng.
-- Tạo thanh menu điều hướng chung.
-- Sử dụng Bootstrap để giao diện dễ nhìn hơn.
+### 10.1. Lỗi EF Core version không tương thích
 
----
+Lỗi:
 
-## 14. Một số lỗi đã gặp và cách xử lý
-
-### 14.1. Lỗi EF Core không tương thích version
-
-Nguyên nhân:
-
-- Project dùng `.NET 8`.
-- NuGet tự chọn Entity Framework Core phiên bản `10.x`.
+```text
+Package Microsoft.EntityFrameworkCore.SqlServer 10.x is not compatible with net8.0
+```
 
 Cách xử lý:
 
-- Cài lại Entity Framework Core phiên bản `8.0.x`.
+- Vì project dùng `.NET 8`, cần cài EF Core bản `8.0.x`.
 
 ---
 
-### 14.2. Lỗi hai project dùng EF Core khác version
-
-Nguyên nhân:
-
-- `CMS.data` và `CMS.Backend` dùng version EF Core khác nhau.
+### 10.2. Lỗi hai project dùng EF Core khác version
 
 Cách xử lý:
 
-- Đồng bộ cả hai project về cùng version `8.0.22`.
+- Đồng bộ `CMS.data` và `CMS.Backend` về cùng phiên bản EF Core.
 
 ---
 
-### 14.3. Lỗi `Build failed` khi chạy Migration
-
-Nguyên nhân:
-
-- Project còn lỗi build.
-- Package chưa đồng bộ.
-- Cấu hình `ApplicationDbContext` hoặc `Program.cs` chưa đúng.
+### 10.3. Lỗi Add-Migration bị Build failed
 
 Cách xử lý:
 
@@ -492,44 +641,46 @@ Cách xử lý:
 
 ---
 
-### 14.4. Lỗi không tìm thấy View
-
-Nguyên nhân:
-
-- Chưa tạo đúng folder View.
-- Tên folder không trùng tên Controller.
+### 10.4. Lỗi không tìm thấy View
 
 Cách xử lý:
 
-- Tạo đúng cấu trúc, ví dụ:
+- Tạo đúng folder View theo tên Controller.
+- Ví dụ:
 
 ```text
-Views/Customer/Index.cshtml
+CustomerController -> Views/Customer/Index.cshtml
 ```
 
 ---
 
-### 14.5. Lỗi khóa ngoại khi nhập dữ liệu
-
-Nguyên nhân:
-
-- Nhập sai Id liên kết, ví dụ `CategoryProductId`, `CustomerId`, `OrderId`, `ProductId`.
+### 10.5. Lỗi khóa ngoại khi nhập dữ liệu
 
 Cách xử lý:
 
-- Kiểm tra Id thật trong bảng cha trước khi nhập dữ liệu.
+- Kiểm tra Id thật trong bảng cha trước khi nhập bảng con.
 
 Ví dụ:
 
 ```sql
-SELECT Id, Name FROM CategoriesProducts;
 SELECT Id, Name FROM Products;
+SELECT Id, Name FROM CategoriesProducts;
 SELECT Id, Notes FROM Orders;
 ```
 
 ---
 
-## 15. Hướng dẫn chạy dự án
+### 10.6. Lỗi không thêm được Category khi dùng ModelState
+
+Cách xử lý:
+
+- Nhận dữ liệu thủ công từ form bằng `string Name, string Description`.
+- Tạo object `Category`.
+- Lưu bằng `_context.Categories.Add(category)` và `_context.SaveChanges()`.
+
+---
+
+## 11. Hướng dẫn chạy dự án
 
 ### Bước 1: Clone source code
 
@@ -555,7 +706,7 @@ Mở file:
 CMS.Backend/appsettings.json
 ```
 
-Kiểm tra chuỗi kết nối `DefaultConnection`.
+Kiểm tra `DefaultConnection`.
 
 ### Bước 4: Tạo database nếu chưa có
 
@@ -571,30 +722,58 @@ Chọn `CMS.Backend` làm Startup Project, sau đó bấm `F5`.
 
 ---
 
-## 16. Các đường dẫn kiểm tra nhanh
+## 12. Các nhánh GitHub nên có
 
-| Trang | Đường dẫn |
+| Nhánh | Nội dung |
 |---|---|
-| Danh mục bài viết | `/Category` |
-| Bài viết | `/Post` |
-| Người dùng | `/User` |
-| Danh mục sản phẩm | `/CategoryProduct` |
-| Sản phẩm | `/Product` |
-| Khách hàng | `/Customer` |
-| Đơn hàng | `/Order` |
-| Chi tiết đơn hàng | `/OrderDetail` |
+| `main` | Nhánh tổng của dự án |
+| `buoi-1` | Khởi tạo cấu trúc Solution, Entity, Controller, View mẫu |
+| `buoi-2` | EF Core, Migration, SQL Server, dữ liệu thật |
+| `buoi-3` | LINQ, Include, Search, CRUD Category |
+| `buoi-4` | Giao diện quản trị MVC, Layout, Menu |
+| `buoi-5` | Validation, thông báo, xử lý dữ liệu an toàn hơn |
+| `buoi-6` | Chuẩn bị Web API và hướng phát triển Full-stack |
 
 ---
 
-## 17. Định hướng phát triển tiếp theo
+## 13. Lệnh Git cơ bản
 
-Trong các buổi tiếp theo, dự án có thể phát triển thêm:
+```bash
+git status
+git add .
+git commit -m "Cap nhat du an TriCMS"
+git push
+```
 
-- Dùng LINQ để lọc, tìm kiếm và sắp xếp dữ liệu.
-- Dùng `.Include()` để hiển thị tên khách hàng, tên sản phẩm thay vì chỉ hiển thị Id.
-- Xây dựng chức năng thêm, sửa, xóa dữ liệu.
-- Hoàn thiện giao diện Admin.
-- Thêm đăng nhập và phân quyền.
+Tạo nhánh mới:
+
+```bash
+git checkout -b ten-nhanh
+git push -u origin ten-nhanh
+```
+
+Chuyển nhánh:
+
+```bash
+git checkout ten-nhanh
+```
+
+---
+
+## 14. Định hướng phát triển tiếp theo
+
+Dự án có thể tiếp tục phát triển thêm:
+
+- Hoàn thiện CRUD cho `Post`.
+- Hoàn thiện CRUD cho `Product`.
+- Dùng dropdown chọn danh mục khi thêm/sửa bài viết.
+- Dùng dropdown chọn danh mục khi thêm/sửa sản phẩm.
+- Thêm validation form.
+- Thêm đăng nhập quản trị.
+- Thêm phân quyền Admin, Editor, User.
 - Xây dựng Web API.
-- Kết nối ReactJS ở phần Frontend.
-- Tối ưu giao diện và trải nghiệm người dùng.
+- Kết nối ReactJS làm Frontend.
+- Tối ưu giao diện Admin.
+- Tách layout quản trị và layout người dùng.
+- Bổ sung upload ảnh.
+- Bổ sung dashboard thống kê.
