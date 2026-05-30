@@ -1,0 +1,59 @@
+﻿@model CMS.Data.Entities.User
+
+@{
+    Layout = "_LayoutAdmin";
+    ViewData["Title"] = "Thêm người dùng";
+}
+
+<div class="card shadow-sm">
+    <div class="card-header bg-primary text-white">
+        <h5 class="mb-0">THÊM NGƯỜI DÙNG</h5>
+    </div>
+
+    <div class="card-body">
+        <form asp-action="Create" method="post">
+            <div asp-validation-summary="All" class="text-danger mb-3"></div>
+
+            <div class="mb-3">
+                <label asp-for="Username" class="form-label fw-bold">Tên đăng nhập</label>
+                <input asp-for="Username" class="form-control" placeholder="Nhập tên đăng nhập" />
+                <span asp-validation-for="Username" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="PasswordHash" class="form-label fw-bold">Mật khẩu</label>
+                <input asp-for="PasswordHash" type="password" class="form-control" placeholder="Nhập mật khẩu" />
+                <span asp-validation-for="PasswordHash" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="FullName" class="form-label fw-bold">Họ và tên</label>
+                <input asp-for="FullName" class="form-control" placeholder="Nhập họ và tên" />
+                <span asp-validation-for="FullName" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Role" class="form-label fw-bold">Quyền</label>
+                <select asp-for="Role" class="form-select">
+                    <option value="">-- Chọn quyền --</option>
+                    <option value="Admin">Admin</option>
+                    <option value="Editor">Editor</option>
+                    <option value="User">User</option>
+                </select>
+                <span asp-validation-for="Role" class="text-danger"></span>
+            </div>
+
+            <button type="submit" class="btn btn-success">
+                <i class="bi bi-save"></i> Lưu người dùng
+            </button>
+
+            <a asp-action="Index" class="btn btn-secondary">
+                Quay lại
+            </a>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+        <partial name="_ValidationScriptsPartial" />
+}

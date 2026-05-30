@@ -1,14 +1,16 @@
-﻿//MSSV:2123110137
-//Truong Minh Tri
-//CCQ2311D
-//Ngay tao:16/5/2026
-//Mo ta: Controller hien thi danh sach chi tiet don hang tu SQL Server
+﻿// MSSV: 2123110137
+// Ho ten: Truong Minh Tri
+// Lop: CCQ2311D
+// Ngay tao: 16/5/2026
+// Mo ta: Controller quan ly chi tiet don hang, su dung Include de lay thong tin don hang, khach hang va san pham
 
-using Microsoft.AspNetCore.Mvc;
 using CMS.Data;
-
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 namespace CMS.Backend.Controllers
 {
+    [Authorize(Roles = "Admin,Editor")]
     public class OrderDetailController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -20,8 +22,13 @@ namespace CMS.Backend.Controllers
 
         public IActionResult Index()
         {
-            var orderDetails = _context.OrderDetails.ToList();
-            return View(orderDetails);
+            var data = _context.OrderDetails
+                .Include(od => od.Order)
+                .ThenInclude(o => o.Customer)
+                .Include(od => od.Product)
+                .ToList();
+
+            return View(data);
         }
     }
 }
