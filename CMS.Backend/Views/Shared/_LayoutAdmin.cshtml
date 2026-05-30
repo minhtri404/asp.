@@ -61,6 +61,16 @@ Mo ta: Layout quan tri Admin Panel dung chung cho cac trang quan ly
 </head>
 
 <body>
+    @if (User.Identity != null && User.Identity.IsAuthenticated)
+    {
+        <div class="px-3 py-2 text-white">
+            Xin chào, <strong>@User.Identity.Name</strong>
+        </div>
+
+        <a asp-controller="Account" asp-action="Logout">
+            <i class="bi bi-box-arrow-right"></i> Đăng xuất
+        </a>
+    }
     <div class="container-fluid">
         <div class="row">
             <nav class="col-md-3 col-lg-2 sidebar p-0">

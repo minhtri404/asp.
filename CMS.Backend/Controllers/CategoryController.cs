@@ -7,9 +7,10 @@
 using Microsoft.AspNetCore.Mvc;
 using CMS.Data;
 using CMS.Data.Entities;
-
+using Microsoft.AspNetCore.Authorization;   
 namespace CMS.Backend.Controllers
 {
+    [Authorize(Roles = "Admin,Editor")]
     public class CategoryController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -34,35 +35,44 @@ namespace CMS.Backend.Controllers
         [HttpPost]
         public IActionResult Create(Category model)
         {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            if (string.IsNullOrWhiteSpace(model.Description))
+            {
+                model.Description = "";
+            }
+
             _context.Categories.Add(model);
             _context.SaveChanges();
 
             TempData["SuccessMessage"] = "Thêm thành công";
             return RedirectToAction("Index");
         }
-
         [HttpGet]
-        public IActionResult Edit(int id)
-        {
-            var category = _context.Categories.Find(id);
-
-            if (category == null)
-            {
-                return NotFound();
-            }
-
-            return View(category);
-        }
-
         [HttpPost]
         public IActionResult Edit(Category model)
         {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            if (string.IsNullOrWhiteSpace(model.Description))
+            {
+                model.Description = "";
+            }
+
             _context.Categories.Update(model);
             _context.SaveChanges();
 
             TempData["SuccessMessage"] = "Sửa thành công";
             return RedirectToAction("Index");
         }
+
+    
 
         public IActionResult Delete(int id)
         {

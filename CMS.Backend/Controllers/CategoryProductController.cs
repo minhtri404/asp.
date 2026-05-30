@@ -6,9 +6,11 @@
 
 using Microsoft.AspNetCore.Mvc;
 using CMS.Data;
-
+using Microsoft.AspNetCore.Authorization;
+using CMS.Data.Entities;
 namespace CMS.Backend.Controllers
 {
+    [Authorize(Roles = "Admin,Editor")]
     public class CategoryProductController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -22,6 +24,40 @@ namespace CMS.Backend.Controllers
         {
             var data = _context.CategoriesProducts.ToList();
             return View(data);
+        }
+        [HttpGet]
+        public IActionResult Create()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult Create(CategoryProduct model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            _context.CategoriesProducts.Add(model);
+            _context.SaveChanges();
+
+            TempData["SuccessMessage"] = "Thêm thành công";
+            return RedirectToAction("Index");
+        }
+        [HttpPost]
+        public IActionResult Edit(Category model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            _context.Categories.Update(model);
+            _context.SaveChanges();
+
+            TempData["SuccessMessage"] = "Sửa thành công";
+            return RedirectToAction("Index");
         }
     }
 }

@@ -8,9 +8,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using CMS.Data;
 using CMS.Data.Entities;
-
+using Microsoft.AspNetCore.Authorization;
 namespace CMS.Backend.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class UserController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -25,13 +26,13 @@ namespace CMS.Backend.Controllers
             var users = _context.Users.ToList();
             return View(users);
         }
-
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public IActionResult Create()
         {
             return View();
         }
-
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public IActionResult Create(User model)
         {
@@ -49,7 +50,7 @@ namespace CMS.Backend.Controllers
             TempData["SuccessMessage"] = "Thêm thành công";
             return RedirectToAction("Index");
         }
-
+        [Authorize(Roles = "Admin")]    
         [HttpGet]
         public IActionResult Edit(int id)
         {

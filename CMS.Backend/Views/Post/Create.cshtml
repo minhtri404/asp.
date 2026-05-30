@@ -1,69 +1,44 @@
-﻿@model CMS.Data.Entities.Post
+﻿@model CMS.Data.Entities.Category
 
 @{
     Layout = "_LayoutAdmin";
-    ViewData["Title"] = "Thêm bài viết mới";
+    ViewData["Title"] = "Sửa danh mục";
 }
 
-<div class="card shadow">
-    <div class="card-header bg-primary text-white">
-        <h4 class="mb-0">THÊM BÀI VIẾT MỚI</h4>
+<div class="card shadow-sm">
+    <div class="card-header bg-warning">
+        <h5 class="mb-0">SỬA DANH MỤC</h5>
     </div>
 
     <div class="card-body">
-        <form asp-action="Create" method="post" enctype="multipart/form-data">
-            <div class="row">
-                <div class="col-md-8">
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">Tiêu đề bài viết</label>
-                        <input asp-for="Title" class="form-control" placeholder="Nhập tiêu đề..." />
-                    </div>
+        <form asp-action="Edit" method="post">
+            <div asp-validation-summary="All" class="text-danger mb-3"></div>
 
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">Nội dung chi tiết</label>
-                        <textarea asp-for="Content" class="form-control" rows="10"></textarea>
-                    </div>
-                </div>
+            <input type="hidden" asp-for="Id" />
 
-                <div class="col-md-4">
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">Chuyên mục</label>
-                        <select asp-for="CategoryId" class="form-select" asp-items="ViewBag.CategoryList">
-                            <option value="">-- Chọn danh mục --</option>
-                        </select>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">Ảnh đại diện</label>
-                        <input type="file" name="uploadImage" class="form-control" />
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">Ngày đăng</label>
-                        <input asp-for="CreatedDate" type="date" class="form-control" value="@DateTime.Now.ToString("yyyy-MM-dd")" />
-                    </div>
-
-                    <button type="submit" class="btn btn-success w-100 mb-2">
-                        Lưu và đăng bài
-                    </button>
-
-                    <a asp-action="Index" class="btn btn-secondary w-100">
-                        Quay lại
-                    </a>
-                </div>
+            <div class="mb-3">
+                <label asp-for="Name" class="form-label fw-bold">Tên danh mục</label>
+                <input asp-for="Name" class="form-control" placeholder="Nhập tên danh mục" />
+                <span asp-validation-for="Name" class="text-danger"></span>
             </div>
+
+            <div class="mb-3">
+                <label asp-for="Description" class="form-label fw-bold">Mô tả</label>
+                <textarea asp-for="Description" class="form-control" rows="4" placeholder="Nhập mô tả"></textarea>
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+
+            <button type="submit" class="btn btn-primary">
+                <i class="bi bi-save"></i> Cập nhật
+            </button>
+
+            <a asp-action="Index" class="btn btn-secondary">
+                Quay lại
+            </a>
         </form>
     </div>
 </div>
 
 @section Scripts {
-        <script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/classic/ckeditor.js"></script>
-
-        <script>
-            ClassicEditor
-                .create(document.querySelector('#Content'))
-                .catch(error => {
-                    console.error(error);
-                });
-        </script>
+        <partial name="_ValidationScriptsPartial" />
 }

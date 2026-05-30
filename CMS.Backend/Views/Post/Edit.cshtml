@@ -1,63 +1,88 @@
-﻿@*
-MSSV: 2123110137
-Ho ten: Truong Minh Tri
-Lop: CCQ2311D
-Ngay tao: 16/5/2026
-Mo ta: Giao dien cap nhat bai viet
-*@
-
-@model CMS.Data.Entities.Post
+﻿@model CMS.Data.Entities.Post
 
 @{
     Layout = "_LayoutAdmin";
     ViewData["Title"] = "Sửa bài viết";
 }
 
-<div class="container mt-4">
-    <div class="card shadow">
-        <div class="card-header bg-warning">
-            <h4>SỬA BÀI VIẾT</h4>
-        </div>
+<div class="card shadow-sm">
+    <div class="card-header bg-warning">
+        <h5 class="mb-0">SỬA BÀI VIẾT</h5>
+    </div>
 
-        <div class="card-body">
-            <form asp-action="Edit" method="post" enctype="multipart/form-data">
-                <input type="hidden" asp-for="Id" />
+    <div class="card-body">
+        <form asp-action="Edit" method="post" enctype="multipart/form-data">
+            <div asp-validation-summary="All" class="text-danger mb-3"></div>
 
-                <div class="mb-3">
-                    <label class="form-label">Tiêu đề</label>
-                    <input asp-for="Title" class="form-control" />
+            <input type="hidden" asp-for="Id" />
+            <input type="hidden" asp-for="ImageUrl" />
+
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="mb-3">
+                        <label asp-for="Title" class="form-label fw-bold">Tiêu đề bài viết</label>
+                        <input asp-for="Title" class="form-control" placeholder="Nhập tiêu đề bài viết" />
+                        <span asp-validation-for="Title" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Content" class="form-label fw-bold">Nội dung bài viết</label>
+                        <textarea asp-for="Content" class="form-control" rows="10" placeholder="Nhập nội dung bài viết"></textarea>
+                        <span asp-validation-for="Content" class="text-danger"></span>
+                    </div>
                 </div>
 
-                <div class="mb-3">
-                    <label class="form-label">Nội dung</label>
-                    <textarea asp-for="Content" class="form-control" rows="8"></textarea>
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <label asp-for="CategoryId" class="form-label fw-bold">Danh mục</label>
+                        <select asp-for="CategoryId" class="form-select" asp-items="ViewBag.CategoryList">
+                            <option value="">-- Chọn danh mục --</option>
+                        </select>
+                        <span asp-validation-for="CategoryId" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Ảnh hiện tại</label>
+
+                        @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                        {
+                                <img src="@Model.ImageUrl"
+                                     class="img-fluid rounded border mb-2"
+                                     style="width:100%; max-height:180px; object-fit:cover;"
+                                     alt="Ảnh bài viết" />
+                        }
+                        else
+                        {
+                                <div class="alert alert-secondary">
+                                    Chưa có ảnh đại diện
+                                </div>
+                        }
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Chọn ảnh mới</label>
+                        <input type="file" name="uploadImage" class="form-control" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="CreatedDate" class="form-label fw-bold">Ngày đăng</label>
+                        <input asp-for="CreatedDate" type="datetime-local" class="form-control" />
+                        <span asp-validation-for="CreatedDate" class="text-danger"></span>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100 mb-2">
+                        <i class="bi bi-save"></i> Cập nhật bài viết
+                    </button>
+
+                    <a asp-action="Index" class="btn btn-secondary w-100">
+                        Quay lại
+                    </a>
                 </div>
-
-                <div class="mb-3">
-                    <label class="form-label">Danh mục</label>
-                    <select asp-for="CategoryId" asp-items="ViewBag.CategoryList" class="form-select"></select>
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label">Ảnh hiện tại</label><br />
-                    <img src="@Model.ImageUrl" width="120" />
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label">Chọn ảnh mới</label>
-                    <input type="file" name="uploadImage" class="form-control" />
-                </div>
-
-                <input type="hidden" asp-for="ImageUrl" />
-
-                <div class="mb-3">
-                    <label class="form-label">Ngày đăng</label>
-                    <input asp-for="CreatedDate" type="date" class="form-control" />
-                </div>
-
-                <button type="submit" class="btn btn-primary">Cập nhật</button>
-                <a asp-action="Index" class="btn btn-secondary">Quay lại</a>
-            </form>
-        </div>
+            </div>
+        </form>
     </div>
 </div>
+
+@section Scripts {
+        <partial name="_ValidationScriptsPartial" />
+}

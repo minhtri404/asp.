@@ -12,20 +12,33 @@
 
     <div class="card-body">
         <form asp-action="Edit" method="post">
+            <div asp-validation-summary="All" class="text-danger mb-3"></div>
+
             <input type="hidden" asp-for="Id" />
 
             <div class="mb-3">
-                <label class="form-label fw-bold">Tên danh mục</label>
-                <input asp-for="Name" class="form-control" />
+                <label asp-for="Name" class="form-label fw-bold">Tên danh mục</label>
+                <input asp-for="Name" class="form-control" placeholder="Nhập tên danh mục" />
+                <span asp-validation-for="Name" class="text-danger"></span>
             </div>
 
             <div class="mb-3">
-                <label class="form-label fw-bold">Mô tả</label>
-                <textarea asp-for="Description" class="form-control" rows="4"></textarea>
+                <label asp-for="Description" class="form-label fw-bold">Mô tả</label>
+                <textarea asp-for="Description" class="form-control" rows="4" placeholder="Nhập mô tả"></textarea>
+                <span asp-validation-for="Description" class="text-danger"></span>
             </div>
 
-            <button type="submit" class="btn btn-primary">Cập nhật</button>
-            <a asp-action="Index" class="btn btn-secondary">Quay lại</a>
+            <button type="submit" class="btn btn-primary">
+                <i class="bi bi-save"></i> Cập nhật
+            </button>
+
+            <a asp-action="Index" class="btn btn-secondary">
+                Quay lại
+            </a>
         </form>
     </div>
 </div>
+
+@section Scripts {
+        <partial name="_ValidationScriptsPartial" />
+}

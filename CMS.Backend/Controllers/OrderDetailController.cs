@@ -7,9 +7,10 @@
 using CMS.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-
+using Microsoft.AspNetCore.Authorization;
 namespace CMS.Backend.Controllers
 {
+    [Authorize(Roles = "Admin,Editor")]
     public class OrderDetailController : Controller
     {
         private readonly ApplicationDbContext _context;
