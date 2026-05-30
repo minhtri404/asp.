@@ -1,0 +1,63 @@
+﻿@*
+MSSV: 2123110137
+Ho ten: Truong Minh Tri
+Lop: CCQ2311D
+Ngay tao: 16/5/2026
+Mo ta: Giao dien cap nhat bai viet
+*@
+
+@model CMS.Data.Entities.Post
+
+@{
+    Layout = "_LayoutAdmin";
+    ViewData["Title"] = "Sửa bài viết";
+}
+
+<div class="container mt-4">
+    <div class="card shadow">
+        <div class="card-header bg-warning">
+            <h4>SỬA BÀI VIẾT</h4>
+        </div>
+
+        <div class="card-body">
+            <form asp-action="Edit" method="post" enctype="multipart/form-data">
+                <input type="hidden" asp-for="Id" />
+
+                <div class="mb-3">
+                    <label class="form-label">Tiêu đề</label>
+                    <input asp-for="Title" class="form-control" />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Nội dung</label>
+                    <textarea asp-for="Content" class="form-control" rows="8"></textarea>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Danh mục</label>
+                    <select asp-for="CategoryId" asp-items="ViewBag.CategoryList" class="form-select"></select>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Ảnh hiện tại</label><br />
+                    <img src="@Model.ImageUrl" width="120" />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Chọn ảnh mới</label>
+                    <input type="file" name="uploadImage" class="form-control" />
+                </div>
+
+                <input type="hidden" asp-for="ImageUrl" />
+
+                <div class="mb-3">
+                    <label class="form-label">Ngày đăng</label>
+                    <input asp-for="CreatedDate" type="date" class="form-control" />
+                </div>
+
+                <button type="submit" class="btn btn-primary">Cập nhật</button>
+                <a asp-action="Index" class="btn btn-secondary">Quay lại</a>
+            </form>
+        </div>
+    </div>
+</div>

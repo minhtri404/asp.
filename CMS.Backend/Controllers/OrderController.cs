@@ -2,9 +2,10 @@
 //Truong Minh Tri
 //CCQ2311D
 //Ngay tao:16/5/2026
-//Mo ta: Controller hien thi danh sach don hang tu SQL Server
+//Mo ta: Controller quan ly don hang, su dung Include de lay thong tin khach hang
 
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using CMS.Data;
 
 namespace CMS.Backend.Controllers
@@ -20,7 +21,11 @@ namespace CMS.Backend.Controllers
 
         public IActionResult Index()
         {
-            var orders = _context.Orders.ToList();
+            var orders = _context.Orders
+                .Include(o => o.Customer)
+                .OrderByDescending(o => o.OrderDate)
+                .ToList();
+
             return View(orders);
         }
     }

@@ -1,0 +1,29 @@
+﻿@model CMS.Data.Entities.Category
+
+@{
+    Layout = "_LayoutAdmin";
+    ViewData["Title"] = "Thêm danh mục";
+}
+
+<div class="card shadow-sm">
+    <div class="card-header bg-primary text-white">
+        <h5 class="mb-0">THÊM DANH MỤC</h5>
+    </div>
+
+    <div class="card-body">
+        <form asp-action="Create" method="post">
+            <div class="mb-3">
+                <label class="form-label fw-bold">Tên danh mục</label>
+                <input asp-for="Name" class="form-control" placeholder="Nhập tên danh mục" />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label fw-bold">Mô tả</label>
+                <textarea asp-for="Description" class="form-control" rows="4"></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-success">Lưu danh mục</button>
+            <a asp-action="Index" class="btn btn-secondary">Quay lại</a>
+        </form>
+    </div>
+</div>
