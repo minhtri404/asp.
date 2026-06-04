@@ -1,0 +1,13 @@
+﻿@{
+    Layout = "_LayoutAdmin";
+    ViewData["Title"] = "Không có quyền truy cập";
+}
+
+<div class="alert alert-danger">
+    <h4>Không có quyền truy cập</h4>
+    <p>Bạn không có quyền thực hiện chức năng này.</p>
+</div>
+
+<a asp-controller="Category" asp-action="Index" class="btn btn-primary">
+    Quay lại trang quản trị
+</a>

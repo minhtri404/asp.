@@ -2,13 +2,16 @@
 //Truong Minh Tri
 //CCQ2311D
 //Ngay tao:16/5/2026
-//Mo ta: Controller hien thi danh sach don hang tu SQL Server
+//Mo ta: Controller quan ly don hang
 
-using Microsoft.AspNetCore.Mvc;
 using CMS.Data;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace CMS.Backend.Controllers
 {
+    [Authorize(Roles = "Admin,Editor")]
     public class OrderController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -20,7 +23,10 @@ namespace CMS.Backend.Controllers
 
         public IActionResult Index()
         {
-            var orders = _context.Orders.ToList();
+            var orders = _context.Orders
+                .Include(o => o.Customer)
+                .ToList();
+
             return View(orders);
         }
     }

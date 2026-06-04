@@ -2,13 +2,15 @@
 //Truong Minh Tri
 //CCQ2311D
 //Ngay tao:16/5/2026
-//Mo ta: Controller quan ly danh muc, lay du lieu that tu SQL Server
+//Mo ta: Controller quan ly danh muc, thuc hien xem, them, sua, xoa du lieu
 
 using Microsoft.AspNetCore.Mvc;
 using CMS.Data;
-
+using CMS.Data.Entities;
+using Microsoft.AspNetCore.Authorization;   
 namespace CMS.Backend.Controllers
 {
+    [Authorize(Roles = "Admin,Editor")]
     public class CategoryController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -22,6 +24,69 @@ namespace CMS.Backend.Controllers
         {
             var data = _context.Categories.ToList();
             return View(data);
+        }
+
+        [HttpGet]
+        public IActionResult Create()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult Create(Category model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            if (string.IsNullOrWhiteSpace(model.Description))
+            {
+                model.Description = "";
+            }
+
+            _context.Categories.Add(model);
+            _context.SaveChanges();
+
+            TempData["SuccessMessage"] = "Thêm thành công";
+            return RedirectToAction("Index");
+        }
+        [HttpGet]
+        [HttpPost]
+        public IActionResult Edit(Category model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            if (string.IsNullOrWhiteSpace(model.Description))
+            {
+                model.Description = "";
+            }
+
+            _context.Categories.Update(model);
+            _context.SaveChanges();
+
+            TempData["SuccessMessage"] = "Sửa thành công";
+            return RedirectToAction("Index");
+        }
+
+    
+
+        public IActionResult Delete(int id)
+        {
+            var category = _context.Categories.Find(id);
+
+            if (category != null)
+            {
+                _context.Categories.Remove(category);
+                _context.SaveChanges();
+
+                TempData["SuccessMessage"] = "Xóa thành công";
+            }
+
+            return RedirectToAction("Index");
         }
     }
 }

@@ -1,32 +1,56 @@
-﻿//MSSV:2123110137
-//Truong Minh Tri
-//CCQ2311D
-//Ngay tao:16/5/2026
-//Mo ta: File cau hinh khoi chay ung dung ASP.NET Core MVC
+﻿using CMS.Data;
 using Microsoft.EntityFrameworkCore;
-using CMS.Data;
+using Microsoft.AspNetCore.Authentication.Cookies;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Dang ky MVC
 builder.Services.AddControllersWithViews();
+
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.LoginPath = "/Account/Login";
+        options.AccessDeniedPath = "/Account/AccessDenied";
+        options.ExpireTimeSpan = TimeSpan.FromMinutes(60);
+    });
+
+// Thêm CORS cho ReactJS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("ReactPolicy", policy =>
+    {
+        policy.WithOrigins("http://localhost:3000", "http://localhost:5173")
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+});
+
 var app = builder.Build();
-    
+
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
+    app.UseHsts();
 }
 
 app.UseStaticFiles();
 
 app.UseRouting();
 
+// Dùng CORS trước Authentication/Authorization
+app.UseCors("ReactPolicy");
+
+app.UseAuthentication();
 app.UseAuthorization();
 
-// Cau hinh route mac dinh
+// Thêm dòng này để chạy API Controller
+app.MapControllers();
+
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=Account}/{action=Login}/{id?}");
 
 app.Run();

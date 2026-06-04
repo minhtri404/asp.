@@ -28,6 +28,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Views\s\" />
+    <Folder Include="Views\NewFolder\" />
     <Folder Include="wwwroot\img\" />
   </ItemGroup>
 
