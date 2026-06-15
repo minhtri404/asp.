@@ -1,0 +1,20 @@
+@model CMS.Data.Entities.OrderDetail
+
+@{
+    Layout = "_LayoutAdmin";
+    ViewData["Title"] = "Chi tiết dòng đơn hàng";
+}
+
+<div class="card shadow-sm">
+    <div class="card-header bg-info text-white"><h5 class="mb-0">CHI TIẾT DÒNG ĐƠN HÀNG</h5></div>
+    <div class="card-body">
+        <p><strong>ID:</strong> @Model.Id</p>
+        <p><strong>Mã đơn:</strong> @Model.OrderId</p>
+        <p><strong>Khách hàng:</strong> @Model.Order?.Customer?.FullName</p>
+        <p><strong>Sản phẩm:</strong> @Model.Product?.Name</p>
+        <p><strong>Số lượng:</strong> @Model.Quantity</p>
+        <p><strong>Đơn giá:</strong> @Model.UnitPrice.ToString("N0") VNĐ</p>
+        <p><strong>Thành tiền:</strong> @((Model.Quantity * Model.UnitPrice).ToString("N0")) VNĐ</p>
+        <a asp-action="Index" class="btn btn-secondary">Quay lại</a>
+    </div>
+</div>

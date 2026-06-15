@@ -1,0 +1,18 @@
+@model CMS.Data.Entities.CategoryProduct
+
+@{
+    Layout = "_LayoutAdmin";
+    ViewData["Title"] = "Chi tiết danh mục sản phẩm";
+}
+
+<div class="card shadow-sm">
+    <div class="card-header bg-info text-white"><h5 class="mb-0">CHI TIẾT DANH MỤC SẢN PHẨM</h5></div>
+    <div class="card-body">
+        <p><strong>ID:</strong> @Model.Id</p>
+        <p><strong>Tên danh mục:</strong> @Model.Name</p>
+        <p><strong>Mô tả:</strong> @Model.Description</p>
+        <p><strong>Số sản phẩm:</strong> @(Model.Products?.Count ?? 0)</p>
+        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Sửa</a>
+        <a asp-action="Index" class="btn btn-secondary">Quay lại</a>
+    </div>
+</div>

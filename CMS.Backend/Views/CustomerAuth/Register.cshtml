@@ -1,0 +1,95 @@
+﻿@{
+    ViewData["Title"] = "Đăng ký khách hàng";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-primary text-white text-center">
+                <h4 class="mb-0">Đăng ký tài khoản khách hàng</h4>
+            </div>
+
+            <div class="card-body">
+                <div id="message"></div>
+
+                <form id="registerForm">
+                    <div class="mb-3">
+                        <label class="form-label">Họ và tên</label>
+                        <input type="text" id="fullName" class="form-control" required />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Email</label>
+                        <input type="email" id="email" class="form-control" required />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Mật khẩu</label>
+                        <input type="password" id="password" class="form-control" required />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Số điện thoại</label>
+                        <input type="text" id="phone" class="form-control" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Địa chỉ</label>
+                        <input type="text" id="address" class="form-control" />
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100">
+                        Đăng ký
+                    </button>
+                </form>
+
+                <div class="text-center mt-3">
+                    <span>Đã có tài khoản?</span>
+                    <a href="/CustomerAuth/Login">Đăng nhập</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.getElementById("registerForm").addEventListener("submit", async function (e) {
+        e.preventDefault();
+
+        const data = {
+            fullName: document.getElementById("fullName").value,
+            email: document.getElementById("email").value,
+            password: document.getElementById("password").value,
+            phone: document.getElementById("phone").value,
+            address: document.getElementById("address").value
+        };
+
+        const response = await fetch("/api/Auth/CustomerRegister", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(data)
+        });
+
+        const result = await response.json();
+        const messageBox = document.getElementById("message");
+
+        if (response.ok) {
+            messageBox.innerHTML =
+                '<div class="alert alert-success">' +
+                result.message +
+                '</div>';
+
+            setTimeout(function () {
+                window.location.href = "/CustomerAuth/Login";
+            }, 1000);
+        } else {
+            messageBox.innerHTML =
+                '<div class="alert alert-danger">' +
+                result.message +
+                '</div>';
+        }
+    });
+</script>

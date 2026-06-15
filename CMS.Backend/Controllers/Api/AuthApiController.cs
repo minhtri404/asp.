@@ -17,7 +17,7 @@ namespace CMS.Backend.Controllers.Api
     {
         private readonly ApplicationDbContext _context;
 
-        public AuthApiController(ApplicationDbContext context)
+        public AuthApiController(ApplicationDbContext context)  
         {
             _context = context;
         }
@@ -25,8 +25,20 @@ namespace CMS.Backend.Controllers.Api
         [HttpPost("CustomerRegister")]
         public async Task<IActionResult> CustomerRegister(CustomerRegisterRequest request)
         {
+            if (string.IsNullOrWhiteSpace(request.FullName) ||
+                string.IsNullOrWhiteSpace(request.Email) ||
+                string.IsNullOrWhiteSpace(request.Password))
+            {
+                return BadRequest(new
+                {
+                    message = "Vui lòng nhập đầy đủ họ tên, email và mật khẩu"
+                });
+            }
+
+            var email = request.Email.Trim().ToLower();
+
             var emailExists = await _context.Customers
-                .AnyAsync(c => c.Email == request.Email);
+                .AnyAsync(c => c.Email.ToLower().Trim() == email);
 
             if (emailExists)
             {
@@ -38,9 +50,9 @@ namespace CMS.Backend.Controllers.Api
 
             var customer = new Customer
             {
-                FullName = request.FullName,
-                Email = request.Email,
-                Password = request.Password,
+                FullName = request.FullName.Trim(),
+                Email = email,
+                Password = request.Password.Trim(),
                 Phone = request.Phone,
                 Address = request.Address
             };
@@ -52,22 +64,35 @@ namespace CMS.Backend.Controllers.Api
             {
                 message = "Đăng ký thành công",
                 customerId = customer.Id,
-                customer.FullName,
-                customer.Email
+                fullName = customer.FullName,
+                email = customer.Email
             });
         }
 
         [HttpPost("CustomerLogin")]
         public async Task<IActionResult> CustomerLogin(CustomerLoginRequest request)
         {
+            if (string.IsNullOrWhiteSpace(request.Email) ||
+                string.IsNullOrWhiteSpace(request.Password))
+            {
+                return BadRequest(new
+                {
+                    message = "Vui lòng nhập email và mật khẩu"
+                });
+            }
+
+            var email = request.Email.Trim().ToLower();
+            var password = request.Password.Trim();
+
             var customer = await _context.Customers
-                .FirstOrDefaultAsync(c =>
-                    c.Email == request.Email &&
-                    c.Password == request.Password);
+                .FirstOrDefaultAsync(x =>
+                    x.Email.ToLower().Trim() == email
+                    && x.Password == password
+                );
 
             if (customer == null)
             {
-                return Unauthorized(new
+                return BadRequest(new
                 {
                     message = "Email hoặc mật khẩu không đúng"
                 });
@@ -76,11 +101,14 @@ namespace CMS.Backend.Controllers.Api
             return Ok(new
             {
                 message = "Đăng nhập thành công",
-                customerId = customer.Id,
-                customer.FullName,
-                customer.Email,
-                customer.Phone,
-                customer.Address
+                customer = new
+                {
+                    id = customer.Id,
+                    fullName = customer.FullName,
+                    email = customer.Email,
+                    phone = customer.Phone,
+                    address = customer.Address
+                }
             });
         }
     }

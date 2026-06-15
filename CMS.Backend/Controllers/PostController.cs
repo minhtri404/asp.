@@ -1,8 +1,8 @@
-﻿//MSSV:2123110137
+//MSSV:2123110137
 //Truong Minh Tri
 //CCQ2311D
 //Ngay tao:16/5/2026
-//Mo ta: Controller quan ly bai viet, thuc hien xem, them, sua, xoa du lieu
+//Mo ta: Controller quan ly bai viet, Admin va Editor duoc them, sua, xoa bai viet
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using CMS.Data;
 using CMS.Data.Entities;
 using Microsoft.AspNetCore.Authorization;
+
 namespace CMS.Backend.Controllers
 {
     [Authorize(Roles = "Admin,Editor")]
@@ -54,7 +55,8 @@ namespace CMS.Backend.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create(Post model, IFormFile uploadImage)
+        [ValidateAntiForgeryToken]
+        public IActionResult Create(Post model, IFormFile? uploadImage)
         {
             if (uploadImage != null && uploadImage.Length > 0)
             {
@@ -76,10 +78,15 @@ namespace CMS.Backend.Controllers
                 model.ImageUrl = "/uploads/" + fileName;
             }
 
+            if (model.CreatedDate == default)
+            {
+                model.CreatedDate = DateTime.Now;
+            }
+
             _context.Posts.Add(model);
             _context.SaveChanges();
 
-            TempData["SuccessMessage"] = "Thêm thành công";
+            TempData["SuccessMessage"] = "Thêm bài viết thành công";
             return RedirectToAction("Index");
         }
 
@@ -98,7 +105,8 @@ namespace CMS.Backend.Controllers
         }
 
         [HttpPost]
-        public IActionResult Edit(Post model, IFormFile uploadImage)
+        [ValidateAntiForgeryToken]
+        public IActionResult Edit(Post model, IFormFile? uploadImage)
         {
             if (uploadImage != null && uploadImage.Length > 0)
             {
@@ -132,7 +140,7 @@ namespace CMS.Backend.Controllers
             _context.Posts.Update(model);
             _context.SaveChanges();
 
-            TempData["SuccessMessage"] = "Sửa thành công";
+            TempData["SuccessMessage"] = "Sửa bài viết thành công";
             return RedirectToAction("Index");
         }
 
@@ -145,7 +153,7 @@ namespace CMS.Backend.Controllers
                 _context.Posts.Remove(post);
                 _context.SaveChanges();
 
-                TempData["SuccessMessage"] = "Xóa thành công";
+                TempData["SuccessMessage"] = "Xóa bài viết thành công";
             }
 
             return RedirectToAction("Index");

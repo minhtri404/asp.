@@ -1,13 +1,15 @@
-﻿//MSSV:2123110137
+//MSSV:2123110137
 //Truong Minh Tri
 //CCQ2311D
-//Ngay tao:16/5/2026
-//Mo ta: Controller quan ly danh muc, thuc hien xem, them, sua, xoa du lieu
+//Ngay tao:04/06/2026
+//Mo ta: Controller quan tri CRUD danh muc, Admin duoc thao tac, Editor chi duoc xem
 
-using Microsoft.AspNetCore.Mvc;
 using CMS.Data;
 using CMS.Data.Entities;
-using Microsoft.AspNetCore.Authorization;   
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+
 namespace CMS.Backend.Controllers
 {
     [Authorize(Roles = "Admin,Editor")]
@@ -20,73 +22,164 @@ namespace CMS.Backend.Controllers
             _context = context;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            var data = _context.Categories.ToList();
+            var data = await _context.Categories
+                .OrderBy(c => c.Id)
+                .ToListAsync();
+
             return View(data);
+        }
+
+        public async Task<IActionResult> Details(int id)
+        {
+            var category = await _context.Categories
+                .Include(c => c.Posts)
+                .FirstOrDefaultAsync(c => c.Id == id);
+
+            if (category == null)
+            {
+                return NotFound();
+            }
+
+            return View(category);
         }
 
         [HttpGet]
         public IActionResult Create()
         {
+            if (User.IsInRole("Editor"))
+            {
+                TempData["ErrorMessage"] = "403, Editor chỉ được xem, không được thêm danh mục.";
+                return RedirectToAction(nameof(Index));
+            }
+
             return View();
         }
 
         [HttpPost]
-        public IActionResult Create(Category model)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(Category model)
         {
+            if (User.IsInRole("Editor"))
+            {
+                TempData["ErrorMessage"] = "Editor không có quyền thêm danh mục.";
+                return RedirectToAction(nameof(Index));
+            }
+
             if (!ModelState.IsValid)
             {
                 return View(model);
             }
 
-            if (string.IsNullOrWhiteSpace(model.Description))
-            {
-                model.Description = "";
-            }
+            model.Description ??= string.Empty;
 
             _context.Categories.Add(model);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
-            TempData["SuccessMessage"] = "Thêm thành công";
-            return RedirectToAction("Index");
+            TempData["SuccessMessage"] = "Thêm danh mục thành công";
+            return RedirectToAction(nameof(Index));
         }
+
         [HttpGet]
-        [HttpPost]
-        public IActionResult Edit(Category model)
+        public async Task<IActionResult> Edit(int id)
         {
+            if (User.IsInRole("Editor"))
+            {
+                TempData["ErrorMessage"] = "Editor chỉ được xem, không được sửa danh mục.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            var category = await _context.Categories.FindAsync(id);
+
+            if (category == null)
+            {
+                return NotFound();
+            }
+
+            return View(category);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, Category model)
+        {
+            if (User.IsInRole("Editor"))
+            {
+                TempData["ErrorMessage"] = "Editor không có quyền sửa danh mục.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            if (id != model.Id)
+            {
+                return NotFound();
+            }
+
             if (!ModelState.IsValid)
             {
                 return View(model);
             }
 
-            if (string.IsNullOrWhiteSpace(model.Description))
-            {
-                model.Description = "";
-            }
+            model.Description ??= string.Empty;
 
             _context.Categories.Update(model);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
-            TempData["SuccessMessage"] = "Sửa thành công";
-            return RedirectToAction("Index");
+            TempData["SuccessMessage"] = "Cập nhật danh mục thành công";
+            return RedirectToAction(nameof(Index));
         }
 
-    
-
-        public IActionResult Delete(int id)
+        [HttpGet]
+        public async Task<IActionResult> Delete(int id)
         {
-            var category = _context.Categories.Find(id);
-
-            if (category != null)
+            if (User.IsInRole("Editor"))
             {
-                _context.Categories.Remove(category);
-                _context.SaveChanges();
-
-                TempData["SuccessMessage"] = "Xóa thành công";
+                TempData["ErrorMessage"] = "Editor không có quyền xóa danh mục.";
+                return RedirectToAction(nameof(Index));
             }
 
-            return RedirectToAction("Index");
+            var category = await _context.Categories
+                .Include(c => c.Posts)
+                .FirstOrDefaultAsync(c => c.Id == id);
+
+            if (category == null)
+            {
+                return NotFound();
+            }
+
+            return View(category);
+        }
+
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            if (User.IsInRole("Editor"))
+            {
+                TempData["ErrorMessage"] = "Editor không có quyền xóa danh mục.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            var category = await _context.Categories
+                .Include(c => c.Posts)
+                .FirstOrDefaultAsync(c => c.Id == id);
+
+            if (category == null)
+            {
+                return NotFound();
+            }
+
+            if (category.Posts != null && category.Posts.Any())
+            {
+                TempData["ErrorMessage"] = "Không thể xóa vì danh mục đang có bài viết.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            _context.Categories.Remove(category);
+            await _context.SaveChangesAsync();
+
+            TempData["SuccessMessage"] = "Xóa danh mục thành công";
+            return RedirectToAction(nameof(Index));
         }
     }
 }

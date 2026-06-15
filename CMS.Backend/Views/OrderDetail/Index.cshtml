@@ -1,65 +1,46 @@
-﻿@model IEnumerable<CMS.Data.Entities.OrderDetail>
+@model IEnumerable<CMS.Data.Entities.OrderDetail>
 
 @{
     Layout = "_LayoutAdmin";
     ViewData["Title"] = "Chi tiết đơn hàng";
 }
+@if (User.IsInRole("Editor"))
+{
+        <div class="alert alert-danger">
+            Editor chỉ được thao tác Bài viết. Các mục khác chỉ được xem, không được thêm, sửa hoặc xóa.
+        </div>
+}s
+<h2 class="text-primary mb-3">DANH SÁCH CHI TIẾT ĐƠN HÀNG</h2>
 
-    <table class="table table-bordered table-hover shadow-sm">
-        <thead class="table-light">
+<table class="table table-bordered table-hover shadow-sm bg-white">
+    <thead class="table-light">
+        <tr>
+            <th>ID</th>
+            <th>Mã đơn</th>
+            <th>Khách hàng</th>
+            <th>Sản phẩm</th>
+            <th>Số lượng</th>
+            <th>Đơn giá</th>
+            <th>Thành tiền</th>
+            <th style="width:180px;">Thao tác</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
             <tr>
-                <th>ID</th>
-                <th>Mã đơn</th>
-                <th>Ngày đặt</th>
-                <th>Khách hàng</th>
-                <th>Sản phẩm</th>
-                <th>Số lượng</th>
-                <th>Đơn giá</th>
-                <th>Thành tiền</th>
-                <th>Thao tác</th>
+                <td>@item.Id</td>
+                <td>@item.OrderId</td>
+                <td>@item.Order?.Customer?.FullName</td>
+                <td>@item.Product?.Name</td>
+                <td>@item.Quantity</td>
+                <td>@item.UnitPrice.ToString("N0") VNĐ</td>
+                <td>@((item.Quantity * item.UnitPrice).ToString("N0")) VNĐ</td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-info">Chi tiết</a>
+                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger">Xóa</a>
+                </td>
             </tr>
-        </thead>
-
-        <tbody>
-            @foreach (var item in Model)
-            {
-                var thanhTien = item.Quantity * item.UnitPrice;
-
-                    <tr>
-                        <td>@item.Id</td>
-
-                        <td>#@item.OrderId</td>
-
-                        <td>
-                        @(item.Order != null ? item.Order.OrderDate.ToString("dd/MM/yyyy") : "Không có ngày")
-                        </td>
-
-                        <td>
-                        @(item.Order != null && item.Order.Customer != null
-                                ? item.Order.Customer.FullName
-                                : "Không có khách hàng")
-                        </td>
-
-                        <td>
-                        @(item.Product != null ? item.Product.Name : "Không có sản phẩm")
-                        </td>
-
-                        <td>@item.Quantity</td>
-
-                        <td>@item.UnitPrice.ToString("N0") VNĐ</td>
-
-                        <td>
-                            <strong class="text-danger">
-                            @thanhTien.ToString("N0") VNĐ
-                            </strong>
-                        </td>
-
-                        <td>
-                            <button class="btn btn-sm btn-outline-warning">Sửa</button>
-                            <button class="btn btn-sm btn-outline-danger">Xóa</button>
-                        </td>
-                    </tr>
-            }
-        </tbody>
-    </table>
-</div>
+        }
+    </tbody>
+</table>

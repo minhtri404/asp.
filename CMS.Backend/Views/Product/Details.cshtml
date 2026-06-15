@@ -1,0 +1,32 @@
+@model CMS.Data.Entities.Product
+
+@{
+    Layout = "_LayoutAdmin";
+    ViewData["Title"] = "Chi tiết sản phẩm";
+}
+
+<div class="card shadow-sm">
+    <div class="card-header bg-info text-white"><h5 class="mb-0">CHI TIẾT SẢN PHẨM</h5></div>
+    <div class="card-body row">
+        <div class="col-md-4">
+            @if (!string.IsNullOrEmpty(Model.ImageUrl))
+            {
+                <img src="@Model.ImageUrl" class="img-fluid rounded border" />
+            }
+            else
+            {
+                <div class="alert alert-secondary">Chưa có ảnh</div>
+            }
+        </div>
+        <div class="col-md-8">
+            <p><strong>ID:</strong> @Model.Id</p>
+            <p><strong>Tên sản phẩm:</strong> @Model.Name</p>
+            <p><strong>Danh mục:</strong> @Model.CategoryProduct?.Name</p>
+            <p><strong>Giá:</strong> @Model.Price.ToString("N0") VNĐ</p>
+            <p><strong>Tồn kho:</strong> @Model.StockQuantity</p>
+            <p><strong>Mô tả:</strong> @Model.Description</p>
+            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Sửa</a>
+            <a asp-action="Index" class="btn btn-secondary">Quay lại</a>
+        </div>
+    </div>
+</div>

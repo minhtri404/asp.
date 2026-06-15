@@ -1,0 +1,20 @@
+@model CMS.Data.Entities.Customer
+
+@{
+    Layout = "_LayoutAdmin";
+    ViewData["Title"] = "Chi tiết khách hàng";
+}
+
+<div class="card shadow-sm">
+    <div class="card-header bg-info text-white"><h5 class="mb-0">CHI TIẾT KHÁCH HÀNG</h5></div>
+    <div class="card-body">
+        <p><strong>ID:</strong> @Model.Id</p>
+        <p><strong>Họ tên:</strong> @Model.FullName</p>
+        <p><strong>Email:</strong> @Model.Email</p>
+        <p><strong>SĐT:</strong> @Model.Phone</p>
+        <p><strong>Địa chỉ:</strong> @Model.Address</p>
+        <p><strong>Số đơn hàng:</strong> @(Model.Orders?.Count ?? 0)</p>
+        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Sửa</a>
+        <a asp-action="Index" class="btn btn-secondary">Quay lại</a>
+    </div>
+</div>

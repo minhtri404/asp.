@@ -1,44 +1,19 @@
-﻿@model CMS.Data.Entities.Category
+@model CMS.Data.Entities.Category
 
-<div class="container mt-4">
-    <div class="card shadow-sm border-danger">
-        <div class="card-header bg-danger text-white">
-            <h4 class="mb-0">XÁC NHẬN XÓA DANH MỤC</h4>
-        </div>
+@{
+    Layout = "_LayoutAdmin";
+    ViewData["Title"] = "Xóa danh mục";
+}
 
-        <div class="card-body">
-            <p class="fs-5">
-                Bạn có chắc chắn muốn xóa danh mục này không?
-            </p>
-
-            <table class="table table-bordered">
-                <tr>
-                    <th style="width: 180px;">ID</th>
-                    <td>@Model.Id</td>
-                </tr>
-
-                <tr>
-                    <th>Tên danh mục</th>
-                    <td><strong>@Model.Name</strong></td>
-                </tr>
-
-                <tr>
-                    <th>Mô tả</th>
-                    <td>@Model.Description</td>
-                </tr>
-            </table>
-
-            <form method="post" action="/Category/DeleteConfirmed">
-                <input type="hidden" name="Id" value="@Model.Id" />
-
-                <button type="submit" class="btn btn-danger">
-                    Xác nhận xóa
-                </button>
-
-                <a href="/Category" class="btn btn-secondary">
-                    Hủy
-                </a>
-            </form>
-        </div>
+<div class="card shadow-sm border-danger">
+    <div class="card-header bg-danger text-white"><h5 class="mb-0">XÁC NHẬN XÓA DANH MỤC</h5></div>
+    <div class="card-body">
+        <div class="alert alert-warning">Bạn có chắc chắn muốn xóa danh mục <strong>@Model.Name</strong>?</div>
+        <p><strong>ID:</strong> @Model.Id</p>
+        <p><strong>Mô tả:</strong> @Model.Description</p>
+        <form asp-action="Delete" asp-route-id="@Model.Id" method="post">
+            <button type="submit" class="btn btn-danger">Xác nhận xóa</button>
+            <a asp-action="Index" class="btn btn-secondary">Hủy</a>
+        </form>
     </div>
 </div>

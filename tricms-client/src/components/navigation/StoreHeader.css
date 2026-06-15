@@ -1,0 +1,243 @@
+.store-header {
+    position: relative;
+    z-index: 20;
+    background: #fff;
+    text-align: left;
+}
+
+.store-header__promo {
+    display: flex;
+    min-height: 58px;
+    align-items: center;
+    justify-content: center;
+    gap: 28px;
+    padding: 8px 16px;
+    color: #fff;
+    background: #050505;
+    font-size: 18px;
+    line-height: 1.2;
+}
+
+.store-header__promo strong {
+    color: #f4db9a;
+    text-transform: uppercase;
+}
+
+.store-header__promo a {
+    color: #fff;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.store-header__main {
+    background: #09189c;
+}
+
+.store-header__main-inner {
+    display: grid;
+    grid-template-columns: auto auto minmax(220px, 1fr) auto;
+    align-items: center;
+    gap: 16px;
+    min-height: 92px;
+}
+
+.store-header__brand {
+    color: #fff;
+    font-size: 36px;
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: 0;
+    text-decoration: none;
+}
+
+.store-header__category {
+    position: relative;
+}
+
+.store-header__category-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 48px;
+    padding: 0 18px;
+    border: 0;
+    border-radius: 6px;
+    color: #fff;
+    background: rgba(255, 255, 255, 0.18);
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.store-header__category-button:hover,
+.store-header__category-button[aria-expanded="true"] {
+    background: rgba(255, 255, 255, 0.28);
+}
+
+.store-header__hamburger {
+    font-size: 28px;
+    line-height: 1;
+}
+
+.store-header__category-panel {
+    position: absolute;
+    top: calc(100% + 12px);
+    left: 0;
+    width: 258px;
+    z-index: 50;
+}
+
+.store-header__search {
+    display: grid;
+    grid-template-columns: 1fr 56px;
+    min-width: 0;
+    overflow: hidden;
+    border-radius: 7px;
+    background: #fff;
+}
+
+.store-header__search input {
+    width: 100%;
+    min-width: 0;
+    height: 50px;
+    padding: 0 16px;
+    border: 0;
+    color: #111;
+    background: #fff;
+    font-size: 15px;
+}
+
+.store-header__search input:focus {
+    outline: none;
+}
+
+.store-header__search button {
+    border: 0;
+    color: #050505;
+    background: #fff;
+    font-size: 34px;
+    line-height: 1;
+}
+
+.store-header__actions {
+    display: flex;
+    align-items: stretch;
+    gap: 12px;
+}
+
+.store-header__action,
+.store-header__account {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 58px;
+    padding: 8px 10px;
+    border: 0;
+    border-radius: 6px;
+    color: #fff;
+    background: transparent;
+    font: 600 14px/1.25 "Segoe UI Variable", "Segoe UI", Inter, Roboto, Arial, sans-serif;
+    text-align: left;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.store-header__action > span:first-child,
+.store-header__account > span:first-child {
+    font-size: 27px;
+    line-height: 1;
+}
+
+.store-header__action:hover,
+.store-header__account:hover {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.16);
+}
+
+.store-header__account {
+    background: rgba(255, 255, 255, 0.18);
+}
+
+.store-header__nav {
+    border-bottom: 1px solid #e8e8e8;
+    background: #fff;
+}
+
+.store-header__nav-inner {
+    display: flex;
+    min-height: 54px;
+    align-items: center;
+    gap: 34px;
+    overflow-x: auto;
+}
+
+.store-header__nav a,
+.store-header__nav span {
+    flex: 0 0 auto;
+    color: #050505;
+    font-size: 15px;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.store-header__nav a.active,
+.store-header__nav a:hover {
+    color: #09189c;
+}
+
+@media (max-width: 1199.98px) {
+    .store-header__main-inner {
+        grid-template-columns: auto auto minmax(200px, 1fr);
+    }
+
+    .store-header__actions {
+        grid-column: 1 / -1;
+        justify-content: space-between;
+        padding-bottom: 12px;
+    }
+}
+
+@media (max-width: 767.98px) {
+    .store-header__promo {
+        min-height: 44px;
+        gap: 12px;
+        font-size: 15px;
+    }
+
+    .store-header__main-inner {
+        grid-template-columns: 1fr auto;
+        gap: 10px;
+        padding-block: 12px;
+    }
+
+    .store-header__brand {
+        font-size: 30px;
+    }
+
+    .store-header__category {
+        order: 3;
+    }
+
+    .store-header__search {
+        grid-column: 1 / -1;
+        order: 4;
+    }
+
+    .store-header__actions {
+        display: none;
+    }
+
+    .store-header__category-panel {
+        right: 0;
+        left: auto;
+        width: min(88vw, 258px);
+    }
+
+    .store-header__nav-inner {
+        gap: 22px;
+    }
+
+    .store-header__nav a,
+    .store-header__nav span {
+        font-size: 16px;
+    }
+}

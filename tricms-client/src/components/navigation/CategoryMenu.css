@@ -1,0 +1,95 @@
+.category-menu {
+    width: min(100%, 258px);
+    overflow: hidden;
+    padding: 6px 0;
+    border-radius: 8px;
+    background: #fff;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.16);
+    text-align: left;
+}
+
+.category-menu__item {
+    display: grid;
+    grid-template-columns: 24px 1fr 18px;
+    align-items: center;
+    width: 100%;
+    min-height: 41px;
+    gap: 8px;
+    padding: 8px 10px 8px 15px;
+    border: 0;
+    color: #171717;
+    background: transparent;
+    font: 600 15px/1.3 "Segoe UI Variable", "Segoe UI", Inter, Roboto, Arial, sans-serif;
+    text-decoration: none;
+    transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.category-menu__item:hover,
+.category-menu__item--active,
+.category-menu__item--highlight {
+    color: #111;
+    background: #ededed;
+}
+
+.category-menu__item:focus-visible {
+    outline: 2px solid #0d6efd;
+    outline-offset: -2px;
+}
+
+.category-menu__item:disabled,
+.category-menu__item--muted {
+    cursor: default;
+}
+
+.category-menu__icon {
+    width: 20px;
+    height: 20px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.7;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.category-menu__label {
+    min-width: 0;
+    overflow-wrap: anywhere;
+}
+
+.category-menu__chevron {
+    justify-self: end;
+    font-size: 25px;
+    line-height: 1;
+    font-weight: 500;
+}
+
+.category-section {
+    display: flex;
+    justify-content: flex-start;
+}
+
+.shop-layout {
+    display: grid;
+    grid-template-columns: 258px minmax(0, 1fr);
+    align-items: start;
+    gap: 24px;
+}
+
+.shop-layout__sidebar {
+    position: sticky;
+    top: 16px;
+}
+
+@media (max-width: 991.98px) {
+    .category-menu {
+        width: 100%;
+    }
+
+    .shop-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .shop-layout__sidebar {
+        position: static;
+    }
+}

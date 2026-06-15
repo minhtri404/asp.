@@ -1,0 +1,43 @@
+@model CMS.Data.Entities.Order
+
+@{
+    Layout = "_LayoutAdmin";
+    ViewData["Title"] = "Chi tiết đơn hàng";
+    var total = Model.OrderDetails?.Sum(od => od.Quantity * od.UnitPrice) ?? 0;
+}
+
+<div class="card shadow-sm mb-3">
+    <div class="card-header bg-info text-white"><h5 class="mb-0">CHI TIẾT ĐƠN HÀNG #@Model.Id</h5></div>
+    <div class="card-body">
+        <p><strong>Khách hàng:</strong> @Model.Customer?.FullName</p>
+        <p><strong>Ngày đặt:</strong> @Model.OrderDate.ToString("dd/MM/yyyy HH:mm")</p>
+        <p><strong>Trạng thái:</strong> @Model.Status</p>
+        <p><strong>Ghi chú:</strong> @Model.Notes</p>
+        <p><strong>Tổng tiền:</strong> @total.ToString("N0") VNĐ</p>
+    </div>
+</div>
+
+<table class="table table-bordered bg-white shadow-sm">
+    <thead class="table-light">
+        <tr>
+            <th>Sản phẩm</th>
+            <th>Số lượng</th>
+            <th>Đơn giá</th>
+            <th>Thành tiền</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.OrderDetails ?? new List<CMS.Data.Entities.OrderDetail>())
+        {
+            <tr>
+                <td>@item.Product?.Name</td>
+                <td>@item.Quantity</td>
+                <td>@item.UnitPrice.ToString("N0") VNĐ</td>
+                <td>@((item.Quantity * item.UnitPrice).ToString("N0")) VNĐ</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Sửa trạng thái</a>
+<a asp-action="Index" class="btn btn-secondary">Quay lại</a>

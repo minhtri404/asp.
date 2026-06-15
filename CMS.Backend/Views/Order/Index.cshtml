@@ -1,56 +1,61 @@
-﻿@model IEnumerable<CMS.Data.Entities.Order>
+@model IEnumerable<CMS.Data.Entities.Order>
 
 @{
     Layout = "_LayoutAdmin";
-    ViewData["Title"] = "Quản lý đơn hàng";
+    ViewData["Title"] = "Đơn hàng";
 }
+@if (User.IsInRole("Editor"))
+{
+        <div class="alert alert-danger">
+            Editor chỉ được thao tác Bài viết. Các mục khác chỉ được xem, không được thêm, sửa hoặc xóa.
+        </div>
+}
+<h2 class="text-primary mb-3">DANH SÁCH ĐƠN HÀNG</h2>
 
-    <table class="table table-bordered table-hover shadow-sm">
-        <thead class="table-light">
+<table class="table table-bordered table-hover shadow-sm bg-white">
+    <thead class="table-light">
+        <tr>
+            <th>ID</th>
+            <th>Khách hàng</th>
+            <th>Ngày đặt</th>
+            <th>Tổng tiền</th>
+            <th>Trạng thái</th>
+            <th>Ghi chú</th>
+            <th style="width:250px;">Thao tác</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            var total = item.OrderDetails?.Sum(od => od.Quantity * od.UnitPrice) ?? 0;
             <tr>
-                <th>ID</th>
-                <th>Ngày đặt</th>
-                <th>Khách hàng</th>
-                <th>Trạng thái</th>
-                <th>Ghi chú</th>
-                <th>Thao tác</th>
+                <td>@item.Id</td>
+                <td>@item.Customer?.FullName</td>
+                <td>@item.OrderDate.ToString("dd/MM/yyyy HH:mm")</td>
+                <td>@total.ToString("N0") VNĐ</td>
+                <td>
+                    @if (item.Status == 0)
+                    { <span class="badge bg-warning text-dark">Chờ duyệt</span> }
+                    else if (item.Status == 1)
+                    { <span class="badge bg-primary">Đang giao</span> }
+                    else
+                    { <span class="badge bg-success">Đã xong</span> }
+                </td>
+                <td>@item.Notes</td>
+               <td>
+        <a href="/Order/Details/@item.Id" class="btn btn-sm btn-outline-info">
+            Chi tiết
+        </a>
+
+        <a href="/Order/Edit/@item.Id" class="btn btn-sm btn-outline-warning">
+            Sửa
+        </a>
+
+        <a href="/Order/Delete/@item.Id" class="btn btn-sm btn-outline-danger">
+            Xóa
+        </a>
+    </td>
             </tr>
-        </thead>
-
-        <tbody>
-            @foreach (var item in Model)
-            {
-                    <tr>
-                        <td>@item.Id</td>
-                        <td>@item.OrderDate.ToString("dd/MM/yyyy")</td>
-
-                        <td>
-                        @(item.Customer != null ? item.Customer.FullName : "Không có khách hàng")
-                        </td>
-
-                        <td>
-                        @if (item.Status == 0)
-                        {
-                                    <span class="badge bg-warning text-dark">Chờ duyệt</span>
-                        }
-                        else if (item.Status == 1)
-                        {
-                                    <span class="badge bg-info text-dark">Đang giao</span>
-                        }
-                        else
-                        {
-                                    <span class="badge bg-success">Đã xong</span>
-                        }
-                        </td>
-
-                        <td>@item.Notes</td>
-
-                        <td>
-                            <button class="btn btn-sm btn-outline-warning">Sửa</button>
-                            <button class="btn btn-sm btn-outline-danger">Xóa</button>
-                        </td>
-                    </tr>
-            }
-        </tbody>
-    </table>
-</div>
+        }
+    </tbody>
+</table>

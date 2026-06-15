@@ -2,13 +2,15 @@
 //Truong Minh Tri
 //CCQ2311D
 //Ngay tao:16/5/2026
-//Mo ta: Controller xu ly dang nhap, dang xuat va phan quyen Admin
+//Mo ta: Controller xu ly dang nhap, dang xuat, dang ky va phan quyen Admin
 
 using CMS.Backend.ViewModels;
 using CMS.Data;
+using CMS.Data.Entities;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
 namespace CMS.Backend.Controllers
@@ -36,9 +38,12 @@ namespace CMS.Backend.Controllers
                 return View(model);
             }
 
-            var user = _context.Users.FirstOrDefault(u =>
-                u.Username == model.Username &&
-                u.PasswordHash == model.Password
+            var username = model.Username.Trim().ToLower();
+            var password = model.Password.Trim();
+
+            var user = await _context.Users.FirstOrDefaultAsync(u =>
+                u.Username.ToLower().Trim() == username &&
+                u.PasswordHash == password
             );
 
             if (user == null)
@@ -46,11 +51,13 @@ namespace CMS.Backend.Controllers
                 ModelState.AddModelError("", "Tên đăng nhập hoặc mật khẩu không đúng");
                 return View(model);
             }
+
             if (user.Role != "Admin" && user.Role != "Editor")
             {
                 ModelState.AddModelError("", "Tài khoản này không có quyền truy cập trang quản trị");
                 return View(model);
             }
+
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.Name, user.Username),
@@ -74,9 +81,55 @@ namespace CMS.Backend.Controllers
                 new ClaimsPrincipal(claimsIdentity),
                 authProperties
             );
-
             TempData["SuccessMessage"] = "Đăng nhập thành công";
+
             return RedirectToAction("Index", "Category");
+        }
+
+        [HttpGet]
+        public IActionResult Register()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Register(string username, string fullName, string password, string role)
+        {
+            if (string.IsNullOrWhiteSpace(username) ||
+                string.IsNullOrWhiteSpace(fullName) ||
+                string.IsNullOrWhiteSpace(password))
+            {
+                ViewBag.Error = "Vui lòng nhập đầy đủ thông tin";
+                return View();
+            }
+
+            username = username.Trim().ToLower();
+            fullName = fullName.Trim();
+            password = password.Trim();
+
+            var exists = await _context.Users
+                .AnyAsync(x => x.Username.ToLower().Trim() == username);
+
+            if (exists)
+            {
+                ViewBag.Error = "Tên đăng nhập đã tồn tại";
+                return View();
+            }
+
+            var user = new User
+            {
+                Username = username,
+                FullName = fullName,
+                PasswordHash = password,
+                Role = string.IsNullOrWhiteSpace(role) ? "Editor" : role
+            };
+
+            _context.Users.Add(user);
+            await _context.SaveChangesAsync();
+
+            TempData["SuccessMessage"] = "Tạo tài khoản quản trị thành công";
+            return RedirectToAction("Login");
         }
 
         public async Task<IActionResult> Logout()

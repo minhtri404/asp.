@@ -1,23 +1,18 @@
 .vs/
 bin/
 obj/
+
 *.user
 *.suo
-*.rsuser
+*.cache
 
-[Dd]ebug/
-[Rr]elease/
-x64/
-x86/
+CMS.Backend/bin/
+CMS.Backend/obj/
+CMS.Data/bin/
+CMS.Data/obj/
+
+tricms-client/node_modules/
+tricms-client/dist/
+tricms-client/.env
 
 *.log
-
-node_modules/
-dist/
-build/
-
-*.mdf
-*.ldf
-
-.DS_Store
-Thumbs.db
