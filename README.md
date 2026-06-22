@@ -680,45 +680,55 @@ Cách xử lý:
 
 ---
 
-## 11. Hướng dẫn chạy dự án
+## 11. Hướng dẫn chạy Backend và Frontend
 
-### Bước 1: Clone source code
+### 11.1. Chuẩn bị
+
+- Visual Studio 2022 với workload **ASP.NET and web development**.
+- .NET 8 SDK và SQL Server LocalDB.
+- Node.js và npm để chạy Frontend.
+
+Clone source code:
 
 ```bash
 git clone https://github.com/minhtri404/asp..git
+cd asp.
 ```
 
-### Bước 2: Mở Solution
+### 11.2. Chạy Backend bằng F5
 
-Mở file:
-
-```text
-TriCMS_Solution.sln
-```
-
-bằng Visual Studio 2022.
-
-### Bước 3: Kiểm tra chuỗi kết nối
-
-Mở file:
-
-```text
-CMS.Backend/appsettings.json
-```
-
-Kiểm tra `DefaultConnection`.
-
-### Bước 4: Tạo database nếu chưa có
-
-Mở Package Manager Console và chạy:
+1. Mở `TriCMS_Solution.sln` bằng Visual Studio 2022.
+2. Trong Solution Explorer, nhấn chuột phải vào `CMS.Backend` và chọn **Set as Startup Project**.
+3. Kiểm tra `DefaultConnection` trong `CMS.Backend/appsettings.json`. Cấu hình mặc định dùng SQL Server LocalDB với database `TriCMS_DB`.
+4. Nếu database chưa được tạo, mở **Tools > NuGet Package Manager > Package Manager Console** và chạy:
 
 ```powershell
-Update-Database -StartupProject CMS.Backend
+Update-Database -Project CMS.data -StartupProject CMS.Backend
 ```
 
-### Bước 5: Chạy dự án
+5. Nhấn **F5** để chạy Backend.
 
-Chọn `CMS.Backend` làm Startup Project, sau đó bấm `F5`.
+Backend mặc định chạy tại `https://localhost:13766` hoặc `http://localhost:13767`. Giữ Backend đang chạy trong lúc sử dụng Frontend.
+
+### 11.3. Chạy Frontend bằng npm start
+
+Frontend ReactJS nằm trên nhánh `buoi7`. Chuyển sang nhánh này trước khi chạy:
+
+```bash
+git checkout buoi7
+cd tricms-client
+npm install
+npm start
+```
+
+Mở địa chỉ Vite hiển thị trong terminal, thường là `http://localhost:5173`.
+
+Frontend chuyển tiếp request `/api` tới Backend tại `http://localhost:13767`. Có thể đổi địa chỉ Backend bằng biến môi trường:
+
+```powershell
+$env:VITE_API_ORIGIN="http://localhost:13767"
+npm start
+```
 
 ---
 
@@ -733,6 +743,7 @@ Chọn `CMS.Backend` làm Startup Project, sau đó bấm `F5`.
 | `buoi-4` | Giao diện quản trị MVC, Layout, Menu |
 | `buoi-5` | Validation, thông báo, xử lý dữ liệu an toàn hơn |
 | `buoi-6` | Chuẩn bị Web API và hướng phát triển Full-stack |
+| `buoi7` | Hoàn thiện Backend Web API và Frontend ReactJS |
 
 ---
 
