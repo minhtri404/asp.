@@ -1,18 +1,22 @@
+# Visual Studio and .NET
 .vs/
+**/.vs/
 bin/
 obj/
-
+**/bin/
+**/obj/
 *.user
 *.suo
 *.cache
 
-CMS.Backend/bin/
-CMS.Backend/obj/
-CMS.Data/bin/
-CMS.Data/obj/
+# Node.js and Vite
+node_modules/
+**/node_modules/
+dist/
+**/dist/
 
-tricms-client/node_modules/
-tricms-client/dist/
-tricms-client/.env
-
+# Local environment and logs
+.env
+.env.*
+!.env.example
 *.log
