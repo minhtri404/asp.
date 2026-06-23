@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using CMS.Data;
 using CMS.Data.Entities;
 using CMS.Backend.Models;
+using CMS.Backend.Services;
 using Microsoft.AspNetCore.Authorization;
 
 namespace CMS.Backend.Controllers
@@ -18,10 +19,12 @@ namespace CMS.Backend.Controllers
     public class PostController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IWebHostEnvironment _environment;
 
-        public PostController(ApplicationDbContext context)
+        public PostController(ApplicationDbContext context, IWebHostEnvironment environment)
         {
             _context = context;
+            _environment = environment;
         }
 
         public async Task<IActionResult> Index(string? keyword, int? categoryId, string? sortOrder, int page = 1, int pageSize = 9)
@@ -84,26 +87,17 @@ namespace CMS.Backend.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(Post model, IFormFile? uploadImage)
+        public async Task<IActionResult> Create(Post model, IFormFile? uploadImage)
         {
-            if (uploadImage != null && uploadImage.Length > 0)
+            try
             {
-                string folder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
-
-                if (!Directory.Exists(folder))
-                {
-                    Directory.CreateDirectory(folder);
-                }
-
-                string fileName = Guid.NewGuid().ToString() + Path.GetExtension(uploadImage.FileName);
-                string filePath = Path.Combine(folder, fileName);
-
-                using (var stream = new FileStream(filePath, FileMode.Create))
-                {
-                    uploadImage.CopyTo(stream);
-                }
-
-                model.ImageUrl = "/uploads/" + fileName;
+                model.ImageUrl = await ImageUploadService.SaveImageAsync(uploadImage, _environment) ?? string.Empty;
+            }
+            catch (InvalidOperationException ex)
+            {
+                ModelState.AddModelError("ImageUrl", ex.Message);
+                ViewBag.CategoryList = new SelectList(_context.Categories, "Id", "Name", model.CategoryId);
+                return View(model);
             }
 
             if (model.CreatedDate == default)
@@ -134,26 +128,20 @@ namespace CMS.Backend.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(Post model, IFormFile? uploadImage)
+        public async Task<IActionResult> Edit(Post model, IFormFile? uploadImage)
         {
             if (uploadImage != null && uploadImage.Length > 0)
             {
-                string folder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
-
-                if (!Directory.Exists(folder))
+                try
                 {
-                    Directory.CreateDirectory(folder);
+                    model.ImageUrl = await ImageUploadService.SaveImageAsync(uploadImage, _environment) ?? string.Empty;
                 }
-
-                string fileName = Guid.NewGuid().ToString() + Path.GetExtension(uploadImage.FileName);
-                string filePath = Path.Combine(folder, fileName);
-
-                using (var stream = new FileStream(filePath, FileMode.Create))
+                catch (InvalidOperationException ex)
                 {
-                    uploadImage.CopyTo(stream);
+                    ModelState.AddModelError("ImageUrl", ex.Message);
+                    ViewBag.CategoryList = new SelectList(_context.Categories, "Id", "Name", model.CategoryId);
+                    return View(model);
                 }
-
-                model.ImageUrl = "/uploads/" + fileName;
             }
             else
             {
@@ -164,6 +152,8 @@ namespace CMS.Backend.Controllers
                     model.ImageUrl = oldPost.ImageUrl;
                 }
             }
+
+            model.ImageUrl ??= string.Empty;
 
             _context.Posts.Update(model);
             _context.SaveChanges();

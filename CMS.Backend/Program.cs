@@ -1,7 +1,9 @@
 ﻿using CMS.Data;
 using Microsoft.EntityFrameworkCore;
 using CMS.Backend.DataSeed;
+using CMS.Backend.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.Extensions.FileProviders;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -32,6 +34,8 @@ builder.Services.AddCors(options =>
 var app = builder.Build();
 
 await CategoryProductSeeder.SeedAsync(app.Services);
+var uploadRootPath = ImageUploadService.GetUploadRootPath(app.Environment);
+Directory.CreateDirectory(uploadRootPath);
 
 if (app.Environment.IsDevelopment())
 {
@@ -43,6 +47,11 @@ else
     app.UseHsts();
 }
 app.UseStaticFiles();
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(uploadRootPath),
+    RequestPath = "/uploads"
+});
 
 app.UseRouting();
 

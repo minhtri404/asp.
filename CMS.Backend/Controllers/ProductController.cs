@@ -7,6 +7,7 @@
 using CMS.Data;
 using CMS.Data.Entities;
 using CMS.Backend.Models;
+using CMS.Backend.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -18,10 +19,12 @@ namespace CMS.Backend.Controllers
     public class ProductController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IWebHostEnvironment _environment;
 
-        public ProductController(ApplicationDbContext context)
+        public ProductController(ApplicationDbContext context, IWebHostEnvironment environment)
         {
             _context = context;
+            _environment = environment;
         }
 
         private bool IsEditor()
@@ -126,7 +129,17 @@ namespace CMS.Backend.Controllers
                 return View(model);
             }
 
-            model.ImageUrl = await SaveImageAsync(uploadImage);
+            try
+            {
+                model.ImageUrl = await ImageUploadService.SaveImageAsync(uploadImage, _environment);
+            }
+            catch (InvalidOperationException ex)
+            {
+                ModelState.AddModelError("ImageUrl", ex.Message);
+                LoadCategoryProductList(model.CategoryProductId);
+                return View(model);
+            }
+
             model.Description ??= string.Empty;
 
             _context.Products.Add(model);
@@ -181,7 +194,18 @@ namespace CMS.Backend.Controllers
                 return NotFound();
             }
 
-            var newImageUrl = await SaveImageAsync(uploadImage);
+            string? newImageUrl;
+            try
+            {
+                newImageUrl = await ImageUploadService.SaveImageAsync(uploadImage, _environment);
+            }
+            catch (InvalidOperationException ex)
+            {
+                ModelState.AddModelError("ImageUrl", ex.Message);
+                LoadCategoryProductList(model.CategoryProductId);
+                return View(model);
+            }
+
             model.ImageUrl = string.IsNullOrEmpty(newImageUrl) ? oldProduct.ImageUrl : newImageUrl;
             model.Description ??= string.Empty;
 
@@ -251,28 +275,5 @@ namespace CMS.Backend.Controllers
                 selectedId);
         }
 
-        private async Task<string?> SaveImageAsync(IFormFile? uploadImage)
-        {
-            if (uploadImage == null || uploadImage.Length == 0)
-            {
-                return null;
-            }
-
-            var folder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
-            if (!Directory.Exists(folder))
-            {
-                Directory.CreateDirectory(folder);
-            }
-
-            var fileName = Guid.NewGuid() + Path.GetExtension(uploadImage.FileName);
-            var filePath = Path.Combine(folder, fileName);
-
-            using (var stream = new FileStream(filePath, FileMode.Create))
-            {
-                await uploadImage.CopyToAsync(stream);
-            }
-
-            return "/uploads/" + fileName;
-        }
     }
 }

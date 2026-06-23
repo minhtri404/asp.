@@ -20,3 +20,7 @@ dist/
 .env.*
 !.env.example
 *.log
+
+# Runtime uploads
+TriCMS.Uploads/
+CMS.Backend/wwwroot/uploads/
