@@ -61,9 +61,16 @@ function PostDetail() {
                         </span>
                     </div>
 
-                    <p style={{ whiteSpace: "pre-line", fontSize: "18px", lineHeight: "1.8" }}>
-                        {post.content || "Bài viết chưa có nội dung."}
-                    </p>
+                    {post.content ? (
+                        <div
+                            className="post-content"
+                            dangerouslySetInnerHTML={{ __html: post.content }}
+                        />
+                    ) : (
+                        <p className="post-content">
+                            Bài viết chưa có nội dung.
+                        </p>
+                    )}
                 </div>
             </div>
         </div>

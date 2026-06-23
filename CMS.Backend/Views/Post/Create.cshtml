@@ -24,7 +24,7 @@
 
                     <div class="mb-3">
                         <label asp-for="Content" class="form-label fw-bold">Nội dung bài viết</label>
-                        <textarea asp-for="Content" class="form-control" rows="12" placeholder="Nhập nội dung bài viết"></textarea>
+                        <textarea asp-for="Content" class="form-control rich-text-editor" rows="12" placeholder="Nhập nội dung bài viết"></textarea>
                         <span asp-validation-for="Content" class="text-danger"></span>
                     </div>
                 </div>
@@ -65,4 +65,5 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <partial name="_RichTextEditorScripts" />
 }

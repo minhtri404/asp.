@@ -7,6 +7,16 @@ import { getImageUrl } from "../../utils/media";
 
 const POST_PAGE_SIZE = 6;
 
+function getPostSummary(content) {
+    if (!content) {
+        return "Bài viết chưa có nội dung.";
+    }
+
+    const text = content.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
+
+    return text.length > 140 ? `${text.substring(0, 140)}...` : text;
+}
+
 function News() {
     const [posts, setPosts] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -110,9 +120,7 @@ function News() {
                                 <h5 className="fw-bold">{post.title}</h5>
 
                                 <p className="text-muted flex-grow-1">
-                                    {post.content
-                                        ? `${post.content.substring(0, 140)}...`
-                                        : "Bài viết chưa có nội dung."}
+                                    {getPostSummary(post.content)}
                                 </p>
 
                                 <Link to={`/post/${post.id}`} className="btn btn-outline-primary">

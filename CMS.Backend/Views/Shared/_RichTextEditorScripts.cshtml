@@ -1,0 +1,41 @@
+<style>
+    .ck-editor__editable_inline {
+        min-height: 360px;
+    }
+</style>
+
+<script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        document.querySelectorAll(".rich-text-editor").forEach(function (textarea) {
+            ClassicEditor
+                .create(textarea, {
+                    toolbar: [
+                        "heading",
+                        "|",
+                        "bold",
+                        "italic",
+                        "link",
+                        "bulletedList",
+                        "numberedList",
+                        "blockQuote",
+                        "|",
+                        "undo",
+                        "redo"
+                    ]
+                })
+                .then(function (editor) {
+                    var form = textarea.closest("form");
+
+                    if (form) {
+                        form.addEventListener("submit", function () {
+                            textarea.value = editor.getData();
+                        });
+                    }
+                })
+                .catch(function (error) {
+                    console.error("Không thể khởi tạo trình soạn thảo:", error);
+                });
+        });
+    });
+</script>

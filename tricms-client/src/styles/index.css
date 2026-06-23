@@ -253,6 +253,24 @@ body {
   background: #fff;
 }
 
+.post-content {
+  font-size: 18px;
+  line-height: 1.8;
+}
+
+.post-content p,
+.post-content ul,
+.post-content ol,
+.post-content blockquote {
+  margin-bottom: 1rem;
+}
+
+.post-content blockquote {
+  padding-left: 16px;
+  border-left: 4px solid #0d6efd;
+  color: #495057;
+}
+
 .about-page {
   display: flex;
   flex-direction: column;
