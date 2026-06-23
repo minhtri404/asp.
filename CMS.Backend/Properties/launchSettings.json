@@ -2,11 +2,12 @@
   "profiles": {
     "CMS.Backend": {
       "commandName": "Project",
-      "launchBrowser": true,
+      "dotnetRunMessages": true,
+      "launchBrowser": false,
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
-      "applicationUrl": "https://localhost:13766;http://localhost:13767"
+      "applicationUrl": "http://localhost:13767;https://localhost:13766"
     }
   }
 }

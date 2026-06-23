@@ -68,4 +68,18 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Account}/{action=Login}/{id?}");
 
-app.Run();
+app.Lifetime.ApplicationStopping.Register(() =>
+    app.Logger.LogWarning("TriCMS backend is stopping."));
+
+app.Lifetime.ApplicationStopped.Register(() =>
+    app.Logger.LogWarning("TriCMS backend has stopped."));
+
+try
+{
+    app.Run();
+}
+catch (Exception ex)
+{
+    app.Logger.LogCritical(ex, "TriCMS backend stopped because of an unhandled exception.");
+    throw;
+}
