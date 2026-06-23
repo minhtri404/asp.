@@ -8,6 +8,7 @@ namespace CMS.Backend.Services
         {
             ".jpg",
             ".jpeg",
+            ".jfif",
             ".png",
             ".gif",
             ".webp"
@@ -19,29 +20,38 @@ namespace CMS.Backend.Services
             return Path.Combine(localAppData, "TriCMS", "Uploads");
         }
 
-        public static async Task<string?> SaveImageAsync(IFormFile? uploadImage, IWebHostEnvironment environment)
+        public static async Task<ImageUploadResult> SaveImageAsync(IFormFile? uploadImage, IWebHostEnvironment environment)
         {
             if (uploadImage == null || uploadImage.Length == 0)
             {
-                return null;
+                return new ImageUploadResult(null, null);
             }
 
             var extension = Path.GetExtension(uploadImage.FileName);
             if (string.IsNullOrWhiteSpace(extension) || !AllowedExtensions.Contains(extension))
             {
-                throw new InvalidOperationException("Chỉ cho phép tải lên file ảnh JPG, PNG, GIF hoặc WEBP.");
+                return new ImageUploadResult(null, "Chỉ cho phép tải lên file ảnh JPG, PNG, GIF hoặc WEBP.");
             }
 
-            var folder = GetUploadRootPath(environment);
-            Directory.CreateDirectory(folder);
+            try
+            {
+                var folder = GetUploadRootPath(environment);
+                Directory.CreateDirectory(folder);
 
-            var fileName = $"{Guid.NewGuid():N}{extension.ToLowerInvariant()}";
-            var filePath = Path.Combine(folder, fileName);
+                var fileName = $"{Guid.NewGuid():N}{extension.ToLowerInvariant()}";
+                var filePath = Path.Combine(folder, fileName);
 
-            await using var stream = new FileStream(filePath, FileMode.CreateNew);
-            await uploadImage.CopyToAsync(stream);
+                await using var stream = new FileStream(filePath, FileMode.CreateNew);
+                await uploadImage.CopyToAsync(stream);
 
-            return "/uploads/" + fileName;
+                return new ImageUploadResult("/uploads/" + fileName, null);
+            }
+            catch (Exception ex)
+            {
+                return new ImageUploadResult(null, "Không thể lưu ảnh: " + ex.Message);
+            }
         }
     }
+
+    public sealed record ImageUploadResult(string? Url, string? ErrorMessage);
 }

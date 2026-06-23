@@ -129,16 +129,15 @@ namespace CMS.Backend.Controllers
                 return View(model);
             }
 
-            try
+            var imageResult = await ImageUploadService.SaveImageAsync(uploadImage, _environment);
+            if (!string.IsNullOrEmpty(imageResult.ErrorMessage))
             {
-                model.ImageUrl = await ImageUploadService.SaveImageAsync(uploadImage, _environment);
-            }
-            catch (Exception ex) when (ex is InvalidOperationException || ex is IOException || ex is UnauthorizedAccessException)
-            {
-                ModelState.AddModelError("ImageUrl", ex.Message);
+                ModelState.AddModelError("ImageUrl", imageResult.ErrorMessage);
                 LoadCategoryProductList(model.CategoryProductId);
                 return View(model);
             }
+
+            model.ImageUrl = imageResult.Url;
 
             model.Description ??= string.Empty;
 
@@ -194,19 +193,15 @@ namespace CMS.Backend.Controllers
                 return NotFound();
             }
 
-            string? newImageUrl;
-            try
+            var imageResult = await ImageUploadService.SaveImageAsync(uploadImage, _environment);
+            if (!string.IsNullOrEmpty(imageResult.ErrorMessage))
             {
-                newImageUrl = await ImageUploadService.SaveImageAsync(uploadImage, _environment);
-            }
-            catch (Exception ex) when (ex is InvalidOperationException || ex is IOException || ex is UnauthorizedAccessException)
-            {
-                ModelState.AddModelError("ImageUrl", ex.Message);
+                ModelState.AddModelError("ImageUrl", imageResult.ErrorMessage);
                 LoadCategoryProductList(model.CategoryProductId);
                 return View(model);
             }
 
-            model.ImageUrl = string.IsNullOrEmpty(newImageUrl) ? oldProduct.ImageUrl : newImageUrl;
+            model.ImageUrl = string.IsNullOrEmpty(imageResult.Url) ? oldProduct.ImageUrl : imageResult.Url;
             model.Description ??= string.Empty;
 
             _context.Products.Update(model);

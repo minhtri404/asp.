@@ -104,24 +104,33 @@ namespace CMS.Backend.Controllers
                 return View(model);
             }
 
-            try
+            var imageResult = await ImageUploadService.SaveImageAsync(uploadImage, _environment);
+            if (!string.IsNullOrEmpty(imageResult.ErrorMessage))
             {
-                model.ImageUrl = await ImageUploadService.SaveImageAsync(uploadImage, _environment) ?? string.Empty;
-            }
-            catch (Exception ex) when (ex is InvalidOperationException || ex is IOException || ex is UnauthorizedAccessException)
-            {
-                ModelState.AddModelError("ImageUrl", ex.Message);
+                ModelState.AddModelError("ImageUrl", imageResult.ErrorMessage);
                 ViewBag.CategoryList = new SelectList(_context.Categories, "Id", "Name", model.CategoryId);
                 return View(model);
             }
+
+            model.ImageUrl = imageResult.Url ?? string.Empty;
 
             if (model.CreatedDate == default)
             {
                 model.CreatedDate = DateTime.Now;
             }
 
-            _context.Posts.Add(model);
-            await _context.SaveChangesAsync();
+            try
+            {
+                _context.Posts.Add(model);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError(string.Empty, "Không thể lưu bài viết. Vui lòng kiểm tra lại dữ liệu hoặc thử lại.");
+                ModelState.AddModelError(string.Empty, ex.Message);
+                ViewBag.CategoryList = new SelectList(_context.Categories, "Id", "Name", model.CategoryId);
+                return View(model);
+            }
 
             TempData["SuccessMessage"] = "Thêm bài viết thành công";
             return RedirectToAction("Index");
@@ -150,16 +159,15 @@ namespace CMS.Backend.Controllers
 
             if (uploadImage != null && uploadImage.Length > 0)
             {
-                try
+                var imageResult = await ImageUploadService.SaveImageAsync(uploadImage, _environment);
+                if (!string.IsNullOrEmpty(imageResult.ErrorMessage))
                 {
-                    model.ImageUrl = await ImageUploadService.SaveImageAsync(uploadImage, _environment) ?? string.Empty;
-                }
-                catch (Exception ex) when (ex is InvalidOperationException || ex is IOException || ex is UnauthorizedAccessException)
-                {
-                    ModelState.AddModelError("ImageUrl", ex.Message);
+                    ModelState.AddModelError("ImageUrl", imageResult.ErrorMessage);
                     ViewBag.CategoryList = new SelectList(_context.Categories, "Id", "Name", model.CategoryId);
                     return View(model);
                 }
+
+                model.ImageUrl = imageResult.Url ?? string.Empty;
             }
             else
             {
@@ -181,8 +189,18 @@ namespace CMS.Backend.Controllers
                 return View(model);
             }
 
-            _context.Posts.Update(model);
-            await _context.SaveChangesAsync();
+            try
+            {
+                _context.Posts.Update(model);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError(string.Empty, "Không thể cập nhật bài viết. Vui lòng kiểm tra lại dữ liệu hoặc thử lại.");
+                ModelState.AddModelError(string.Empty, ex.Message);
+                ViewBag.CategoryList = new SelectList(_context.Categories, "Id", "Name", model.CategoryId);
+                return View(model);
+            }
 
             TempData["SuccessMessage"] = "Sửa bài viết thành công";
             return RedirectToAction("Index");
