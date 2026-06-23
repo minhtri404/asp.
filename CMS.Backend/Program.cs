@@ -1,5 +1,6 @@
 ﻿using CMS.Data;
 using Microsoft.EntityFrameworkCore;
+using CMS.Backend.DataSeed;
 using Microsoft.AspNetCore.Authentication.Cookies;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -29,6 +30,8 @@ builder.Services.AddCors(options =>
 });
 
 var app = builder.Build();
+
+await CategoryProductSeeder.SeedAsync(app.Services);
 
 if (app.Environment.IsDevelopment())
 {
