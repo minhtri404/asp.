@@ -22,9 +22,12 @@
 
             <hr />
 
-            <div class="text-center mb-4">
-                <img src="@Model.ImageUrl" class="img-fluid rounded shadow" alt="@Model.Title" style="max-height:400px; object-fit:cover;">
-            </div>
+            @if (!string.IsNullOrWhiteSpace(Model.ImageUrl))
+            {
+                <div class="text-center mb-4">
+                    <img src="@Model.ImageUrl" class="img-fluid rounded shadow" alt="@Model.Title" style="max-height:400px; object-fit:cover;">
+                </div>
+            }
 
             <div class="fs-5">
                 @Model.Content

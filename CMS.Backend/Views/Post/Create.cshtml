@@ -1,44 +1,68 @@
-﻿@model CMS.Data.Entities.Category
+@model CMS.Data.Entities.Post
 
 @{
     Layout = "_LayoutAdmin";
-    ViewData["Title"] = "Sửa danh mục";
+    ViewData["Title"] = "Thêm bài viết";
 }
 
 <div class="card shadow-sm">
-    <div class="card-header bg-warning">
-        <h5 class="mb-0">SỬA DANH MỤC</h5>
+    <div class="card-header bg-success text-white">
+        <h5 class="mb-0">THÊM BÀI VIẾT</h5>
     </div>
 
     <div class="card-body">
-        <form asp-action="Edit" method="post">
+        <form asp-action="Create" method="post" enctype="multipart/form-data">
             <div asp-validation-summary="All" class="text-danger mb-3"></div>
 
-            <input type="hidden" asp-for="Id" />
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="mb-3">
+                        <label asp-for="Title" class="form-label fw-bold">Tiêu đề bài viết</label>
+                        <input asp-for="Title" class="form-control" placeholder="Nhập tiêu đề bài viết" />
+                        <span asp-validation-for="Title" class="text-danger"></span>
+                    </div>
 
-            <div class="mb-3">
-                <label asp-for="Name" class="form-label fw-bold">Tên danh mục</label>
-                <input asp-for="Name" class="form-control" placeholder="Nhập tên danh mục" />
-                <span asp-validation-for="Name" class="text-danger"></span>
+                    <div class="mb-3">
+                        <label asp-for="Content" class="form-label fw-bold">Nội dung bài viết</label>
+                        <textarea asp-for="Content" class="form-control" rows="12" placeholder="Nhập nội dung bài viết"></textarea>
+                        <span asp-validation-for="Content" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <label asp-for="CategoryId" class="form-label fw-bold">Danh mục</label>
+                        <select asp-for="CategoryId" class="form-select" asp-items="ViewBag.CategoryList">
+                            <option value="">-- Chọn danh mục --</option>
+                        </select>
+                        <span asp-validation-for="CategoryId" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Ảnh đại diện</label>
+                        <input type="file" name="uploadImage" class="form-control" accept=".jpg,.jpeg,.png,.gif,.webp" />
+                        <span asp-validation-for="ImageUrl" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="CreatedDate" class="form-label fw-bold">Ngày đăng</label>
+                        <input asp-for="CreatedDate" type="datetime-local" class="form-control" />
+                        <span asp-validation-for="CreatedDate" class="text-danger"></span>
+                    </div>
+
+                    <button type="submit" class="btn btn-success w-100 mb-2">
+                        <i class="bi bi-save"></i> Lưu bài viết
+                    </button>
+
+                    <a asp-action="Index" class="btn btn-secondary w-100">
+                        Quay lại
+                    </a>
+                </div>
             </div>
-
-            <div class="mb-3">
-                <label asp-for="Description" class="form-label fw-bold">Mô tả</label>
-                <textarea asp-for="Description" class="form-control" rows="4" placeholder="Nhập mô tả"></textarea>
-                <span asp-validation-for="Description" class="text-danger"></span>
-            </div>
-
-            <button type="submit" class="btn btn-primary">
-                <i class="bi bi-save"></i> Cập nhật
-            </button>
-
-            <a asp-action="Index" class="btn btn-secondary">
-                Quay lại
-            </a>
         </form>
     </div>
 </div>
 
 @section Scripts {
-        <partial name="_ValidationScriptsPartial" />
+    <partial name="_ValidationScriptsPartial" />
 }

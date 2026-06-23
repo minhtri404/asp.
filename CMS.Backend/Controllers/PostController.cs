@@ -82,13 +82,28 @@ namespace CMS.Backend.Controllers
         public IActionResult Create()
         {
             ViewBag.CategoryList = new SelectList(_context.Categories, "Id", "Name");
-            return View();
+            return View(new Post
+            {
+                CreatedDate = DateTime.Now
+            });
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Post model, IFormFile? uploadImage)
         {
+            model.ImageUrl ??= string.Empty;
+            ModelState.Remove(nameof(Post.ImageUrl));
+            ModelState.Remove(nameof(Post.Category));
+
+            ValidatePostForm(model);
+
+            if (!ModelState.IsValid)
+            {
+                ViewBag.CategoryList = new SelectList(_context.Categories, "Id", "Name", model.CategoryId);
+                return View(model);
+            }
+
             try
             {
                 model.ImageUrl = await ImageUploadService.SaveImageAsync(uploadImage, _environment) ?? string.Empty;
@@ -106,7 +121,7 @@ namespace CMS.Backend.Controllers
             }
 
             _context.Posts.Add(model);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
             TempData["SuccessMessage"] = "Thêm bài viết thành công";
             return RedirectToAction("Index");
@@ -130,6 +145,9 @@ namespace CMS.Backend.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(Post model, IFormFile? uploadImage)
         {
+            ModelState.Remove(nameof(Post.ImageUrl));
+            ModelState.Remove(nameof(Post.Category));
+
             if (uploadImage != null && uploadImage.Length > 0)
             {
                 try
@@ -155,8 +173,16 @@ namespace CMS.Backend.Controllers
 
             model.ImageUrl ??= string.Empty;
 
+            ValidatePostForm(model);
+
+            if (!ModelState.IsValid)
+            {
+                ViewBag.CategoryList = new SelectList(_context.Categories, "Id", "Name", model.CategoryId);
+                return View(model);
+            }
+
             _context.Posts.Update(model);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
             TempData["SuccessMessage"] = "Sửa bài viết thành công";
             return RedirectToAction("Index");
@@ -175,6 +201,24 @@ namespace CMS.Backend.Controllers
             }
 
             return RedirectToAction("Index");
+        }
+
+        private void ValidatePostForm(Post model)
+        {
+            if (string.IsNullOrWhiteSpace(model.Title))
+            {
+                ModelState.AddModelError(nameof(Post.Title), "Tiêu đề bài viết không được để trống.");
+            }
+
+            if (string.IsNullOrWhiteSpace(model.Content))
+            {
+                ModelState.AddModelError(nameof(Post.Content), "Nội dung bài viết không được để trống.");
+            }
+
+            if (model.CategoryId <= 0 || !_context.Categories.Any(c => c.Id == model.CategoryId))
+            {
+                ModelState.AddModelError(nameof(Post.CategoryId), "Vui lòng chọn danh mục bài viết.");
+            }
         }
     }
 }
