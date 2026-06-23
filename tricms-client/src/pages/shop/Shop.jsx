@@ -5,16 +5,22 @@ import {
     getProducts,
     getProductsByCategory
 } from "../../services/catalogService";
+import Pagination from "../../components/pagination/Pagination";
 import { formatMoney } from "../../utils/formatters";
 import { getImageUrl } from "../../utils/media";
+
+const PRODUCT_PAGE_SIZE = 12;
 
 function Shop() {
     const [categories, setCategories] = useState([]);
     const [products, setProducts] = useState([]);
+    const [productsLoaded, setProductsLoaded] = useState(false);
     const [searchParams, setSearchParams] = useSearchParams();
 
     const categoryId = searchParams.get("category");
     const keyword = searchParams.get("keyword") || "";
+    const pageValue = Number(searchParams.get("page") || 1);
+    const currentPage = Number.isInteger(pageValue) && pageValue > 0 ? pageValue : 1;
     const selectedCategory = categories.find((item) => Number(item.id) === Number(categoryId));
 
     const filteredProducts = products.filter((item) => {
@@ -28,6 +34,25 @@ function Shop() {
         return text.includes(value);
     });
 
+    const totalPages = Math.max(1, Math.ceil(filteredProducts.length / PRODUCT_PAGE_SIZE));
+    const safePage = Math.min(currentPage, totalPages);
+    const paginatedProducts = filteredProducts.slice(
+        (safePage - 1) * PRODUCT_PAGE_SIZE,
+        safePage * PRODUCT_PAGE_SIZE
+    );
+
+    const updatePage = (page) => {
+        const nextParams = new URLSearchParams(searchParams);
+
+        if (page <= 1) {
+            nextParams.delete("page");
+        } else {
+            nextParams.set("page", String(page));
+        }
+
+        setSearchParams(nextParams);
+    };
+
     const loadCategories = useCallback(async () => {
         try {
             const res = await getCategoriesProducts();
@@ -38,6 +63,8 @@ function Shop() {
     }, []);
 
     const loadProducts = useCallback(async () => {
+        setProductsLoaded(false);
+
         try {
             let res;
 
@@ -50,6 +77,8 @@ function Shop() {
             setProducts(res.data);
         } catch (error) {
             console.error("Lỗi tải sản phẩm:", error);
+        } finally {
+            setProductsLoaded(true);
         }
     }, [categoryId]);
 
@@ -62,6 +91,13 @@ function Shop() {
         // eslint-disable-next-line react-hooks/set-state-in-effect
         loadProducts();
     }, [loadProducts]);
+
+    useEffect(() => {
+        if (productsLoaded && currentPage !== safePage) {
+            updatePage(safePage);
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [currentPage, productsLoaded, safePage]);
 
     return (
         <div className="shop-page">
@@ -95,7 +131,7 @@ function Shop() {
             </div>
 
             <div className="row">
-                {filteredProducts.map((item) => (
+                {paginatedProducts.map((item) => (
                     <div className="col-sm-6 col-lg-3 mb-4" key={item.id}>
                         <div className="card h-100 shadow-sm product-card">
                             <img
@@ -128,6 +164,13 @@ function Shop() {
                     Không có sản phẩm phù hợp.
                 </div>
             )}
+
+            <Pagination
+                currentPage={safePage}
+                totalItems={filteredProducts.length}
+                pageSize={PRODUCT_PAGE_SIZE}
+                onPageChange={updatePage}
+            />
         </div>
     );
 }

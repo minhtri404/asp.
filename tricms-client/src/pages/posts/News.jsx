@@ -1,13 +1,37 @@
 import { useCallback, useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
+import Pagination from "../../components/pagination/Pagination";
 import { getPosts } from "../../services/postService";
 import { formatDate } from "../../utils/formatters";
 import { getImageUrl } from "../../utils/media";
+
+const POST_PAGE_SIZE = 6;
 
 function News() {
     const [posts, setPosts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [message, setMessage] = useState("");
+    const [searchParams, setSearchParams] = useSearchParams();
+    const pageValue = Number(searchParams.get("page") || 1);
+    const currentPage = Number.isInteger(pageValue) && pageValue > 0 ? pageValue : 1;
+    const totalPages = Math.max(1, Math.ceil(posts.length / POST_PAGE_SIZE));
+    const safePage = Math.min(currentPage, totalPages);
+    const paginatedPosts = posts.slice(
+        (safePage - 1) * POST_PAGE_SIZE,
+        safePage * POST_PAGE_SIZE
+    );
+
+    const updatePage = (page) => {
+        const nextParams = new URLSearchParams(searchParams);
+
+        if (page <= 1) {
+            nextParams.delete("page");
+        } else {
+            nextParams.set("page", String(page));
+        }
+
+        setSearchParams(nextParams);
+    };
 
     const loadPosts = useCallback(async () => {
         setLoading(true);
@@ -28,6 +52,13 @@ function News() {
         // eslint-disable-next-line react-hooks/set-state-in-effect
         loadPosts();
     }, [loadPosts]);
+
+    useEffect(() => {
+        if (!loading && currentPage !== safePage) {
+            updatePage(safePage);
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [currentPage, loading, safePage]);
 
     return (
         <div>
@@ -61,7 +92,7 @@ function News() {
             )}
 
             <div className="row">
-                {posts.map((post) => (
+                {paginatedPosts.map((post) => (
                     <div className="col-md-6 col-lg-4 mb-4" key={post.id}>
                         <div className="card h-100 shadow-sm">
                             <img
@@ -92,6 +123,13 @@ function News() {
                     </div>
                 ))}
             </div>
+
+            <Pagination
+                currentPage={safePage}
+                totalItems={posts.length}
+                pageSize={POST_PAGE_SIZE}
+                onPageChange={updatePage}
+            />
         </div>
     );
 }

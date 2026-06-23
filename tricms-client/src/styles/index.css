@@ -241,6 +241,18 @@ body {
   background: #fff;
 }
 
+.catalog-pagination {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 4px;
+  padding: 14px;
+  border-radius: 8px;
+  background: #fff;
+}
+
 .about-page {
   display: flex;
   flex-direction: column;
