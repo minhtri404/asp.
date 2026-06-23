@@ -1,16 +1,63 @@
-@model IEnumerable<CMS.Data.Entities.OrderDetail>
+@model CMS.Backend.Models.PaginatedList<CMS.Data.Entities.OrderDetail>
 
 @{
     Layout = "_LayoutAdmin";
     ViewData["Title"] = "Chi tiết đơn hàng";
 }
+
 @if (User.IsInRole("Editor"))
 {
-        <div class="alert alert-danger">
-            Editor chỉ được thao tác Bài viết. Các mục khác chỉ được xem, không được thêm, sửa hoặc xóa.
-        </div>
-}s
+    <div class="alert alert-danger">
+        Editor chỉ được thao tác Bài viết. Các mục khác chỉ được xem, không được thêm, sửa hoặc xóa.
+    </div>
+}
+
 <h2 class="text-primary mb-3">DANH SÁCH CHI TIẾT ĐƠN HÀNG</h2>
+
+<form method="get" class="card card-body shadow-sm mb-3">
+    <div class="row g-2">
+        <div class="col-md-3">
+            <input name="keyword" value="@ViewBag.Keyword" class="form-control" placeholder="Tìm mã, khách hàng, sản phẩm" />
+        </div>
+        <div class="col-md-3">
+            <select name="productId" asp-items="ViewBag.ProductList" class="form-select">
+                <option value="">Tất cả sản phẩm</option>
+            </select>
+        </div>
+        <div class="col-md-2">
+            <select name="status" class="form-select">
+                <option value="">Tất cả trạng thái đơn</option>
+                <option value="0" selected="@(ViewBag.Status == 0)">Chờ duyệt</option>
+                <option value="1" selected="@(ViewBag.Status == 1)">Đang giao</option>
+                <option value="2" selected="@(ViewBag.Status == 2)">Đã xong</option>
+            </select>
+        </div>
+        <div class="col-md-2">
+            <select name="sortOrder" class="form-select">
+                <option value="">Mới nhất</option>
+                <option value="quantity_asc" selected="@(ViewBag.SortOrder == "quantity_asc")">Số lượng tăng</option>
+                <option value="quantity_desc" selected="@(ViewBag.SortOrder == "quantity_desc")">Số lượng giảm</option>
+                <option value="price_asc" selected="@(ViewBag.SortOrder == "price_asc")">Đơn giá tăng</option>
+                <option value="price_desc" selected="@(ViewBag.SortOrder == "price_desc")">Đơn giá giảm</option>
+                <option value="total_asc" selected="@(ViewBag.SortOrder == "total_asc")">Thành tiền tăng</option>
+                <option value="total_desc" selected="@(ViewBag.SortOrder == "total_desc")">Thành tiền giảm</option>
+            </select>
+        </div>
+        <div class="col-md-1">
+            <select name="pageSize" class="form-select">
+                <option value="10" selected="@((int)ViewBag.PageSize == 10)">10</option>
+                <option value="20" selected="@((int)ViewBag.PageSize == 20)">20</option>
+                <option value="50" selected="@((int)ViewBag.PageSize == 50)">50</option>
+            </select>
+        </div>
+        <div class="col-md-1 d-flex gap-2">
+            <button class="btn btn-primary flex-fill">Lọc</button>
+        </div>
+    </div>
+    <div class="mt-2">
+        <a asp-action="Index" class="btn btn-outline-secondary btn-sm">Xóa bộ lọc</a>
+    </div>
+</form>
 
 <table class="table table-bordered table-hover shadow-sm bg-white">
     <thead class="table-light">
@@ -44,3 +91,10 @@
         }
     </tbody>
 </table>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">Không có dữ liệu phù hợp.</div>
+}
+
+@await Html.PartialAsync("_AdminPager", Model)

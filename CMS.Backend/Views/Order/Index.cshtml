@@ -1,16 +1,62 @@
-@model IEnumerable<CMS.Data.Entities.Order>
+@model CMS.Backend.Models.PaginatedList<CMS.Data.Entities.Order>
 
 @{
     Layout = "_LayoutAdmin";
     ViewData["Title"] = "Đơn hàng";
 }
+
 @if (User.IsInRole("Editor"))
 {
-        <div class="alert alert-danger">
-            Editor chỉ được thao tác Bài viết. Các mục khác chỉ được xem, không được thêm, sửa hoặc xóa.
-        </div>
+    <div class="alert alert-danger">
+        Editor chỉ được thao tác Bài viết. Các mục khác chỉ được xem, không được thêm, sửa hoặc xóa.
+    </div>
 }
+
 <h2 class="text-primary mb-3">DANH SÁCH ĐƠN HÀNG</h2>
+
+<form method="get" class="card card-body shadow-sm mb-3">
+    <div class="row g-2">
+        <div class="col-md-3">
+            <input name="keyword" value="@ViewBag.Keyword" class="form-control" placeholder="Tìm mã đơn, khách hàng, ghi chú" />
+        </div>
+        <div class="col-md-2">
+            <select name="status" class="form-select">
+                <option value="">Tất cả trạng thái</option>
+                <option value="0" selected="@(ViewBag.Status == 0)">Chờ duyệt</option>
+                <option value="1" selected="@(ViewBag.Status == 1)">Đang giao</option>
+                <option value="2" selected="@(ViewBag.Status == 2)">Đã xong</option>
+            </select>
+        </div>
+        <div class="col-md-2">
+            <input type="date" name="fromDate" value="@ViewBag.FromDate" class="form-control" />
+        </div>
+        <div class="col-md-2">
+            <input type="date" name="toDate" value="@ViewBag.ToDate" class="form-control" />
+        </div>
+        <div class="col-md-1">
+            <select name="pageSize" class="form-select">
+                <option value="10" selected="@((int)ViewBag.PageSize == 10)">10</option>
+                <option value="20" selected="@((int)ViewBag.PageSize == 20)">20</option>
+                <option value="50" selected="@((int)ViewBag.PageSize == 50)">50</option>
+            </select>
+        </div>
+        <div class="col-md-2 d-flex gap-2">
+            <button class="btn btn-primary flex-fill">Lọc</button>
+            <a asp-action="Index" class="btn btn-outline-secondary">Xóa</a>
+        </div>
+    </div>
+    <div class="row g-2 mt-2">
+        <div class="col-md-3">
+            <select name="sortOrder" class="form-select">
+                <option value="">Ngày mới nhất</option>
+                <option value="date_asc" selected="@(ViewBag.SortOrder == "date_asc")">Ngày cũ nhất</option>
+                <option value="total_asc" selected="@(ViewBag.SortOrder == "total_asc")">Tổng tiền tăng</option>
+                <option value="total_desc" selected="@(ViewBag.SortOrder == "total_desc")">Tổng tiền giảm</option>
+                <option value="status_asc" selected="@(ViewBag.SortOrder == "status_asc")">Trạng thái</option>
+            </select>
+        </div>
+    </div>
+</form>
 
 <table class="table table-bordered table-hover shadow-sm bg-white">
     <thead class="table-light">
@@ -35,27 +81,32 @@
                 <td>@total.ToString("N0") VNĐ</td>
                 <td>
                     @if (item.Status == 0)
-                    { <span class="badge bg-warning text-dark">Chờ duyệt</span> }
+                    {
+                        <span class="badge bg-warning text-dark">Chờ duyệt</span>
+                    }
                     else if (item.Status == 1)
-                    { <span class="badge bg-primary">Đang giao</span> }
+                    {
+                        <span class="badge bg-primary">Đang giao</span>
+                    }
                     else
-                    { <span class="badge bg-success">Đã xong</span> }
+                    {
+                        <span class="badge bg-success">Đã xong</span>
+                    }
                 </td>
                 <td>@item.Notes</td>
-               <td>
-        <a href="/Order/Details/@item.Id" class="btn btn-sm btn-outline-info">
-            Chi tiết
-        </a>
-
-        <a href="/Order/Edit/@item.Id" class="btn btn-sm btn-outline-warning">
-            Sửa
-        </a>
-
-        <a href="/Order/Delete/@item.Id" class="btn btn-sm btn-outline-danger">
-            Xóa
-        </a>
-    </td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-info">Chi tiết</a>
+                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-warning">Sửa</a>
+                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger">Xóa</a>
+                </td>
             </tr>
         }
     </tbody>
 </table>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">Không có dữ liệu phù hợp.</div>
+}
+
+@await Html.PartialAsync("_AdminPager", Model)

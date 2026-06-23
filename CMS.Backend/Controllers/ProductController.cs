@@ -6,6 +6,7 @@
 
 using CMS.Data;
 using CMS.Data.Entities;
+using CMS.Backend.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -34,7 +35,7 @@ namespace CMS.Backend.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        public async Task<IActionResult> Index(string? keyword, decimal? minPrice, decimal? maxPrice, string? sortOrder)
+        public async Task<IActionResult> Index(string? keyword, int? categoryProductId, decimal? minPrice, decimal? maxPrice, string? sortOrder, int page = 1, int pageSize = 9)
         {
             var query = _context.Products
                 .Include(p => p.CategoryProduct)
@@ -44,7 +45,13 @@ namespace CMS.Backend.Controllers
             {
                 query = query.Where(p =>
                     p.Name.Contains(keyword) ||
-                    (p.Description != null && p.Description.Contains(keyword)));
+                    (p.Description != null && p.Description.Contains(keyword)) ||
+                    (p.CategoryProduct != null && p.CategoryProduct.Name.Contains(keyword)));
+            }
+
+            if (categoryProductId.HasValue)
+            {
+                query = query.Where(p => p.CategoryProductId == categoryProductId.Value);
             }
 
             if (minPrice.HasValue)
@@ -67,11 +74,15 @@ namespace CMS.Backend.Controllers
             };
 
             ViewBag.Keyword = keyword;
+            ViewBag.CategoryProductId = categoryProductId;
             ViewBag.MinPrice = minPrice;
             ViewBag.MaxPrice = maxPrice;
             ViewBag.SortOrder = sortOrder;
+            ViewBag.PageSize = pageSize;
+            ViewBag.CategoryProductList = new SelectList(_context.CategoriesProducts.OrderBy(c => c.Name), "Id", "Name", categoryProductId);
 
-            return View(await query.ToListAsync());
+            var data = await PaginatedList<Product>.CreateAsync(query.AsNoTracking(), page, pageSize);
+            return View(data);
         }
 
         public async Task<IActionResult> Details(int id)

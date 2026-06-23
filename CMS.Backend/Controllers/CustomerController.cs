@@ -6,6 +6,7 @@
 
 using CMS.Data;
 using CMS.Data.Entities;
+using CMS.Backend.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -33,7 +34,7 @@ namespace CMS.Backend.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        public async Task<IActionResult> Index(string? keyword)
+        public async Task<IActionResult> Index(string? keyword, string? sortOrder, int page = 1, int pageSize = 10)
         {
             var query = _context.Customers.AsQueryable();
 
@@ -46,8 +47,20 @@ namespace CMS.Backend.Controllers
                     (c.Address != null && c.Address.Contains(keyword)));
             }
 
+            query = sortOrder switch
+            {
+                "name_desc" => query.OrderByDescending(c => c.FullName),
+                "email_asc" => query.OrderBy(c => c.Email),
+                "email_desc" => query.OrderByDescending(c => c.Email),
+                _ => query.OrderBy(c => c.FullName)
+            };
+
             ViewBag.Keyword = keyword;
-            return View(await query.OrderBy(c => c.FullName).ToListAsync());
+            ViewBag.SortOrder = sortOrder;
+            ViewBag.PageSize = pageSize;
+
+            var data = await PaginatedList<Customer>.CreateAsync(query.AsNoTracking(), page, pageSize);
+            return View(data);
         }
 
         public async Task<IActionResult> Details(int id)

@@ -1,20 +1,47 @@
-@model IEnumerable<CMS.Data.Entities.CategoryProduct>
+@model CMS.Backend.Models.PaginatedList<CMS.Data.Entities.CategoryProduct>
 
 @{
     Layout = "_LayoutAdmin";
     ViewData["Title"] = "Danh mục sản phẩm";
 }
+
 @if (User.IsInRole("Editor"))
 {
-        <div class="alert alert-danger">
-            Editor chỉ được thao tác Bài viết. Các mục khác chỉ được xem, không được thêm, sửa hoặc xóa.
-        </div>
+    <div class="alert alert-danger">
+        Editor chỉ được thao tác Bài viết. Các mục khác chỉ được xem, không được thêm, sửa hoặc xóa.
+    </div>
 }
 
 <div class="d-flex justify-content-between align-items-center mb-3">
     <h2 class="text-primary mb-0">DANH MỤC SẢN PHẨM</h2>
     <a asp-action="Create" class="btn btn-success"><i class="bi bi-plus-circle"></i> Thêm danh mục</a>
 </div>
+
+<form method="get" class="card card-body shadow-sm mb-3">
+    <div class="row g-2">
+        <div class="col-md-5">
+            <input name="keyword" value="@ViewBag.Keyword" class="form-control" placeholder="Tìm tên hoặc mô tả" />
+        </div>
+        <div class="col-md-3">
+            <select name="sortOrder" class="form-select">
+                <option value="">Tên A-Z</option>
+                <option value="name_desc" selected="@(ViewBag.SortOrder == "name_desc")">Tên Z-A</option>
+                <option value="id_desc" selected="@(ViewBag.SortOrder == "id_desc")">Mới thêm trước</option>
+            </select>
+        </div>
+        <div class="col-md-2">
+            <select name="pageSize" class="form-select">
+                <option value="10" selected="@((int)ViewBag.PageSize == 10)">10 dòng</option>
+                <option value="20" selected="@((int)ViewBag.PageSize == 20)">20 dòng</option>
+                <option value="50" selected="@((int)ViewBag.PageSize == 50)">50 dòng</option>
+            </select>
+        </div>
+        <div class="col-md-2 d-flex gap-2">
+            <button class="btn btn-primary flex-fill">Lọc</button>
+            <a asp-action="Index" class="btn btn-outline-secondary">Xóa</a>
+        </div>
+    </div>
+</form>
 
 <table class="table table-bordered table-hover shadow-sm bg-white">
     <thead class="table-light">
@@ -41,3 +68,10 @@
         }
     </tbody>
 </table>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">Không có dữ liệu phù hợp.</div>
+}
+
+@await Html.PartialAsync("_AdminPager", Model)

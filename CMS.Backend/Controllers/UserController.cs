@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using CMS.Data;
 using CMS.Data.Entities;
+using CMS.Backend.Models;
 using Microsoft.AspNetCore.Authorization;
 
 namespace CMS.Backend.Controllers
@@ -33,9 +34,37 @@ namespace CMS.Backend.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index(string? keyword, string? role, string? sortOrder, int page = 1, int pageSize = 10)
         {
-            var users = _context.Users.ToList();
+            var query = _context.Users.AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(keyword))
+            {
+                query = query.Where(u =>
+                    u.Username.Contains(keyword) ||
+                    u.FullName.Contains(keyword) ||
+                    u.Role.Contains(keyword));
+            }
+
+            if (!string.IsNullOrWhiteSpace(role))
+            {
+                query = query.Where(u => u.Role == role);
+            }
+
+            query = sortOrder switch
+            {
+                "name_desc" => query.OrderByDescending(u => u.FullName),
+                "role_asc" => query.OrderBy(u => u.Role).ThenBy(u => u.FullName),
+                "role_desc" => query.OrderByDescending(u => u.Role).ThenBy(u => u.FullName),
+                _ => query.OrderBy(u => u.FullName)
+            };
+
+            ViewBag.Keyword = keyword;
+            ViewBag.Role = role;
+            ViewBag.SortOrder = sortOrder;
+            ViewBag.PageSize = pageSize;
+
+            var users = await PaginatedList<User>.CreateAsync(query.AsNoTracking(), page, pageSize);
             return View(users);
         }
 

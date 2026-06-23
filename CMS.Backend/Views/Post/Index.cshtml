@@ -1,4 +1,4 @@
-﻿@model IEnumerable<CMS.Data.Entities.Post>
+@model CMS.Backend.Models.PaginatedList<CMS.Data.Entities.Post>
 
 @{
     Layout = "_LayoutAdmin";
@@ -6,50 +6,87 @@
 }
 
 <div class="d-flex justify-content-between align-items-center mb-3">
-    <h2 class="text-dark">DANH SÁCH BÀI VIẾT</h2>
-
+    <h2 class="text-dark mb-0">DANH SÁCH BÀI VIẾT</h2>
     <a asp-action="Create" class="btn btn-success">
         <i class="bi bi-plus-circle"></i> Thêm bài viết mới
     </a>
 </div>
 
+<form method="get" class="card card-body shadow-sm mb-3">
+    <div class="row g-2">
+        <div class="col-md-4">
+            <input name="keyword" value="@ViewBag.Keyword" class="form-control" placeholder="Tìm tiêu đề, nội dung, danh mục" />
+        </div>
+        <div class="col-md-3">
+            <select name="categoryId" asp-items="ViewBag.CategoryList" class="form-select">
+                <option value="">Tất cả danh mục</option>
+            </select>
+        </div>
+        <div class="col-md-2">
+            <select name="sortOrder" class="form-select">
+                <option value="">Mới nhất</option>
+                <option value="date_asc" selected="@(ViewBag.SortOrder == "date_asc")">Cũ nhất</option>
+                <option value="title_asc" selected="@(ViewBag.SortOrder == "title_asc")">Tiêu đề A-Z</option>
+                <option value="title_desc" selected="@(ViewBag.SortOrder == "title_desc")">Tiêu đề Z-A</option>
+            </select>
+        </div>
+        <div class="col-md-1">
+            <select name="pageSize" class="form-select">
+                <option value="9" selected="@((int)ViewBag.PageSize == 9)">9</option>
+                <option value="18" selected="@((int)ViewBag.PageSize == 18)">18</option>
+                <option value="36" selected="@((int)ViewBag.PageSize == 36)">36</option>
+            </select>
+        </div>
+        <div class="col-md-2 d-flex gap-2">
+            <button class="btn btn-primary flex-fill">Lọc</button>
+            <a asp-action="Index" class="btn btn-outline-secondary">Xóa</a>
+        </div>
+    </div>
+</form>
+
 <div class="row">
     @foreach (var item in Model)
     {
-            <div class="col-md-4 mb-3">
-                <div class="card shadow-sm h-100">
-                    <img src="@item.ImageUrl" class="card-img-top" alt="Thumbnail" style="height:180px; object-fit:cover;">
+        <div class="col-md-4 mb-3">
+            <div class="card shadow-sm h-100">
+                @if (!string.IsNullOrWhiteSpace(item.ImageUrl))
+                {
+                    <img src="@item.ImageUrl" class="card-img-top" alt="@item.Title" style="height:180px; object-fit:cover;">
+                }
+                else
+                {
+                    <div class="bg-light d-flex align-items-center justify-content-center" style="height:180px;">Chưa có ảnh</div>
+                }
 
-                    <div class="card-body">
-                        <span class="badge bg-info text-dark">
+                <div class="card-body">
+                    <span class="badge bg-info text-dark">
                         @(item.Category != null ? item.Category.Name : "Chưa có danh mục")
-                        </span>
+                    </span>
 
-                        <h5 class="card-title text-primary mt-2">@item.Title</h5>
+                    <h5 class="card-title text-primary mt-2">@item.Title</h5>
 
-                        <p class="card-text text-truncate">
+                    <p class="card-text text-truncate">
                         @Html.Raw(item.Content)
-                        </p>
+                    </p>
 
-                        <p class="text-muted small">
-                            Ngày đăng: @item.CreatedDate.ToString("dd/MM/yyyy")
-                        </p>
+                    <p class="text-muted small">
+                        Ngày đăng: @item.CreatedDate.ToString("dd/MM/yyyy")
+                    </p>
 
-                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary">
-                            Xem chi tiết
-                        </a>
-
-                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-warning">
-                            Sửa
-                        </a>
-
-                        <a asp-action="Delete" asp-route-id="@item.Id"
-                           class="btn btn-sm btn-outline-danger"
-                           onclick="return confirm('Bạn có chắc chắn muốn xóa bài viết này không?')">
-                            Xóa
-                        </a>
-                    </div>
+                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary">Xem chi tiết</a>
+                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-warning">Sửa</a>
+                    <a asp-action="Delete" asp-route-id="@item.Id"
+                       class="btn btn-sm btn-outline-danger"
+                       onclick="return confirm('Bạn có chắc chắn muốn xóa bài viết này không?')">Xóa</a>
                 </div>
             </div>
+        </div>
     }
 </div>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">Không có dữ liệu phù hợp.</div>
+}
+
+@await Html.PartialAsync("_AdminPager", Model)

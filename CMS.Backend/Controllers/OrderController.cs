@@ -5,6 +5,8 @@
 //Mo ta: Controller quan tri don hang, Admin duoc thao tac, Editor chi duoc xem
 
 using CMS.Data;
+using CMS.Data.Entities;
+using CMS.Backend.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -32,15 +34,56 @@ namespace CMS.Backend.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string? keyword, int? status, DateTime? fromDate, DateTime? toDate, string? sortOrder, int page = 1, int pageSize = 10)
         {
-            var orders = await _context.Orders
+            var query = _context.Orders
                 .Include(o => o.Customer)
                 .Include(o => o.OrderDetails)
                 .ThenInclude(od => od.Product)
-                .OrderByDescending(o => o.OrderDate)
-                .ToListAsync();
+                .AsQueryable();
 
+            if (!string.IsNullOrWhiteSpace(keyword))
+            {
+                query = query.Where(o =>
+                    o.Id.ToString().Contains(keyword) ||
+                    (o.Customer != null && (
+                        o.Customer.FullName.Contains(keyword) ||
+                        o.Customer.Email.Contains(keyword))) ||
+                    (o.Notes != null && o.Notes.Contains(keyword)));
+            }
+
+            if (status.HasValue)
+            {
+                query = query.Where(o => o.Status == status.Value);
+            }
+
+            if (fromDate.HasValue)
+            {
+                query = query.Where(o => o.OrderDate >= fromDate.Value.Date);
+            }
+
+            if (toDate.HasValue)
+            {
+                query = query.Where(o => o.OrderDate < toDate.Value.Date.AddDays(1));
+            }
+
+            query = sortOrder switch
+            {
+                "date_asc" => query.OrderBy(o => o.OrderDate),
+                "total_asc" => query.OrderBy(o => o.OrderDetails!.Sum(od => od.Quantity * od.UnitPrice)),
+                "total_desc" => query.OrderByDescending(o => o.OrderDetails!.Sum(od => od.Quantity * od.UnitPrice)),
+                "status_asc" => query.OrderBy(o => o.Status).ThenByDescending(o => o.OrderDate),
+                _ => query.OrderByDescending(o => o.OrderDate)
+            };
+
+            ViewBag.Keyword = keyword;
+            ViewBag.Status = status;
+            ViewBag.FromDate = fromDate?.ToString("yyyy-MM-dd");
+            ViewBag.ToDate = toDate?.ToString("yyyy-MM-dd");
+            ViewBag.SortOrder = sortOrder;
+            ViewBag.PageSize = pageSize;
+
+            var orders = await PaginatedList<Order>.CreateAsync(query.AsNoTracking(), page, pageSize);
             return View(orders);
         }
 

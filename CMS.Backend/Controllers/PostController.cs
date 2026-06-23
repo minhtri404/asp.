@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using CMS.Data;
 using CMS.Data.Entities;
+using CMS.Backend.Models;
 using Microsoft.AspNetCore.Authorization;
 
 namespace CMS.Backend.Controllers
@@ -23,13 +24,40 @@ namespace CMS.Backend.Controllers
             _context = context;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index(string? keyword, int? categoryId, string? sortOrder, int page = 1, int pageSize = 9)
         {
-            var posts = _context.Posts
+            var query = _context.Posts
                 .Include(p => p.Category)
-                .OrderByDescending(p => p.CreatedDate)
-                .ToList();
+                .AsQueryable();
 
+            if (!string.IsNullOrWhiteSpace(keyword))
+            {
+                query = query.Where(p =>
+                    p.Title.Contains(keyword) ||
+                    p.Content.Contains(keyword) ||
+                    p.Category.Name.Contains(keyword));
+            }
+
+            if (categoryId.HasValue)
+            {
+                query = query.Where(p => p.CategoryId == categoryId.Value);
+            }
+
+            query = sortOrder switch
+            {
+                "date_asc" => query.OrderBy(p => p.CreatedDate),
+                "title_asc" => query.OrderBy(p => p.Title),
+                "title_desc" => query.OrderByDescending(p => p.Title),
+                _ => query.OrderByDescending(p => p.CreatedDate)
+            };
+
+            ViewBag.Keyword = keyword;
+            ViewBag.CategoryId = categoryId;
+            ViewBag.SortOrder = sortOrder;
+            ViewBag.PageSize = pageSize;
+            ViewBag.CategoryList = new SelectList(_context.Categories.OrderBy(c => c.Name), "Id", "Name", categoryId);
+
+            var posts = await PaginatedList<Post>.CreateAsync(query.AsNoTracking(), page, pageSize);
             return View(posts);
         }
 

@@ -5,8 +5,11 @@
 //Mo ta: Controller quan tri chi tiet don hang, Admin duoc thao tac, Editor chi duoc xem
 
 using CMS.Data;
+using CMS.Data.Entities;
+using CMS.Backend.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
 namespace CMS.Backend.Controllers
@@ -32,15 +35,54 @@ namespace CMS.Backend.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string? keyword, int? productId, int? status, string? sortOrder, int page = 1, int pageSize = 10)
         {
-            var data = await _context.OrderDetails
+            var query = _context.OrderDetails
                 .Include(od => od.Order)
                 .ThenInclude(o => o.Customer)
                 .Include(od => od.Product)
-                .OrderByDescending(od => od.Id)
-                .ToListAsync();
+                .AsQueryable();
 
+            if (!string.IsNullOrWhiteSpace(keyword))
+            {
+                query = query.Where(od =>
+                    od.Id.ToString().Contains(keyword) ||
+                    od.OrderId.ToString().Contains(keyword) ||
+                    (od.Product != null && od.Product.Name.Contains(keyword)) ||
+                    (od.Order != null && od.Order.Customer != null && (
+                        od.Order.Customer.FullName.Contains(keyword) ||
+                        od.Order.Customer.Email.Contains(keyword))));
+            }
+
+            if (productId.HasValue)
+            {
+                query = query.Where(od => od.ProductId == productId.Value);
+            }
+
+            if (status.HasValue)
+            {
+                query = query.Where(od => od.Order != null && od.Order.Status == status.Value);
+            }
+
+            query = sortOrder switch
+            {
+                "quantity_asc" => query.OrderBy(od => od.Quantity),
+                "quantity_desc" => query.OrderByDescending(od => od.Quantity),
+                "price_asc" => query.OrderBy(od => od.UnitPrice),
+                "price_desc" => query.OrderByDescending(od => od.UnitPrice),
+                "total_asc" => query.OrderBy(od => od.Quantity * od.UnitPrice),
+                "total_desc" => query.OrderByDescending(od => od.Quantity * od.UnitPrice),
+                _ => query.OrderByDescending(od => od.Id)
+            };
+
+            ViewBag.Keyword = keyword;
+            ViewBag.ProductId = productId;
+            ViewBag.Status = status;
+            ViewBag.SortOrder = sortOrder;
+            ViewBag.PageSize = pageSize;
+            ViewBag.ProductList = new SelectList(_context.Products.OrderBy(p => p.Name), "Id", "Name", productId);
+
+            var data = await PaginatedList<OrderDetail>.CreateAsync(query.AsNoTracking(), page, pageSize);
             return View(data);
         }
 

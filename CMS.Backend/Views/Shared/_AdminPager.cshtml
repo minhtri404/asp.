@@ -1,0 +1,68 @@
+@model dynamic
+
+@{
+    var pageIndex = (int)Model.PageIndex;
+    var totalPages = (int)Model.TotalPages;
+    var totalItems = (int)Model.TotalItems;
+    var pageSize = (int)Model.PageSize;
+    var routeValues = new Dictionary<string, string>();
+
+    foreach (var query in Context.Request.Query)
+    {
+        if (!string.Equals(query.Key, "page", StringComparison.OrdinalIgnoreCase))
+        {
+            routeValues[query.Key] = query.Value.ToString();
+        }
+    }
+}
+
+@if (totalItems > 0)
+{
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mt-3">
+        <div class="text-muted small">
+            Hiển thị @(((pageIndex - 1) * pageSize) + 1) - @(Math.Min(pageIndex * pageSize, totalItems)) / @totalItems dòng
+        </div>
+
+        <nav aria-label="Phân trang">
+            <ul class="pagination pagination-sm mb-0">
+                @{
+                    var previousRouteValues = new Dictionary<string, string>(routeValues)
+                    {
+                        ["page"] = (pageIndex - 1).ToString()
+                    };
+                    var nextRouteValues = new Dictionary<string, string>(routeValues)
+                    {
+                        ["page"] = (pageIndex + 1).ToString()
+                    };
+                }
+
+                <li class="page-item @(pageIndex <= 1 ? "disabled" : "")">
+                    <a class="page-link" asp-action="Index" asp-all-route-data="previousRouteValues">Trước</a>
+                </li>
+
+                @for (var pageNumber = 1; pageNumber <= totalPages; pageNumber++)
+                {
+                    if (pageNumber == 1 || pageNumber == totalPages || Math.Abs(pageNumber - pageIndex) <= 2)
+                    {
+                        var pageRouteValues = new Dictionary<string, string>(routeValues)
+                        {
+                            ["page"] = pageNumber.ToString()
+                        };
+
+                        <li class="page-item @(pageNumber == pageIndex ? "active" : "")">
+                            <a class="page-link" asp-action="Index" asp-all-route-data="pageRouteValues">@pageNumber</a>
+                        </li>
+                    }
+                    else if (pageNumber == pageIndex - 3 || pageNumber == pageIndex + 3)
+                    {
+                        <li class="page-item disabled"><span class="page-link">...</span></li>
+                    }
+                }
+
+                <li class="page-item @(pageIndex >= totalPages ? "disabled" : "")">
+                    <a class="page-link" asp-action="Index" asp-all-route-data="nextRouteValues">Sau</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+}
