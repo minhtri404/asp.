@@ -108,7 +108,7 @@ namespace CMS.Backend.Controllers
             {
                 model.ImageUrl = await ImageUploadService.SaveImageAsync(uploadImage, _environment) ?? string.Empty;
             }
-            catch (InvalidOperationException ex)
+            catch (Exception ex) when (ex is InvalidOperationException || ex is IOException || ex is UnauthorizedAccessException)
             {
                 ModelState.AddModelError("ImageUrl", ex.Message);
                 ViewBag.CategoryList = new SelectList(_context.Categories, "Id", "Name", model.CategoryId);
@@ -154,7 +154,7 @@ namespace CMS.Backend.Controllers
                 {
                     model.ImageUrl = await ImageUploadService.SaveImageAsync(uploadImage, _environment) ?? string.Empty;
                 }
-                catch (InvalidOperationException ex)
+                catch (Exception ex) when (ex is InvalidOperationException || ex is IOException || ex is UnauthorizedAccessException)
                 {
                     ModelState.AddModelError("ImageUrl", ex.Message);
                     ViewBag.CategoryList = new SelectList(_context.Categories, "Id", "Name", model.CategoryId);

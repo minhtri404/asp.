@@ -133,7 +133,7 @@ namespace CMS.Backend.Controllers
             {
                 model.ImageUrl = await ImageUploadService.SaveImageAsync(uploadImage, _environment);
             }
-            catch (InvalidOperationException ex)
+            catch (Exception ex) when (ex is InvalidOperationException || ex is IOException || ex is UnauthorizedAccessException)
             {
                 ModelState.AddModelError("ImageUrl", ex.Message);
                 LoadCategoryProductList(model.CategoryProductId);
@@ -199,7 +199,7 @@ namespace CMS.Backend.Controllers
             {
                 newImageUrl = await ImageUploadService.SaveImageAsync(uploadImage, _environment);
             }
-            catch (InvalidOperationException ex)
+            catch (Exception ex) when (ex is InvalidOperationException || ex is IOException || ex is UnauthorizedAccessException)
             {
                 ModelState.AddModelError("ImageUrl", ex.Message);
                 LoadCategoryProductList(model.CategoryProductId);
