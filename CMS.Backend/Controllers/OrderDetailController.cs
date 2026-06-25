@@ -1,8 +1,8 @@
-//MSSV:2123110137
+﻿//MSSV:2123110137
 //Truong Minh Tri
 //CCQ2311D
 //Ngay tao:04/06/2026
-//Mo ta: Controller quan tri chi tiet don hang, Admin duoc thao tac, Editor chi duoc xem
+//Mo ta: Controller quan tri chi tiet don hang, Admin va Editor duoc thao tac
 
 using CMS.Data;
 using CMS.Data.Entities;
@@ -22,17 +22,6 @@ namespace CMS.Backend.Controllers
         public OrderDetailController(ApplicationDbContext context)
         {
             _context = context;
-        }
-
-        private bool IsEditor()
-        {
-            return User.IsInRole("Editor");
-        }
-
-        private IActionResult EditorNoPermission()
-        {
-            TempData["ErrorMessage"] = "Editor chỉ được xem dữ liệu, không được xóa chi tiết đơn hàng.";
-            return RedirectToAction(nameof(Index));
         }
 
         public async Task<IActionResult> Index(string? keyword, int? productId, int? status, string? sortOrder, int page = 1, int pageSize = 10)
@@ -105,16 +94,11 @@ namespace CMS.Backend.Controllers
         [HttpGet]
         public async Task<IActionResult> Delete(int id)
         {
-            if (IsEditor())
-            {
-                return EditorNoPermission();
-            }
-
             var detail = await _context.OrderDetails
-                .Include(od => od.Order)
-                .ThenInclude(o => o.Customer)
-                .Include(od => od.Product)
-                .FirstOrDefaultAsync(od => od.Id == id);
+                            .Include(od => od.Order)
+                            .ThenInclude(o => o.Customer)
+                            .Include(od => od.Product)
+                            .FirstOrDefaultAsync(od => od.Id == id);
 
             if (detail == null)
             {
@@ -128,11 +112,6 @@ namespace CMS.Backend.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (IsEditor())
-            {
-                return EditorNoPermission();
-            }
-
             var detail = await _context.OrderDetails.FindAsync(id);
 
             if (detail == null)
@@ -148,3 +127,4 @@ namespace CMS.Backend.Controllers
         }
     }
 }
+

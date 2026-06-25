@@ -29,8 +29,8 @@ namespace CMS.Backend.Controllers
         {
             return View();
         }
-
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginViewModel model)
         {
             if (!ModelState.IsValid)
@@ -132,16 +132,29 @@ namespace CMS.Backend.Controllers
             return RedirectToAction("Login");
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Logout()
         {
-            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            // Xóa dữ liệu Session
+            HttpContext.Session.Clear();
 
-            TempData["SuccessMessage"] = "Đăng xuất thành công";
+            // Xóa Cookie đăng nhập
+            await HttpContext.SignOutAsync(
+                CookieAuthenticationDefaults.AuthenticationScheme
+            );
+
+            // Xóa các Cookie còn lại của ứng dụng
+            foreach (var cookie in Request.Cookies.Keys)
+            {
+                Response.Cookies.Delete(cookie);
+            }
+
             return RedirectToAction("Login", "Account");
         }
-
         public IActionResult AccessDenied()
         {
+            Response.StatusCode = StatusCodes.Status403Forbidden;
             return View();
         }
     }

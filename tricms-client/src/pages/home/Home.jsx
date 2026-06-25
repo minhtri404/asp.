@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import HeroBanner from "../../components/home/HeroBanner";
 import { getProducts } from "../../services/catalogService";
 import { getPosts } from "../../services/postService";
 import { addCartItem } from "../../utils/cartStorage";
@@ -41,33 +42,7 @@ function Home() {
 
     return (
         <div className="home-page">
-            <section className="home-hero">
-                <div className="home-hero__content">
-                    <p className="home-hero__eyebrow">TriShop công nghệ</p>
-                    <h1>iPhone 15 Pro Max</h1>
-                    <p className="home-hero__copy">
-                        Titan bền nhẹ, camera sắc nét, ưu đãi trả góp và thu cũ lên đời cho khách hàng TriShop.
-                    </p>
-
-                    <div className="home-hero__offers">
-                        <span>Ưu đãi thu cũ đến 95%</span>
-                        <span>Trả góp 0%</span>
-                    </div>
-
-                    <div className="home-hero__actions">
-                        <Link to="/shop?category=2" className="btn btn-light btn-lg fw-bold">
-                            Xem điện thoại
-                        </Link>
-                        <Link to="/shop" className="btn btn-outline-light btn-lg fw-bold">
-                            Mua sắm ngay
-                        </Link>
-                    </div>
-                </div>
-
-                <div className="home-hero__media">
-                    <img src={getStaticAssetUrl("/img/iphone.jpg")} alt="iPhone 15" />
-                </div>
-            </section>
+            <HeroBanner />
 
             <section className="home-feature-grid">
                 <Link className="home-feature-card" to="/shop?category=2">

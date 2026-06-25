@@ -1,8 +1,8 @@
-//MSSV:2123110137
+﻿//MSSV:2123110137
 //Truong Minh Tri
 //CCQ2311D
 //Ngay tao:04/06/2026
-//Mo ta: Controller quan tri don hang, Admin duoc thao tac, Editor chi duoc xem
+//Mo ta: Controller quan tri don hang, Admin va Editor duoc thao tac
 
 using CMS.Data;
 using CMS.Data.Entities;
@@ -21,17 +21,6 @@ namespace CMS.Backend.Controllers
         public OrderController(ApplicationDbContext context)
         {
             _context = context;
-        }
-
-        private bool IsEditor()
-        {
-            return User.IsInRole("Editor");
-        }
-
-        private IActionResult EditorNoPermission()
-        {
-            TempData["ErrorMessage"] = "Editor chỉ được xem dữ liệu, không được sửa hoặc xóa đơn hàng.";
-            return RedirectToAction(nameof(Index));
         }
 
         public async Task<IActionResult> Index(string? keyword, int? status, DateTime? fromDate, DateTime? toDate, string? sortOrder, int page = 1, int pageSize = 10)
@@ -106,14 +95,9 @@ namespace CMS.Backend.Controllers
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
-            if (IsEditor())
-            {
-                return EditorNoPermission();
-            }
-
             var order = await _context.Orders
-                .Include(o => o.Customer)
-                .FirstOrDefaultAsync(o => o.Id == id);
+                            .Include(o => o.Customer)
+                            .FirstOrDefaultAsync(o => o.Id == id);
 
             if (order == null)
             {
@@ -127,11 +111,6 @@ namespace CMS.Backend.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, int status, string? notes)
         {
-            if (IsEditor())
-            {
-                return EditorNoPermission();
-            }
-
             var order = await _context.Orders.FindAsync(id);
 
             if (order == null)
@@ -150,16 +129,11 @@ namespace CMS.Backend.Controllers
         [HttpGet]
         public async Task<IActionResult> Delete(int id)
         {
-            if (IsEditor())
-            {
-                return EditorNoPermission();
-            }
-
             var order = await _context.Orders
-                .Include(o => o.Customer)
-                .Include(o => o.OrderDetails)
-                .ThenInclude(od => od.Product)
-                .FirstOrDefaultAsync(o => o.Id == id);
+                            .Include(o => o.Customer)
+                            .Include(o => o.OrderDetails)
+                            .ThenInclude(od => od.Product)
+                            .FirstOrDefaultAsync(o => o.Id == id);
 
             if (order == null)
             {
@@ -173,14 +147,9 @@ namespace CMS.Backend.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (IsEditor())
-            {
-                return EditorNoPermission();
-            }
-
             var order = await _context.Orders
-                .Include(o => o.OrderDetails)
-                .FirstOrDefaultAsync(o => o.Id == id);
+                            .Include(o => o.OrderDetails)
+                            .FirstOrDefaultAsync(o => o.Id == id);
 
             if (order == null)
             {
@@ -200,3 +169,4 @@ namespace CMS.Backend.Controllers
         }
     }
 }
+

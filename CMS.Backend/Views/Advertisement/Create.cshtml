@@ -1,0 +1,84 @@
+@model CMS.Data.Entities.Advertisement
+
+@{
+    Layout = "_LayoutAdmin";
+    ViewData["Title"] = "Thêm banner";
+}
+
+<div class="card shadow-sm">
+    <div class="card-header bg-primary text-white">
+        <h5 class="mb-0">THÊM BANNER QUẢNG CÁO</h5>
+    </div>
+
+    <div class="card-body">
+        <form asp-action="Create" method="post" enctype="multipart/form-data">
+            <div asp-validation-summary="All" class="text-danger mb-3"></div>
+
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="mb-3">
+                        <label asp-for="Title" class="form-label fw-bold">Tiêu đề</label>
+                        <input asp-for="Title" class="form-control" placeholder="VD: iPhone 15 Pro Max" />
+                        <span asp-validation-for="Title" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Subtitle" class="form-label fw-bold">Dòng phụ</label>
+                        <input asp-for="Subtitle" class="form-control" placeholder="VD: TriShop công nghệ" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Description" class="form-label fw-bold">Mô tả</label>
+                        <textarea asp-for="Description" class="form-control" rows="4" placeholder="Nội dung ngắn hiển thị trên banner"></textarea>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Ảnh banner</label>
+                        <input type="file" name="uploadImage" class="form-control" accept=".jpg,.jpeg,.png,.gif,.webp" />
+                        <span asp-validation-for="ImageUrl" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="LinkUrl" class="form-label fw-bold">Link khi bấm</label>
+                        <input asp-for="LinkUrl" class="form-control" placeholder="/shop hoặc /product/1" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="ButtonText" class="form-label fw-bold">Chữ nút</label>
+                        <input asp-for="ButtonText" class="form-control" placeholder="Mua ngay" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="DisplayOrder" class="form-label fw-bold">Thứ tự hiển thị</label>
+                        <input asp-for="DisplayOrder" class="form-control" />
+                    </div>
+
+                    <div class="form-check form-switch mb-3">
+                        <input asp-for="IsActive" class="form-check-input" />
+                        <label asp-for="IsActive" class="form-check-label">Bật banner</label>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="StartDate" class="form-label fw-bold">Ngày bắt đầu</label>
+                        <input asp-for="StartDate" type="datetime-local" class="form-control" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="EndDate" class="form-label fw-bold">Ngày kết thúc</label>
+                        <input asp-for="EndDate" type="datetime-local" class="form-control" />
+                        <span asp-validation-for="EndDate" class="text-danger"></span>
+                    </div>
+
+                    <button type="submit" class="btn btn-success w-100 mb-2">Lưu banner</button>
+                    <a asp-action="Index" class="btn btn-secondary w-100">Quay lại</a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

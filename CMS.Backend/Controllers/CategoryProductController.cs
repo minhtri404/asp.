@@ -1,8 +1,8 @@
-//MSSV:2123110137
+﻿//MSSV:2123110137
 //Truong Minh Tri
 //CCQ2311D
 //Ngay tao:04/06/2026
-//Mo ta: Controller quan tri CRUD danh muc san pham, Admin duoc thao tac, Editor chi duoc xem
+//Mo ta: Controller quan tri CRUD danh muc san pham, Admin va Editor duoc thao tac
 
 using CMS.Data;
 using CMS.Data.Entities;
@@ -21,17 +21,6 @@ namespace CMS.Backend.Controllers
         public CategoryProductController(ApplicationDbContext context)
         {
             _context = context;
-        }
-
-        private bool IsEditor()
-        {
-            return User.IsInRole("Editor");
-        }
-
-        private IActionResult EditorNoPermission()
-        {
-            TempData["ErrorMessage"] = "Editor chỉ được xem dữ liệu, không được thêm, sửa hoặc xóa.";
-            return RedirectToAction(nameof(Index));
         }
 
         public async Task<IActionResult> Index(string? keyword, string? sortOrder, int page = 1, int pageSize = 10)
@@ -77,11 +66,6 @@ namespace CMS.Backend.Controllers
         [HttpGet]
         public IActionResult Create()
         {
-            if (IsEditor())
-            {
-                return EditorNoPermission();
-            }
-
             return View();
         }
 
@@ -89,11 +73,6 @@ namespace CMS.Backend.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CategoryProduct model)
         {
-            if (IsEditor())
-            {
-                return EditorNoPermission();
-            }
-
             if (!ModelState.IsValid)
             {
                 return View(model);
@@ -110,11 +89,6 @@ namespace CMS.Backend.Controllers
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
-            if (IsEditor())
-            {
-                return EditorNoPermission();
-            }
-
             var categoryProduct = await _context.CategoriesProducts.FindAsync(id);
 
             if (categoryProduct == null)
@@ -129,11 +103,6 @@ namespace CMS.Backend.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, CategoryProduct model)
         {
-            if (IsEditor())
-            {
-                return EditorNoPermission();
-            }
-
             if (id != model.Id)
             {
                 return NotFound();
@@ -155,14 +124,9 @@ namespace CMS.Backend.Controllers
         [HttpGet]
         public async Task<IActionResult> Delete(int id)
         {
-            if (IsEditor())
-            {
-                return EditorNoPermission();
-            }
-
             var categoryProduct = await _context.CategoriesProducts
-                .Include(c => c.Products)
-                .FirstOrDefaultAsync(c => c.Id == id);
+                            .Include(c => c.Products)
+                            .FirstOrDefaultAsync(c => c.Id == id);
 
             if (categoryProduct == null)
             {
@@ -176,14 +140,9 @@ namespace CMS.Backend.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (IsEditor())
-            {
-                return EditorNoPermission();
-            }
-
             var categoryProduct = await _context.CategoriesProducts
-                .Include(c => c.Products)
-                .FirstOrDefaultAsync(c => c.Id == id);
+                            .Include(c => c.Products)
+                            .FirstOrDefaultAsync(c => c.Id == id);
 
             if (categoryProduct == null)
             {
@@ -204,3 +163,4 @@ namespace CMS.Backend.Controllers
         }
     }
 }
+

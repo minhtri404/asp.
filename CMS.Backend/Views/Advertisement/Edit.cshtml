@@ -1,0 +1,96 @@
+@model CMS.Data.Entities.Advertisement
+
+@{
+    Layout = "_LayoutAdmin";
+    ViewData["Title"] = "Sửa banner";
+}
+
+<div class="card shadow-sm">
+    <div class="card-header bg-warning">
+        <h5 class="mb-0">SỬA BANNER QUẢNG CÁO</h5>
+    </div>
+
+    <div class="card-body">
+        <form asp-action="Edit" asp-route-id="@Model.Id" method="post" enctype="multipart/form-data">
+            <div asp-validation-summary="All" class="text-danger mb-3"></div>
+
+            <input type="hidden" asp-for="Id" />
+            <input type="hidden" asp-for="ImageUrl" />
+            <input type="hidden" asp-for="CreatedDate" />
+
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="mb-3">
+                        <label asp-for="Title" class="form-label fw-bold">Tiêu đề</label>
+                        <input asp-for="Title" class="form-control" />
+                        <span asp-validation-for="Title" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Subtitle" class="form-label fw-bold">Dòng phụ</label>
+                        <input asp-for="Subtitle" class="form-control" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Description" class="form-label fw-bold">Mô tả</label>
+                        <textarea asp-for="Description" class="form-control" rows="4"></textarea>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Ảnh hiện tại</label>
+                        @if (!string.IsNullOrWhiteSpace(Model.ImageUrl))
+                        {
+                            <img src="@Model.ImageUrl" class="img-fluid rounded border mb-2" style="width:100%; max-height:180px; object-fit:cover;" alt="@Model.Title" />
+                        }
+                        else
+                        {
+                            <div class="alert alert-secondary">Chưa có ảnh banner</div>
+                        }
+
+                        <input type="file" name="uploadImage" class="form-control" accept=".jpg,.jpeg,.png,.gif,.webp" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="LinkUrl" class="form-label fw-bold">Link khi bấm</label>
+                        <input asp-for="LinkUrl" class="form-control" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="ButtonText" class="form-label fw-bold">Chữ nút</label>
+                        <input asp-for="ButtonText" class="form-control" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="DisplayOrder" class="form-label fw-bold">Thứ tự hiển thị</label>
+                        <input asp-for="DisplayOrder" class="form-control" />
+                    </div>
+
+                    <div class="form-check form-switch mb-3">
+                        <input asp-for="IsActive" class="form-check-input" />
+                        <label asp-for="IsActive" class="form-check-label">Bật banner</label>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="StartDate" class="form-label fw-bold">Ngày bắt đầu</label>
+                        <input asp-for="StartDate" type="datetime-local" class="form-control" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="EndDate" class="form-label fw-bold">Ngày kết thúc</label>
+                        <input asp-for="EndDate" type="datetime-local" class="form-control" />
+                        <span asp-validation-for="EndDate" class="text-danger"></span>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100 mb-2">Cập nhật banner</button>
+                    <a asp-action="Index" class="btn btn-secondary w-100">Quay lại</a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,40 @@
+@model CMS.Data.Entities.Advertisement
+
+@{
+    Layout = "_LayoutAdmin";
+    ViewData["Title"] = "Xóa banner";
+}
+
+<div class="card shadow-sm">
+    <div class="card-header bg-danger text-white">
+        <h5 class="mb-0">XÓA BANNER QUẢNG CÁO</h5>
+    </div>
+
+    <div class="card-body">
+        <div class="alert alert-warning">
+            Bạn có chắc chắn muốn xóa banner này không?
+        </div>
+
+        <dl class="row">
+            <dt class="col-sm-3">Tiêu đề</dt>
+            <dd class="col-sm-9">@Model.Title</dd>
+
+            <dt class="col-sm-3">Dòng phụ</dt>
+            <dd class="col-sm-9">@(Model.Subtitle ?? "Không có")</dd>
+
+            <dt class="col-sm-3">Trạng thái</dt>
+            <dd class="col-sm-9">@(Model.IsActive ? "Đang bật" : "Đang tắt")</dd>
+        </dl>
+
+        @if (!string.IsNullOrWhiteSpace(Model.ImageUrl))
+        {
+            <img src="@Model.ImageUrl" class="img-fluid rounded border mb-3" style="max-height:220px; object-fit:cover;" alt="@Model.Title" />
+        }
+
+        <form asp-action="Delete" method="post">
+            <input type="hidden" asp-for="Id" />
+            <button type="submit" class="btn btn-danger">Xóa</button>
+            <a asp-action="Index" class="btn btn-secondary">Quay lại</a>
+        </form>
+    </div>
+</div>

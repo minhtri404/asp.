@@ -67,9 +67,18 @@ Mo ta: Layout quan tri Admin Panel dung chung cho cac trang quan ly
             Xin chào, <strong>@User.Identity.Name</strong>
         </div>
 
-        <a asp-controller="Account" asp-action="Logout">
-            <i class="bi bi-box-arrow-right"></i> Đăng xuất
-        </a>
+        <form asp-controller="Account"
+              asp-action="Logout"
+              method="post"
+              class="d-inline">
+
+            @Html.AntiForgeryToken()
+
+            <button type="submit"
+                    class="btn btn-danger btn-sm">
+                Đăng xuất
+            </button>
+        </form>
     }
     <div class="container-fluid">
         <div class="row">
@@ -90,6 +99,10 @@ Mo ta: Layout quan tri Admin Panel dung chung cho cac trang quan ly
 
                     <a asp-controller="Post" asp-action="Index">
                         <i class="bi bi-file-earmark-post"></i> Quản lý Bài viết
+                    </a>
+
+                    <a asp-controller="Advertisement" asp-action="Index">
+                        <i class="bi bi-badge-ad"></i> Quảng cáo
                     </a>
 
                     <a asp-controller="User" asp-action="Index">

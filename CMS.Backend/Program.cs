@@ -8,6 +8,14 @@ using Microsoft.Extensions.FileProviders;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews();
+builder.Services.AddDistributedMemoryCache();
+
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(60);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
@@ -34,6 +42,7 @@ builder.Services.AddCors(options =>
 var app = builder.Build();
 
 await CategoryProductSeeder.SeedAsync(app.Services);
+await AdvertisementSeeder.SeedAsync(app.Services);
 var uploadRootPath = ImageUploadService.GetUploadRootPath(app.Environment);
 Directory.CreateDirectory(uploadRootPath);
 
@@ -54,7 +63,7 @@ app.UseStaticFiles(new StaticFileOptions
 });
 
 app.UseRouting();
-
+app.UseSession();
 // Dùng CORS trước Authentication/Authorization
 app.UseCors("ReactPolicy");
 

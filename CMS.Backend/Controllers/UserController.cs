@@ -2,7 +2,7 @@
 //Truong Minh Tri
 //CCQ2311D
 //Ngay tao:16/5/2026
-//Mo ta: Controller quan ly thanh vien, Admin duoc thao tac, Editor chi duoc xem
+//Mo ta: Controller quan ly thanh vien, chi Admin duoc truy cap
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -13,7 +13,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace CMS.Backend.Controllers
 {
-    [Authorize(Roles = "Admin,Editor")]
+    [Authorize(Roles = "Admin")]
     public class UserController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -21,17 +21,6 @@ namespace CMS.Backend.Controllers
         public UserController(ApplicationDbContext context)
         {
             _context = context;
-        }
-
-        private bool IsEditor()
-        {
-            return User.IsInRole("Editor");
-        }
-
-        private IActionResult EditorNoPermission()
-        {
-            TempData["ErrorMessage"] = "Editor chỉ được xem dữ liệu, không được thêm, sửa hoặc xóa thành viên.";
-            return RedirectToAction(nameof(Index));
         }
 
         public async Task<IActionResult> Index(string? keyword, string? role, string? sortOrder, int page = 1, int pageSize = 10)
@@ -71,11 +60,6 @@ namespace CMS.Backend.Controllers
         [HttpGet]
         public IActionResult Create()
         {
-            if (IsEditor())
-            {
-                return EditorNoPermission();
-            }
-
             return View();
         }
 
@@ -83,11 +67,6 @@ namespace CMS.Backend.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Create(User model)
         {
-            if (IsEditor())
-            {
-                return EditorNoPermission();
-            }
-
             var checkExist = _context.Users.Any(u => u.Username == model.Username);
 
             if (checkExist)
@@ -106,11 +85,6 @@ namespace CMS.Backend.Controllers
         [HttpGet]
         public IActionResult Edit(int id)
         {
-            if (IsEditor())
-            {
-                return EditorNoPermission();
-            }
-
             var user = _context.Users.Find(id);
 
             if (user == null)
@@ -125,11 +99,6 @@ namespace CMS.Backend.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Edit(User model, string? NewPassword)
         {
-            if (IsEditor())
-            {
-                return EditorNoPermission();
-            }
-
             var existingUser = _context.Users.AsNoTracking().FirstOrDefault(u => u.Id == model.Id);
 
             if (existingUser == null)
@@ -155,11 +124,6 @@ namespace CMS.Backend.Controllers
 
         public IActionResult Delete(int id)
         {
-            if (IsEditor())
-            {
-                return EditorNoPermission();
-            }
-
             var user = _context.Users.Find(id);
 
             if (user != null)

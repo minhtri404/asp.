@@ -1,15 +1,8 @@
-@model CMS.Backend.Models.PaginatedList<CMS.Data.Entities.OrderDetail>
+﻿@model CMS.Backend.Models.PaginatedList<CMS.Data.Entities.OrderDetail>
 
 @{
     Layout = "_LayoutAdmin";
     ViewData["Title"] = "Chi tiết đơn hàng";
-}
-
-@if (User.IsInRole("Editor"))
-{
-    <div class="alert alert-danger">
-        Editor chỉ được thao tác Bài viết. Các mục khác chỉ được xem, không được thêm, sửa hoặc xóa.
-    </div>
 }
 
 <h2 class="text-primary mb-3">DANH SÁCH CHI TIẾT ĐƠN HÀNG</h2>
@@ -98,3 +91,4 @@
 }
 
 @await Html.PartialAsync("_AdminPager", Model)
+

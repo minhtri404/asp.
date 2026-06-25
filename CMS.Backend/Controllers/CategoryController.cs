@@ -1,8 +1,8 @@
-//MSSV:2123110137
+﻿//MSSV:2123110137
 //Truong Minh Tri
 //CCQ2311D
 //Ngay tao:04/06/2026
-//Mo ta: Controller quan tri CRUD danh muc, Admin duoc thao tac, Editor chi duoc xem
+//Mo ta: Controller quan tri CRUD danh muc, Admin va Editor duoc thao tac
 
 using CMS.Data;
 using CMS.Data.Entities;
@@ -66,12 +66,6 @@ namespace CMS.Backend.Controllers
         [HttpGet]
         public IActionResult Create()
         {
-            if (User.IsInRole("Editor"))
-            {
-                TempData["ErrorMessage"] = "403, Editor chỉ được xem, không được thêm danh mục.";
-                return RedirectToAction(nameof(Index));
-            }
-
             return View();
         }
 
@@ -79,12 +73,6 @@ namespace CMS.Backend.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Category model)
         {
-            if (User.IsInRole("Editor"))
-            {
-                TempData["ErrorMessage"] = "Editor không có quyền thêm danh mục.";
-                return RedirectToAction(nameof(Index));
-            }
-
             if (!ModelState.IsValid)
             {
                 return View(model);
@@ -102,12 +90,6 @@ namespace CMS.Backend.Controllers
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
-            if (User.IsInRole("Editor"))
-            {
-                TempData["ErrorMessage"] = "Editor chỉ được xem, không được sửa danh mục.";
-                return RedirectToAction(nameof(Index));
-            }
-
             var category = await _context.Categories.FindAsync(id);
 
             if (category == null)
@@ -122,12 +104,6 @@ namespace CMS.Backend.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, Category model)
         {
-            if (User.IsInRole("Editor"))
-            {
-                TempData["ErrorMessage"] = "Editor không có quyền sửa danh mục.";
-                return RedirectToAction(nameof(Index));
-            }
-
             if (id != model.Id)
             {
                 return NotFound();
@@ -150,15 +126,9 @@ namespace CMS.Backend.Controllers
         [HttpGet]
         public async Task<IActionResult> Delete(int id)
         {
-            if (User.IsInRole("Editor"))
-            {
-                TempData["ErrorMessage"] = "Editor không có quyền xóa danh mục.";
-                return RedirectToAction(nameof(Index));
-            }
-
             var category = await _context.Categories
-                .Include(c => c.Posts)
-                .FirstOrDefaultAsync(c => c.Id == id);
+                            .Include(c => c.Posts)
+                            .FirstOrDefaultAsync(c => c.Id == id);
 
             if (category == null)
             {
@@ -172,15 +142,9 @@ namespace CMS.Backend.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (User.IsInRole("Editor"))
-            {
-                TempData["ErrorMessage"] = "Editor không có quyền xóa danh mục.";
-                return RedirectToAction(nameof(Index));
-            }
-
             var category = await _context.Categories
-                .Include(c => c.Posts)
-                .FirstOrDefaultAsync(c => c.Id == id);
+                            .Include(c => c.Posts)
+                            .FirstOrDefaultAsync(c => c.Id == id);
 
             if (category == null)
             {
@@ -201,3 +165,4 @@ namespace CMS.Backend.Controllers
         }
     }
 }
+

@@ -1,15 +1,8 @@
-@model CMS.Backend.Models.PaginatedList<CMS.Data.Entities.Category>
+﻿@model CMS.Backend.Models.PaginatedList<CMS.Data.Entities.Category>
 
 @{
     Layout = "_LayoutAdmin";
     ViewData["Title"] = "Danh mục bài viết";
-}
-
-@if (User.IsInRole("Editor"))
-{
-    <div class="alert alert-danger">
-        Editor chỉ được thao tác Bài viết. Các mục khác chỉ được xem, không được thêm, sửa hoặc xóa.
-    </div>
 }
 
 @if (TempData["ErrorMessage"] != null)
@@ -85,3 +78,4 @@
 }
 
 @await Html.PartialAsync("_AdminPager", Model)
+

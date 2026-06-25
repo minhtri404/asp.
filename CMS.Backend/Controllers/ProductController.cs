@@ -1,8 +1,8 @@
-//MSSV:2123110137
+﻿//MSSV:2123110137
 //Truong Minh Tri
 //CCQ2311D
 //Ngay tao:04/06/2026
-//Mo ta: Controller quan tri CRUD san pham, Admin duoc thao tac, Editor chi duoc xem
+//Mo ta: Controller quan tri CRUD san pham, Admin va Editor duoc thao tac
 
 using CMS.Data;
 using CMS.Data.Entities;
@@ -25,17 +25,6 @@ namespace CMS.Backend.Controllers
         {
             _context = context;
             _environment = environment;
-        }
-
-        private bool IsEditor()
-        {
-            return User.IsInRole("Editor");
-        }
-
-        private IActionResult EditorNoPermission()
-        {
-            TempData["ErrorMessage"] = "Editor chỉ được xem dữ liệu, không được thêm, sửa hoặc xóa.";
-            return RedirectToAction(nameof(Index));
         }
 
         public async Task<IActionResult> Index(string? keyword, int? categoryProductId, decimal? minPrice, decimal? maxPrice, string? sortOrder, int page = 1, int pageSize = 9)
@@ -105,11 +94,6 @@ namespace CMS.Backend.Controllers
         [HttpGet]
         public IActionResult Create()
         {
-            if (IsEditor())
-            {
-                return EditorNoPermission();
-            }
-
             LoadCategoryProductList();
             return View();
         }
@@ -118,11 +102,6 @@ namespace CMS.Backend.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Product model, IFormFile? uploadImage)
         {
-            if (IsEditor())
-            {
-                return EditorNoPermission();
-            }
-
             if (!ModelState.IsValid)
             {
                 LoadCategoryProductList(model.CategoryProductId);
@@ -151,11 +130,6 @@ namespace CMS.Backend.Controllers
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
-            if (IsEditor())
-            {
-                return EditorNoPermission();
-            }
-
             var product = await _context.Products.FindAsync(id);
 
             if (product == null)
@@ -171,11 +145,6 @@ namespace CMS.Backend.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, Product model, IFormFile? uploadImage)
         {
-            if (IsEditor())
-            {
-                return EditorNoPermission();
-            }
-
             if (id != model.Id)
             {
                 return NotFound();
@@ -214,14 +183,9 @@ namespace CMS.Backend.Controllers
         [HttpGet]
         public async Task<IActionResult> Delete(int id)
         {
-            if (IsEditor())
-            {
-                return EditorNoPermission();
-            }
-
             var product = await _context.Products
-                .Include(p => p.CategoryProduct)
-                .FirstOrDefaultAsync(p => p.Id == id);
+                            .Include(p => p.CategoryProduct)
+                            .FirstOrDefaultAsync(p => p.Id == id);
 
             if (product == null)
             {
@@ -235,11 +199,6 @@ namespace CMS.Backend.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (IsEditor())
-            {
-                return EditorNoPermission();
-            }
-
             var product = await _context.Products.FindAsync(id);
 
             if (product == null)
@@ -272,3 +231,4 @@ namespace CMS.Backend.Controllers
 
     }
 }
+

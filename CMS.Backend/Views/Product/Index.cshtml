@@ -1,15 +1,8 @@
-@model CMS.Backend.Models.PaginatedList<CMS.Data.Entities.Product>
+﻿@model CMS.Backend.Models.PaginatedList<CMS.Data.Entities.Product>
 
 @{
     Layout = "_LayoutAdmin";
     ViewData["Title"] = "Sản phẩm";
-}
-
-@if (User.IsInRole("Editor"))
-{
-    <div class="alert alert-danger">
-        Editor chỉ được thao tác Bài viết. Các mục khác chỉ được xem, không được thêm, sửa hoặc xóa.
-    </div>
 }
 
 <div class="d-flex justify-content-between align-items-center mb-3">
@@ -90,3 +83,4 @@
 }
 
 @await Html.PartialAsync("_AdminPager", Model)
+
