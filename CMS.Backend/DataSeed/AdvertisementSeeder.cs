@@ -10,13 +10,14 @@ namespace CMS.Backend.DataSeed
         {
             using var scope = services.CreateScope();
             var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+            var advertisements = context.Set<Advertisement>();
 
-            if (await context.Advertisements.AnyAsync())
+            if (await advertisements.AnyAsync())
             {
                 return;
             }
 
-            context.Advertisements.AddRange(
+            advertisements.AddRange(
                 new Advertisement
                 {
                     Title = "iPhone 15 Pro Max",

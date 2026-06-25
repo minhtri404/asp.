@@ -22,7 +22,7 @@ namespace CMS.Backend.Controllers
 
         public async Task<IActionResult> Index(string? keyword, string? status, int page = 1, int pageSize = 10)
         {
-            var query = _context.Advertisements.AsQueryable();
+            var query = _context.Set<Advertisement>().AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(keyword))
             {
@@ -54,7 +54,7 @@ namespace CMS.Backend.Controllers
         [HttpGet]
         public async Task<IActionResult> Create()
         {
-            var maxOrder = await _context.Advertisements.MaxAsync(item => (int?)item.DisplayOrder) ?? 0;
+            var maxOrder = await _context.Set<Advertisement>().MaxAsync(item => (int?)item.DisplayOrder) ?? 0;
 
             return View(new Advertisement
             {
@@ -86,7 +86,7 @@ namespace CMS.Backend.Controllers
             model.ImageUrl = imageResult.Url;
             model.CreatedDate = DateTime.Now;
 
-            _context.Advertisements.Add(model);
+            _context.Set<Advertisement>().Add(model);
             await _context.SaveChangesAsync();
 
             TempData["SuccessMessage"] = "Thêm banner quảng cáo thành công";
@@ -96,7 +96,7 @@ namespace CMS.Backend.Controllers
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
-            var advertisement = await _context.Advertisements.FindAsync(id);
+            var advertisement = await _context.Set<Advertisement>().FindAsync(id);
 
             if (advertisement == null)
             {
@@ -123,7 +123,7 @@ namespace CMS.Backend.Controllers
                 return View(model);
             }
 
-            var oldAdvertisement = await _context.Advertisements.AsNoTracking().FirstOrDefaultAsync(item => item.Id == id);
+            var oldAdvertisement = await _context.Set<Advertisement>().AsNoTracking().FirstOrDefaultAsync(item => item.Id == id);
             if (oldAdvertisement == null)
             {
                 return NotFound();
@@ -139,7 +139,7 @@ namespace CMS.Backend.Controllers
             model.ImageUrl = string.IsNullOrWhiteSpace(imageResult.Url) ? oldAdvertisement.ImageUrl : imageResult.Url;
             model.CreatedDate = oldAdvertisement.CreatedDate;
 
-            _context.Advertisements.Update(model);
+            _context.Set<Advertisement>().Update(model);
             await _context.SaveChangesAsync();
 
             TempData["SuccessMessage"] = "Cập nhật banner quảng cáo thành công";
@@ -149,7 +149,7 @@ namespace CMS.Backend.Controllers
         [HttpGet]
         public async Task<IActionResult> Delete(int id)
         {
-            var advertisement = await _context.Advertisements.FindAsync(id);
+            var advertisement = await _context.Set<Advertisement>().FindAsync(id);
 
             if (advertisement == null)
             {
@@ -163,14 +163,14 @@ namespace CMS.Backend.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var advertisement = await _context.Advertisements.FindAsync(id);
+            var advertisement = await _context.Set<Advertisement>().FindAsync(id);
 
             if (advertisement == null)
             {
                 return NotFound();
             }
 
-            _context.Advertisements.Remove(advertisement);
+            _context.Set<Advertisement>().Remove(advertisement);
             await _context.SaveChangesAsync();
 
             TempData["SuccessMessage"] = "Xóa banner quảng cáo thành công";

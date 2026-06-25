@@ -41,6 +41,12 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
+using (var scope = app.Services.CreateScope())
+{
+    var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    await context.Database.MigrateAsync();
+}
+
 await CategoryProductSeeder.SeedAsync(app.Services);
 await AdvertisementSeeder.SeedAsync(app.Services);
 var uploadRootPath = ImageUploadService.GetUploadRootPath(app.Environment);

@@ -1,4 +1,5 @@
 using CMS.Data;
+using CMS.Data.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -20,7 +21,7 @@ namespace CMS.Backend.Controllers.Api
         {
             var now = DateTime.Now;
 
-            var advertisements = await _context.Advertisements
+            var advertisements = await _context.Set<Advertisement>()
                 .Where(item =>
                     item.IsActive &&
                     (!item.StartDate.HasValue || item.StartDate.Value <= now) &&
