@@ -25,7 +25,7 @@ TriCMS là bài thực hành môn Chuyên đề ASP.NET, gồm Backend ASP.NET C
 ```bash
 git clone https://github.com/minhtri404/asp..git
 cd asp.
-git checkout buoi7
+git checkout Bao-cao
 ```
 
 ## Chạy Backend bằng F5
@@ -33,13 +33,13 @@ git checkout buoi7
 1. Mở file `TriCMS_Solution.sln` bằng Visual Studio 2022.
 2. Trong Solution Explorer, nhấn chuột phải vào `CMS.Backend` và chọn **Set as Startup Project**.
 3. Kiểm tra chuỗi kết nối `DefaultConnection` trong `CMS.Backend/appsettings.json`. Cấu hình mặc định dùng SQL Server LocalDB với database `TriCMS_DB`.
-4. Mở **Tools > NuGet Package Manager > Package Manager Console** và chạy migration nếu database chưa được tạo:
+4. Nhấn **F5** để chạy Backend. Ứng dụng sẽ tự chạy migration và tạo database/bảng cần thiết nếu chưa có.
+
+Nếu muốn chạy migration thủ công trong Visual Studio, mở **Tools > NuGet Package Manager > Package Manager Console** và chạy:
 
 ```powershell
 Update-Database -Project CMS.data -StartupProject CMS.Backend
 ```
-
-5. Nhấn **F5** để chạy Backend.
 
 Backend mặc định chạy tại:
 
