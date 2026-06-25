@@ -3,7 +3,6 @@ using Microsoft.EntityFrameworkCore;
 using CMS.Backend.DataSeed;
 using CMS.Backend.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.Extensions.FileProviders;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -62,11 +61,6 @@ else
     app.UseHsts();
 }
 app.UseStaticFiles();
-app.UseStaticFiles(new StaticFileOptions
-{
-    FileProvider = new PhysicalFileProvider(uploadRootPath),
-    RequestPath = "/uploads"
-});
 
 app.UseRouting();
 app.UseSession();

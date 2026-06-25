@@ -16,8 +16,7 @@ namespace CMS.Backend.Services
 
         public static string GetUploadRootPath(IWebHostEnvironment environment)
         {
-            var localAppData = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-            return Path.Combine(localAppData, "TriCMS", "Uploads");
+            return Path.Combine(environment.WebRootPath, "uploads");
         }
 
         public static async Task<ImageUploadResult> SaveImageAsync(IFormFile? uploadImage, IWebHostEnvironment environment)
