@@ -1,10 +1,14 @@
 using System;
+using CMS.Data;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
 namespace CMS.data.Migrations
 {
+    [DbContext(typeof(ApplicationDbContext))]
+    [Migration("20260625090000_AddAdvertisements")]
     public partial class AddAdvertisements : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
