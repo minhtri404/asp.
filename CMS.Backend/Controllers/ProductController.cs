@@ -13,7 +13,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
-namespace CMS.Backend.Controllers
+namespace CMS.Backend.Controllers   
 {
     [Authorize(Roles = "Admin,Editor")]
     public class ProductController : Controller

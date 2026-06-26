@@ -65,31 +65,31 @@ function Home() {
                 </div>
             </section>
 
-           <section className="category-section">
-    <div className="category-grid">
-        {categories.slice(0, 6).map((item) => (
-            <Link
-                to={`/shop?category=${item.id}`}
-                className="category-card"
-                key={item.id}
-            >
-                <img
-                    src={
-                        item.imageUrl
-                            ? `http://localhost:5000${item.imageUrl}`
-                            : "https://via.placeholder.com/120x80?text=No+Image"
-                    }
-                    alt={item.name}
-                />
+            <section className="category-section">
+                <div className="category-grid">
+                    {categories.slice(0, 6).map((item) => (
+                        <Link
+                            to={`/shop?category=${item.id}`}
+                            className="category-card"
+                            key={item.id}
+                        >
+                            <img
+                                src={
+                                    item.imageUrl
+                                        ? `http://localhost:5000${item.imageUrl}`
+                                        : "https://via.placeholder.com/120x80?text=No+Image"
+                                }
+                                alt={item.name}
+                            />
 
-                <div>
-                    <h4>{item.name}</h4>
-                    <p>{item.description}</p>
+                            <div>
+                                <h4>{item.name}</h4>
+                                <p>{item.description}</p>
+                            </div>
+                        </Link>
+                    ))}
                 </div>
-            </Link>
-        ))}
-    </div>
-</section>
+            </section>
 
             <section className="home-section">
                 <div className="home-section__heading">

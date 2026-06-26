@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import SiteFooter from "../components/layout/SiteFooter";
 import StoreHeader from "../components/navigation/StoreHeader";
 import { getCategoriesProducts } from "../services/catalogService";
 import AppRoutes from "./AppRoutes";
@@ -37,6 +38,14 @@ function App() {
         loadCategories();
     }, [loadCategories]);
 
+    useEffect(() => {
+        window.addEventListener("focus", loadCategories);
+
+        return () => {
+            window.removeEventListener("focus", loadCategories);
+        };
+    }, [loadCategories]);
+
     const handleLogout = () => {
         localStorage.removeItem("customerId");
         localStorage.removeItem("customerName");
@@ -57,6 +66,8 @@ function App() {
             <main className="page-main">
                 <AppRoutes />
             </main>
+
+            <SiteFooter />
         </>
     );
 }

@@ -1,22 +1,28 @@
 import { useCallback, useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
+import FeaturedCategories from "../../components/home/FeaturedCategories";
 import HeroBanner from "../../components/home/HeroBanner";
-import { getProducts } from "../../services/catalogService";
+import NewProductTabs from "../../components/home/NewProductTabs";
+import ProductGrid from "../../components/home/ProductGrid";
+import { getCategoriesProducts, getProducts } from "../../services/catalogService";
 import { getPosts } from "../../services/postService";
-import { addCartItem } from "../../utils/cartStorage";
-import { formatDate, formatMoney } from "../../utils/formatters";
-import { getImageUrl, getStaticAssetUrl } from "../../utils/media";
+import { formatDate } from "../../utils/formatters";
+import { getImageUrl } from "../../utils/media";
 
 function Home() {
+    const [categories, setCategories] = useState([]);
     const [products, setProducts] = useState([]);
     const [posts, setPosts] = useState([]);
-    const navigate = useNavigate();
 
     const loadHomeData = useCallback(async () => {
         try {
-            const productsRes = await getProducts();
-            const postsRes = await getPosts();
+            const [categoriesRes, productsRes, postsRes] = await Promise.all([
+                getCategoriesProducts(),
+                getProducts(),
+                getPosts()
+            ]);
 
+            setCategories(categoriesRes.data);
             setProducts(productsRes.data);
             setPosts(postsRes.data);
         } catch (error) {
@@ -25,7 +31,6 @@ function Home() {
     }, []);
 
     useEffect(() => {
-        // eslint-disable-next-line react-hooks/set-state-in-effect
         loadHomeData();
     }, [loadHomeData]);
 
@@ -35,78 +40,15 @@ function Home() {
         })
         .slice(0, 3);
 
-    const handleBuyNow = (product) => {
-        addCartItem(product, 1);
-        navigate("/checkout");
-    };
-
     return (
         <div className="home-page">
             <HeroBanner />
 
-            <section className="home-feature-grid">
-                <Link className="home-feature-card" to="/shop?category=2">
-                    <img src={getStaticAssetUrl("/img/iphone.jpg")} alt="Điện thoại" />
-                    <span>Điện thoại nổi bật</span>
-                </Link>
-                <Link className="home-feature-card" to="/shop?category=1">
-                    <img src={getStaticAssetUrl("/img/laptop.jpg")} alt="Laptop" />
-                    <span>Laptop văn phòng</span>
-                </Link>
-                <Link className="home-feature-card" to="/shop?category=3">
-                    <img src={getStaticAssetUrl("/img/headphone.jpg")} alt="Phụ kiện" />
-                    <span>Phụ kiện công nghệ</span>
-                </Link>
-            </section>
+            <FeaturedCategories categories={categories} products={products} />
 
-            <section className="home-section">
-                <div className="home-section__heading">
-                    <h2>Sản phẩm mới</h2>
-                    <Link to="/shop" className="btn btn-primary btn-sm">
-                        Xem tất cả
-                    </Link>
-                </div>
+            <NewProductTabs products={products} />
 
-                <div className="row">
-                    {products.slice(0, 8).map((item) => (
-                        <div className="col-sm-6 col-lg-3 mb-4" key={item.id}>
-                            <div className="card h-100 shadow-sm product-card">
-                                <img
-                                    src={getImageUrl(item.imageUrl)}
-                                    className="card-img-top"
-                                    alt={item.name}
-                                />
-
-                                <div className="card-body">
-                                    <h6 className="card-title">{item.name}</h6>
-
-                                    <p className="text-danger fw-bold">
-                                        {formatMoney(item.price)}
-                                    </p>
-
-                                    <div className="d-grid gap-2">
-                                        <button
-                                            type="button"
-                                            className="btn btn-primary"
-                                            onClick={() => handleBuyNow(item)}
-                                            disabled={Number(item.stockQuantity) <= 0}
-                                        >
-                                            {Number(item.stockQuantity) <= 0 ? "Hết hàng" : "Mua ngay"}
-                                        </button>
-
-                                        <Link
-                                            to={`/product/${item.id}`}
-                                            className="btn btn-outline-primary"
-                                        >
-                                            Xem chi tiết
-                                        </Link>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    ))}
-                </div>
-            </section>
+            <ProductGrid categories={categories} products={products} />
 
             {latestPosts.length > 0 && (
                 <section className="home-section">

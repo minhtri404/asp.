@@ -24,3 +24,7 @@ dist/
 # Runtime uploads
 TriCMS.Uploads/
 CMS.Backend/wwwroot/uploads/
+!CMS.Backend/wwwroot/uploads/
+!CMS.Backend/wwwroot/uploads/product-*.jpg
+!CMS.Backend/wwwroot/uploads/product-*.jfif
+!CMS.Backend/wwwroot/uploads/product-image-credits.txt

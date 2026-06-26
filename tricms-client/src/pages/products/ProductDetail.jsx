@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { getProductById } from "../../services/catalogService";
 import { addCartItem } from "../../utils/cartStorage";
 import { formatMoney } from "../../utils/formatters";
@@ -7,6 +7,7 @@ import { getImageUrl } from "../../utils/media";
 
 function ProductDetail() {
     const { id } = useParams();
+    const navigate = useNavigate();
     const [product, setProduct] = useState(null);
     const [quantity, setQuantity] = useState(1);
 
@@ -20,78 +21,104 @@ function ProductDetail() {
     }, [id]);
 
     useEffect(() => {
-        // eslint-disable-next-line react-hooks/set-state-in-effect
         loadProduct();
     }, [loadProduct]);
 
+    const safeQuantity = Math.max(1, Number(quantity) || 1);
+
     const addToCart = () => {
-        addCartItem(product, quantity);
-        alert("Đã thêm sản phẩm vào giỏ hàng");
+        addCartItem(product, safeQuantity);
+    };
+
+    const buyNow = () => {
+        addCartItem(product, safeQuantity);
+        navigate("/cart");
     };
 
     if (!product) {
         return <div className="alert alert-info">Đang tải sản phẩm...</div>;
     }
 
+    const stockQuantity = Number(product.stockQuantity || 0);
+
     return (
-        <div>
-            <Link to="/shop" className="btn btn-secondary mb-3">
-                Quay lại cửa hàng
+        <div className="product-detail-page">
+            <Link to="/shop" className="btn btn-outline-secondary mb-3">
+                ← Quay lại cửa hàng
             </Link>
 
-            <div className="row">
-                <div className="col-md-5">
+            <section className="product-detail">
+                <div className="product-detail__media">
                     <img
                         src={getImageUrl(product.imageUrl, "https://via.placeholder.com/500x400?text=No+Image")}
                         alt={product.name}
-                        className="img-fluid rounded shadow-sm"
-                        style={{ width: "100%", maxHeight: "450px", objectFit: "cover" }}
                     />
                 </div>
 
-                <div className="col-md-7">
-                    <h2 className="fw-bold">{product.name}</h2>
-
-                    <p className="text-danger fw-bold fs-4">
-                        {formatMoney(product.price)}
-                    </p>
-
-                    <p>
-                        <strong>Danh mục:</strong>{" "}
+                <div className="product-detail__content">
+                    <span className="product-detail__category">
                         {product.categoryProductName || "Chưa có danh mục"}
-                    </p>
+                    </span>
 
-                    <p>
-                        <strong>Số lượng tồn kho:</strong>{" "}
-                        {product.stockQuantity}
-                    </p>
+                    <h1>{product.name}</h1>
 
-                    <p className="text-muted">
-                        {product.description || "Sản phẩm chưa có mô tả."}
-                    </p>
+                    <div className="product-detail__price">
+                        {formatMoney(product.price)}
+                    </div>
 
-                    <div className="mb-3">
-                        <label className="form-label">Số lượng mua</label>
+                    <div className="product-detail__meta">
+                        <span className={stockQuantity > 0 ? "is-available" : "is-empty"}>
+                            {stockQuantity > 0 ? `Còn ${stockQuantity} sản phẩm` : "Hết hàng"}
+                        </span>
+                        <span>Bảo hành chính hãng 12 tháng</span>
+                        <span>Đổi trả trong 30 ngày</span>
+                    </div>
+
+                    <div className="product-detail__description">
+                        <h2>Mô tả sản phẩm</h2>
+                        <p>{product.description || "Sản phẩm chưa có mô tả chi tiết."}</p>
+                    </div>
+
+                    <div className="product-detail__quantity">
+                        <label htmlFor="quantity">Số lượng</label>
                         <input
+                            id="quantity"
                             type="number"
                             min="1"
-                            max={product.stockQuantity}
+                            max={stockQuantity || 999}
                             value={quantity}
-                            className="form-control"
-                            style={{ width: "150px" }}
-                            onChange={(e) => setQuantity(e.target.value)}
+                            onChange={(event) => setQuantity(event.target.value)}
                         />
                     </div>
 
-                    <button className="btn btn-primary me-2" onClick={addToCart}>
-                        Thêm vào giỏ hàng
-                    </button>
-
-                    <Link to="/cart" className="btn btn-outline-primary">
-                        Xem giỏ hàng
-                    </Link>
+                    <div className="product-detail__actions">
+                        <button type="button" className="btn btn-primary" onClick={buyNow}>
+                            Mua ngay
+                        </button>
+                        <button type="button" className="btn btn-outline-primary" onClick={addToCart}>
+                            Thêm vào giỏ hàng
+                        </button>
+                    </div>
                 </div>
-            </div>
+            </section>
+
+            <section className="product-detail-info">
+                <h2>Thông tin mua hàng</h2>
+                <div className="product-detail-info__grid">
+                    <div>
+                        <strong>Giao hàng</strong>
+                        <p>Giao hàng toàn quốc, hỗ trợ kiểm tra sản phẩm khi nhận.</p>
+                    </div>
+                    <div>
+                        <strong>Thanh toán</strong>
+                        <p>Hỗ trợ thanh toán khi nhận hàng hoặc chuyển khoản.</p>
+                    </div>
+                    <div>
+                        <strong>Bảo hành</strong>
+                        <p>Sản phẩm được bảo hành theo chính sách của cửa hàng.</p>
+                    </div>
+                </div>
+            </section>
         </div>
     );
 }

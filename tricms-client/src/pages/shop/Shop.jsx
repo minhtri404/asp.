@@ -1,45 +1,154 @@
-import { useCallback, useEffect, useState } from "react";
-import { Link, useSearchParams } from "react-router-dom";
-import {
-    getCategoriesProducts,
-    getProducts,
-    getProductsByCategory
-} from "../../services/catalogService";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { useSearchParams } from "react-router-dom";
+import FeaturedCategories from "../../components/home/FeaturedCategories";
 import Pagination from "../../components/pagination/Pagination";
-import { formatMoney } from "../../utils/formatters";
-import { getImageUrl } from "../../utils/media";
+import ShopFilters from "../../components/shop/ShopFilters";
+import ShopProductCard from "../../components/shop/ShopProductCard";
+import { getCategoriesProducts, getProducts } from "../../services/catalogService";
 
-const PRODUCT_PAGE_SIZE = 12;
+function normalizeText(value) {
+    return String(value || "")
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/đ/g, "d")
+        .replace(/Đ/g, "D")
+        .toLowerCase();
+}
+
+function toNumber(value) {
+    const number = Number(value);
+    return Number.isFinite(number) && number >= 0 ? number : 0;
+}
+
+function sortProducts(products, sort) {
+    const items = [...products];
+
+    return items.sort((first, second) => {
+        switch (sort) {
+            case "price_asc":
+                return Number(first.price || 0) - Number(second.price || 0);
+            case "price_desc":
+                return Number(second.price || 0) - Number(first.price || 0);
+            case "name_asc":
+                return String(first.name || "").localeCompare(String(second.name || ""), "vi");
+            case "stock_desc":
+                return Number(second.stockQuantity || 0) - Number(first.stockQuantity || 0);
+            case "newest":
+            default:
+                return Number(second.id || 0) - Number(first.id || 0);
+        }
+    });
+}
 
 function Shop() {
     const [categories, setCategories] = useState([]);
     const [products, setProducts] = useState([]);
-    const [productsLoaded, setProductsLoaded] = useState(false);
+    const [loaded, setLoaded] = useState(false);
     const [searchParams, setSearchParams] = useSearchParams();
 
-    const categoryId = searchParams.get("category");
-    const keyword = searchParams.get("keyword") || "";
+    const filters = {
+        category: searchParams.get("category") || "",
+        keyword: searchParams.get("keyword") || "",
+        minPrice: searchParams.get("minPrice") || "",
+        maxPrice: searchParams.get("maxPrice") || "",
+        stock: searchParams.get("stock") || "",
+        sort: searchParams.get("sort") || "newest",
+        pageSize: searchParams.get("pageSize") || "12"
+    };
+
     const pageValue = Number(searchParams.get("page") || 1);
     const currentPage = Number.isInteger(pageValue) && pageValue > 0 ? pageValue : 1;
-    const selectedCategory = categories.find((item) => Number(item.id) === Number(categoryId));
+    const pageSize = Number(filters.pageSize) || 12;
 
-    const filteredProducts = products.filter((item) => {
-        const value = keyword.trim().toLowerCase();
+    const loadShopData = useCallback(async () => {
+        setLoaded(false);
 
-        if (!value) {
-            return true;
+        try {
+            const [categoriesRes, productsRes] = await Promise.all([
+                getCategoriesProducts(),
+                getProducts()
+            ]);
+
+            setCategories(categoriesRes.data);
+            setProducts(productsRes.data);
+        } catch (error) {
+            console.error("Lỗi tải dữ liệu shop:", error);
+        } finally {
+            setLoaded(true);
         }
+    }, []);
 
-        const text = `${item.name || ""} ${item.description || ""} ${item.categoryProductName || ""}`.toLowerCase();
-        return text.includes(value);
-    });
+    useEffect(() => {
+        loadShopData();
+    }, [loadShopData]);
 
-    const totalPages = Math.max(1, Math.ceil(filteredProducts.length / PRODUCT_PAGE_SIZE));
+    const filteredProducts = useMemo(() => {
+        const keyword = normalizeText(filters.keyword.trim());
+        const minPrice = filters.minPrice ? toNumber(filters.minPrice) : null;
+        const maxPrice = filters.maxPrice ? toNumber(filters.maxPrice) : null;
+        const categoryId = filters.category ? Number(filters.category) : null;
+
+        const matched = products.filter((product) => {
+            const price = Number(product.price || 0);
+            const stockQuantity = Number(product.stockQuantity || 0);
+
+            if (categoryId && Number(product.categoryProductId) !== categoryId) {
+                return false;
+            }
+
+            if (keyword) {
+                const searchText = normalizeText(
+                    `${product.name || ""} ${product.description || ""} ${product.categoryProductName || ""}`
+                );
+
+                if (!searchText.includes(keyword)) {
+                    return false;
+                }
+            }
+
+            if (minPrice !== null && price < minPrice) {
+                return false;
+            }
+
+            if (maxPrice !== null && price > maxPrice) {
+                return false;
+            }
+
+            if (filters.stock === "in_stock" && stockQuantity <= 0) {
+                return false;
+            }
+
+            if (filters.stock === "out_of_stock" && stockQuantity > 0) {
+                return false;
+            }
+
+            return true;
+        });
+
+        return sortProducts(matched, filters.sort);
+    }, [filters, products]);
+
+    const totalPages = Math.max(1, Math.ceil(filteredProducts.length / pageSize));
     const safePage = Math.min(currentPage, totalPages);
     const paginatedProducts = filteredProducts.slice(
-        (safePage - 1) * PRODUCT_PAGE_SIZE,
-        safePage * PRODUCT_PAGE_SIZE
+        (safePage - 1) * pageSize,
+        safePage * pageSize
     );
+
+    const updateParams = (changes) => {
+        const nextParams = new URLSearchParams(searchParams);
+
+        Object.entries(changes).forEach(([key, value]) => {
+            if (value === "" || value === null || value === undefined) {
+                nextParams.delete(key);
+            } else {
+                nextParams.set(key, String(value));
+            }
+        });
+
+        nextParams.delete("page");
+        setSearchParams(nextParams);
+    };
 
     const updatePage = (page) => {
         const nextParams = new URLSearchParams(searchParams);
@@ -53,122 +162,45 @@ function Shop() {
         setSearchParams(nextParams);
     };
 
-    const loadCategories = useCallback(async () => {
-        try {
-            const res = await getCategoriesProducts();
-            setCategories(res.data);
-        } catch (error) {
-            console.error("Lỗi tải danh mục:", error);
-        }
-    }, []);
-
-    const loadProducts = useCallback(async () => {
-        setProductsLoaded(false);
-
-        try {
-            let res;
-
-            if (categoryId) {
-                res = await getProductsByCategory(categoryId);
-            } else {
-                res = await getProducts();
-            }
-
-            setProducts(res.data);
-        } catch (error) {
-            console.error("Lỗi tải sản phẩm:", error);
-        } finally {
-            setProductsLoaded(true);
-        }
-    }, [categoryId]);
+    const resetFilters = () => {
+        setSearchParams({});
+    };
 
     useEffect(() => {
-        // eslint-disable-next-line react-hooks/set-state-in-effect
-        loadCategories();
-    }, [loadCategories]);
-
-    useEffect(() => {
-        // eslint-disable-next-line react-hooks/set-state-in-effect
-        loadProducts();
-    }, [loadProducts]);
-
-    useEffect(() => {
-        if (productsLoaded && currentPage !== safePage) {
+        if (loaded && currentPage !== safePage) {
             updatePage(safePage);
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [currentPage, productsLoaded, safePage]);
+    }, [currentPage, loaded, safePage]);
 
     return (
         <div className="shop-page">
-            <div className="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
-                <div>
-                    <h2 className="fw-bold mb-1">Sản phẩm</h2>
-                    <p className="text-muted">Chọn danh mục ở đầu trang hoặc tìm nhanh sản phẩm bạn cần.</p>
-                </div>
-                <span className="text-muted">{filteredProducts.length} sản phẩm</span>
-            </div>
+            <FeaturedCategories categories={categories} products={products} />
 
-            <div className="shop-filter-bar">
-                <button
-                    className={`btn btn-sm ${!categoryId && !keyword ? "btn-primary" : "btn-outline-primary"}`}
-                    onClick={() => setSearchParams({})}
-                >
-                    Tất cả sản phẩm
-                </button>
+            <ShopFilters
+                filters={filters}
+                categories={categories}
+                totalItems={filteredProducts.length}
+                onFilterChange={updateParams}
+                onReset={resetFilters}
+            />
 
-                {selectedCategory && (
-                    <span className="badge text-bg-light">
-                        Danh mục: {selectedCategory.name}
-                    </span>
-                )}
-
-                {keyword && (
-                    <span className="badge text-bg-light">
-                        Tìm kiếm: {keyword}
-                    </span>
-                )}
-            </div>
-
-            <div className="row">
-                {paginatedProducts.map((item) => (
-                    <div className="col-sm-6 col-lg-3 mb-4" key={item.id}>
-                        <div className="card h-100 shadow-sm product-card">
-                            <img
-                                src={getImageUrl(item.imageUrl)}
-                                className="card-img-top"
-                                alt={item.name}
-                            />
-
-                            <div className="card-body">
-                                <h6 className="card-title">{item.name}</h6>
-
-                                <p className="text-danger fw-bold">
-                                    {formatMoney(item.price)}
-                                </p>
-
-                                <Link
-                                    to={`/product/${item.id}`}
-                                    className="btn btn-outline-primary w-100"
-                                >
-                                    Xem chi tiết
-                                </Link>
-                            </div>
-                        </div>
-                    </div>
+            <div className="shop-product-grid">
+                {paginatedProducts.map((product) => (
+                    <ShopProductCard product={product} key={product.id} />
                 ))}
             </div>
 
-            {filteredProducts.length === 0 && (
+            {loaded && filteredProducts.length === 0 && (
                 <div className="alert alert-warning">
-                    Không có sản phẩm phù hợp.
+                    Không có sản phẩm phù hợp với bộ lọc hiện tại.
                 </div>
             )}
 
             <Pagination
                 currentPage={safePage}
                 totalItems={filteredProducts.length}
-                pageSize={PRODUCT_PAGE_SIZE}
+                pageSize={pageSize}
                 onPageChange={updatePage}
             />
         </div>

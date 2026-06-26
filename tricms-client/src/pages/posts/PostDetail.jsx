@@ -22,45 +22,30 @@ function PostDetail() {
     }, [id]);
 
     if (!post) {
-        return (
-            <div className="alert alert-info">
-                Đang tải bài viết...
-            </div>
-        );
+        return <div className="alert alert-info">Đang tải bài viết...</div>;
     }
 
     return (
-        <div>
-            <Link to="/" className="btn btn-secondary mb-3">
-                Quay lại trang chủ
+        <article className="post-detail-page">
+            <Link to="/news" className="btn btn-outline-secondary mb-3">
+                ← Quay lại tin tức
             </Link>
 
-            <div className="card shadow-sm">
+            <header className="post-detail-hero">
+                <div className="post-detail-hero__content">
+                    <span>{post.categoryName || "Tin công nghệ"}</span>
+                    <h1>{post.title}</h1>
+                    <p>Ngày đăng: {formatDate(post.createdDate)}</p>
+                </div>
+
                 <img
                     src={getImageUrl(post.imageUrl, "https://via.placeholder.com/900x400?text=No+Image")}
                     alt={post.title}
-                    className="card-img-top"
-                    style={{
-                        height: "420px",
-                        objectFit: "cover"
-                    }}
                 />
+            </header>
 
-                <div className="card-body">
-                    <h1 className="fw-bold mb-3">
-                        {post.title}
-                    </h1>
-
-                    <div className="text-muted mb-3">
-                        <span>
-                            Danh mục: {post.categoryName || "Chưa có danh mục"}
-                        </span>
-                        <span className="mx-2">|</span>
-                        <span>
-                            Ngày đăng: {formatDate(post.createdDate)}
-                        </span>
-                    </div>
-
+            <div className="post-detail-layout">
+                <div className="post-detail-body">
                     {post.content ? (
                         <div
                             className="post-content"
@@ -72,8 +57,18 @@ function PostDetail() {
                         </p>
                     )}
                 </div>
+
+                <aside className="post-detail-sidebar">
+                    <h2>TriShop</h2>
+                    <p>
+                        Theo dõi tin tức công nghệ, ưu đãi sản phẩm và hướng dẫn mua hàng mới nhất.
+                    </p>
+                    <Link to="/shop" className="btn btn-primary btn-sm">
+                        Xem sản phẩm
+                    </Link>
+                </aside>
             </div>
-        </div>
+        </article>
     );
 }
 

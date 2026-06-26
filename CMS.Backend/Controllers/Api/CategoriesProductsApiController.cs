@@ -1,4 +1,4 @@
-﻿//MSSV:2123110137
+//MSSV:2123110137
 //Truong Minh Tri
 //CCQ2311D
 //Ngay tao:04/06/2026
@@ -25,6 +25,7 @@ namespace CMS.Backend.Controllers.Api
         public async Task<IActionResult> GetCategoriesProducts()
         {
             var data = await _context.CategoriesProducts
+                .OrderBy(c => c.Name)
                 .Select(c => new
                 {
                     c.Id,

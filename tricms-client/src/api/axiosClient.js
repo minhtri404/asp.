@@ -1,12 +1,12 @@
 import axios from "axios";
-
-export const API_ORIGIN = import.meta.env.VITE_API_ORIGIN || "http://localhost:13767";
+import { API_BASE_URL, API_ORIGIN } from "../config/api";
 
 const axiosClient = axios.create({
-    baseURL: `${API_ORIGIN}/api`,
+    baseURL: API_BASE_URL,
     headers: {
         "Content-Type": "application/json"
     }
 });
 
+export { API_ORIGIN };
 export default axiosClient;

@@ -1,10 +1,12 @@
 import { useState } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import CategoryMenu from "./CategoryMenu";
+import ProductMegaMenu from "./ProductMegaMenu";
 import "./StoreHeader.css";
 
 function StoreHeader({ categories = [], customerName, onLogout }) {
     const [categoryOpen, setCategoryOpen] = useState(false);
+    const [productMenuOpen, setProductMenuOpen] = useState(false);
     const [keyword, setKeyword] = useState("");
     const navigate = useNavigate();
 
@@ -90,12 +92,12 @@ function StoreHeader({ categories = [], customerName, onLogout }) {
 
                         {customerName ? (
                             <button className="store-header__account" type="button" onClick={onLogout}>
-                                <span aria-hidden="true">◎</span>
+                                <span aria-hidden="true">●</span>
                                 <span>{customerName}<br />Đăng xuất</span>
                             </button>
                         ) : (
                             <Link className="store-header__account" to="/login">
-                                <span aria-hidden="true">◎</span>
+                                <span aria-hidden="true">●</span>
                                 <span>Thông tin<br />tài khoản</span>
                             </Link>
                         )}
@@ -106,13 +108,28 @@ function StoreHeader({ categories = [], customerName, onLogout }) {
             <nav className="store-header__nav">
                 <div className="container store-header__nav-inner">
                     <NavLink to="/">Trang chủ</NavLink>
-                    <NavLink to="/about">Về chúng tôi</NavLink>
-                    <NavLink to="/shop">Sản phẩm</NavLink>
-                    <NavLink to="/orders">Tra cứu đơn hàng</NavLink>
-                    <NavLink to="/cart">Giỏ hàng</NavLink>
-                    <NavLink to="/checkout">Thanh toán</NavLink>
-                    <NavLink to="/register">Đăng ký</NavLink>
+                    <NavLink to="/about">Giới thiệu</NavLink>
+
+                    <div
+                        className="store-header__nav-product"
+                        onMouseEnter={() => setProductMenuOpen(true)}
+                        onMouseLeave={() => setProductMenuOpen(false)}
+                        onFocus={() => setProductMenuOpen(true)}
+                    >
+                        <NavLink to="/shop" onClick={() => setProductMenuOpen(false)}>
+                            Sản phẩm <span aria-hidden="true">⌃</span>
+                        </NavLink>
+
+                        {productMenuOpen && (
+                            <ProductMegaMenu categories={categories} />
+                        )}
+                    </div>
+
                     <NavLink to="/news">Tin tức</NavLink>
+                    
+                    <NavLink to="/contact">Câu hỏi thường gặp</NavLink>
+                   
+                
                     <NavLink to="/contact">Liên hệ</NavLink>
                 </div>
             </nav>
