@@ -1,0 +1,10 @@
+GET http://localhost:13767/api/Products
+GET http://localhost:13767/api/Products/1
+GET http://localhost:13767/api/Products/category/1
+GET http://localhost:13767/api/CategoriesProducts
+GET http://localhost:13767/api/Posts
+GET http://localhost:13767/api/Posts/1
+GET http://localhost:13767/api/Advertisements
+GET http://localhost:13767/api/Orders/customer/1
+GET http://localhost:13767/api/Users
+GET http://localhost:13767/api/Users/1

@@ -6,12 +6,13 @@ export function getCartItems() {
 
 export function saveCartItems(cartItems) {
     localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cartItems));
+    window.dispatchEvent(new CustomEvent("cartUpdated", { detail: cartItems }));
 }
 
 export function addCartItem(product, quantity = 1) {
     const cartItems = getCartItems();
-    const productId = product.productId || product.id;
-    const existingItem = cartItems.find((item) => item.productId === productId);
+    const productId = Number(product.productId || product.id);
+    const existingItem = cartItems.find((item) => Number(item.productId) === productId);
 
     if (existingItem) {
         existingItem.quantity += Number(quantity);
@@ -31,4 +32,5 @@ export function addCartItem(product, quantity = 1) {
 
 export function clearCartItems() {
     localStorage.removeItem(CART_STORAGE_KEY);
+    window.dispatchEvent(new CustomEvent("cartUpdated", { detail: [] }));
 }

@@ -10,6 +10,7 @@ function ProductDetail() {
     const navigate = useNavigate();
     const [product, setProduct] = useState(null);
     const [quantity, setQuantity] = useState(1);
+    const [cartMessage, setCartMessage] = useState("");
 
     const loadProduct = useCallback(async () => {
         try {
@@ -27,10 +28,19 @@ function ProductDetail() {
     const safeQuantity = Math.max(1, Number(quantity) || 1);
 
     const addToCart = () => {
+        if (!product) {
+            return;
+        }
+
         addCartItem(product, safeQuantity);
+        setCartMessage(`Đã thêm ${safeQuantity} sản phẩm vào giỏ hàng.`);
     };
 
     const buyNow = () => {
+        if (!product) {
+            return;
+        }
+
         addCartItem(product, safeQuantity);
         navigate("/cart");
     };
@@ -90,6 +100,15 @@ function ProductDetail() {
                             onChange={(event) => setQuantity(event.target.value)}
                         />
                     </div>
+
+                    {cartMessage && (
+                        <div className="alert alert-success mb-0">
+                            {cartMessage}{" "}
+                            <Link to="/cart" className="alert-link">
+                                Xem giỏ hàng
+                            </Link>
+                        </div>
+                    )}
 
                     <div className="product-detail__actions">
                         <button type="button" className="btn btn-primary" onClick={buyNow}>

@@ -3,11 +3,15 @@ import { useNavigate } from "react-router-dom";
 import SiteFooter from "../components/layout/SiteFooter";
 import StoreHeader from "../components/navigation/StoreHeader";
 import { getCategoriesProducts } from "../services/catalogService";
+import { getCartItems } from "../utils/cartStorage";
 import AppRoutes from "./AppRoutes";
 
 function App() {
     const [customerName, setCustomerName] = useState(localStorage.getItem("customerName"));
     const [categories, setCategories] = useState([]);
+    const [cartCount, setCartCount] = useState(() => {
+        return getCartItems().reduce((total, item) => total + Number(item.quantity || 0), 0);
+    });
     const navigate = useNavigate();
 
     const loadCategories = useCallback(async () => {
@@ -46,6 +50,20 @@ function App() {
         };
     }, [loadCategories]);
 
+    useEffect(() => {
+        const updateCartCount = () => {
+            setCartCount(getCartItems().reduce((total, item) => total + Number(item.quantity || 0), 0));
+        };
+
+        window.addEventListener("storage", updateCartCount);
+        window.addEventListener("cartUpdated", updateCartCount);
+
+        return () => {
+            window.removeEventListener("storage", updateCartCount);
+            window.removeEventListener("cartUpdated", updateCartCount);
+        };
+    }, []);
+
     const handleLogout = () => {
         localStorage.removeItem("customerId");
         localStorage.removeItem("customerName");
@@ -59,6 +77,7 @@ function App() {
         <>
             <StoreHeader
                 categories={categories}
+                cartCount={cartCount}
                 customerName={customerName}
                 onLogout={handleLogout}
             />

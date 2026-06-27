@@ -4,7 +4,7 @@ import CategoryMenu from "./CategoryMenu";
 import ProductMegaMenu from "./ProductMegaMenu";
 import "./StoreHeader.css";
 
-function StoreHeader({ categories = [], customerName, onLogout }) {
+function StoreHeader({ categories = [], cartCount = 0, customerName, onLogout }) {
     const [categoryOpen, setCategoryOpen] = useState(false);
     const [productMenuOpen, setProductMenuOpen] = useState(false);
     const [keyword, setKeyword] = useState("");
@@ -87,7 +87,7 @@ function StoreHeader({ categories = [], customerName, onLogout }) {
 
                         <Link className="store-header__action" to="/cart">
                             <span aria-hidden="true">▱</span>
-                            <span>Giỏ hàng<br />Sản phẩm</span>
+                            <span>Giỏ hàng<br />Sản phẩm {cartCount}</span>
                         </Link>
 
                         {customerName ? (
@@ -126,10 +126,7 @@ function StoreHeader({ categories = [], customerName, onLogout }) {
                     </div>
 
                     <NavLink to="/news">Tin tức</NavLink>
-                    
                     <NavLink to="/contact">Câu hỏi thường gặp</NavLink>
-                   
-                
                     <NavLink to="/contact">Liên hệ</NavLink>
                 </div>
             </nav>
